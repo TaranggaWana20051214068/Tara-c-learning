@@ -45,7 +45,12 @@
                             </div>
                         </div>
                         @if (session('success'))
-                            <div class="alert alert-success">{{ session('success') }}</div>
+                            <div class="alert alert-success d-flex align-items-center" role="alert">
+                                <i class="bi-lg bi-check-circle flex-shrink-0 me-2"></i>
+                                <div>
+                                    {{ session('success') }}
+                                </div>
+                            </div>
                         @endif
                         <div class="table-responsive">
                             <table class="table table-striped mb-0">
@@ -63,9 +68,11 @@
                                     @foreach ($articles as $article)
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
+                                            <td><img src="{{ Storage::url('images/articles/' . $article->thumbnail_image_name) }}"
+                                                    alt="" style="width:50px"></td>
                                             <td>
-                                                @if ($article->thumbnail_image_name)
-                                                    <a href="{{ Storage::url('images/articles/' . $article->thumbnail_image_name) }}"
+                                                @if ($article->file_name)
+                                                    <a href="{{ Storage::url('images/articles/file/' . $article->file_name) }}"
                                                         target="_blank">
                                                         <i class="bi bi-file-earmark-medical"></i>
                                                     </a>
@@ -109,6 +116,13 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('assets/plugins/sweet-alert2/sweetalert2.min.js') }}"></script>
+
     <script src="{{ asset('js/main.js') }}"></script>
+@endsection
+@section('script-bottom')
+    @if (session('success'))
+        <script>
+            $.SweetAlert.showSucc("{{ session('success') }}");
+        </script>
+    @endif
 @endsection

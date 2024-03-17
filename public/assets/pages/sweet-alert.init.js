@@ -237,6 +237,40 @@
                 },
             ]);
         });
+        // Toast
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+        });
+        SweetAlert.prototype.showToast = function (pesan) {
+            Toast.fire({
+                icon: "success",
+                title: pesan,
+            });
+        };
+        SweetAlert.prototype.showSucc = function (pesan) {
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: pesan,
+                showConfirmButton: false,
+                timer: 2000,
+            });
+        };
+        SweetAlert.prototype.showErr = function (pesan) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: pesan,
+            });
+        };
     }),
         //init
         ($.SweetAlert = new SweetAlert()),

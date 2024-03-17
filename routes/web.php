@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Authenticate;
+use App\Http\Controllers\Admin\ArticleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,10 @@ Route::prefix('/articles')->group(function () {
     Route::get('/', 'HomeController@article_index')->name('article.index');
     Route::get('/{id}', 'HomeController@article_show')->name('article.show');
 });
+Route::prefix('/questions')->group(function () {
+    Route::get('/', 'HomeController@questions_index')->name('soal.index');
+    Route::get('/{id}', 'HomeController@questions_show')->name('soal.show');
+});
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::name('admin.')->group(function () {
@@ -58,3 +63,5 @@ Route::group(['middleware' => Authenticate::class], function () {
 Auth::routes();
 
 Route::get('/admin', 'admin\HomeController@index')->middleware('role:admin,guru')->name('admin.dashboard');
+// Route::post('/articles', 'admin\ArticleController@url')->name('admin.articles.edit');
+Route::post('/articles', [ArticleController::class, 'url'])->name('admin.articles.url');

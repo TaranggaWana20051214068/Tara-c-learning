@@ -35,10 +35,6 @@ class ArticleController extends Controller
     {
         return view('admin.articles.add');
     }
-    public function validateUrl($url)
-    {
-        return filter_var($url, FILTER_VALIDATE_URL) !== false;
-    }
     /**
      * Store a newly created resource in storage.
      *
@@ -52,7 +48,8 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'thumbnail' => 'file|max:1024', // Maksimum 10MB (10 * 1024 KB)
+            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'file' => 'file',
         ]);
         // Simpan artikel
         $article = new Article;
@@ -61,12 +58,18 @@ class ArticleController extends Controller
         $article->content = $request->content;
 
         // Simpan thumbnail jika ada
-        if ($request->hasFile('thumbnail')) {
-            $photo = $request->file('thumbnail');
+        $photo = $request->file('thumbnail');
+        $image_extension = $photo->extension();
+        $image_name = Str::slug($request->title) . "." . $image_extension;
+        $photo->storeAs('/images/articles', $image_name, 'public');
+        $article->thumbnail_image_name = $image_name;
+
+        if ($request->hasFile('file')) {
+            $photo = $request->file('file');
             $image_extension = $photo->extension();
             $image_name = Str::slug($request->title) . "." . $image_extension;
-            $photo->storeAs('/images/articles', $image_name, 'public');
-            $article->thumbnail_image_name = $image_name;
+            $photo->storeAs('/images/articles/file', $image_name, 'public');
+            $article->file_name = $image_name;
         }
 
         // Simpan artikel terlebih dahulu
@@ -76,7 +79,6 @@ class ArticleController extends Controller
         if (!empty($request->youtube_links)) {
             if ($request->has('youtube_links')) {
                 foreach ($request->youtube_links as $link) {
-                    // Periksa apakah link tidak null dan tidak kosong
                     YoutubeLink::create([
                         'article_id' => $article->id,
                         'link' => $link,
@@ -127,10 +129,9 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'thumbnail' => 'nullable|file'
+            'thumbnail' => 'nullable|file',
+            'file' => 'nullable|file'
         ]);
-
-
         $article = Article::findOrFail($id);
         $article->title = $request->title;
         $article->content = $request->content;
@@ -142,9 +143,17 @@ class ArticleController extends Controller
             $photo->storeAs('/images/articles', $image_name, 'public');
             $article->thumbnail_image_name = $image_name;
         }
+        if ($request->hasFile('file')) {
+            Storage::delete('public/images/articles/file/' . $article->image_name);
+            $photo = $request->file('file');
+            $image_extension = $photo->extension();
+            $image_name = Str::slug($request->title) . "." . $image_extension;
+            $photo->storeAs('/images/articles/file', $image_name, 'public');
+            $article->file_name = $image_name;
+        }
         $article->save();
 
-        session()->flash('success', "Sukses ubah Artikel $request->name");
+        session()->flash('success', "Sukses ubah Materi $article->title");
         return redirect()->route('admin.articles.index');
     }
 
@@ -158,9 +167,90 @@ class ArticleController extends Controller
     {
         $article = Article::findOrFail($id);
         Storage::delete('public/images/articles/' . $article->thumbnail_image_name);
+        Storage::delete('public/images/articles/file/' . $article->file_name);
         $article->delete();
 
         session()->flash('success', 'Sukses Menghapus Data');
         return redirect()->back();
+    }
+
+    public function getYoutubeVideoId($url)
+    {
+        // Mengambil ID video dari URL yang memiliki format 'youtu.be'
+        if (strpos($url, 'youtu.be') !== false) {
+            $parts = explode('/', $url);
+            return end($parts);
+        }
+
+        // Mengambil ID video dari URL yang memiliki parameter 'v'
+        $queryString = parse_url($url, PHP_URL_QUERY);
+        parse_str($queryString, $params);
+        if (isset($params['v'])) {
+            return $params['v']; // Mengembalikan ID video jika ada
+        } else {
+            return null; // Mengembalikan null jika tidak ada ID video
+        }
+    }
+    public function validateUrl($url)
+    {
+
+        if (strpos($url, 'youtube') !== false || strpos($url, 'youtu.be') !== false) {
+            // Jika terdapat ID video setelah kata kunci 'youtube' atau 'youtu.be'
+            if ($this->getYoutubeVideoId($url) !== null) {
+                return filter_var($url, FILTER_VALIDATE_URL) !== false;
+            }
+        }
+        return false;
+
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     */
+    public function url(Request $request)
+    {
+        // Validasi request jika diperlukan
+        $request->validate([
+            'link' => 'required|url',
+            'id' => 'required',
+            'title' => 'required'
+        ]);
+        // Validasi umum untuk link YouTube
+        $request->validate(YoutubeLink::$rules, YoutubeLink::$messages);
+
+        // Validasi unik untuk link berdasarkan artikel
+        $youtubeLink = new YoutubeLink();
+
+        $validatedData = $request->validate(['link' => $youtubeLink->rules()], $youtubeLink->messages());
+
+
+        // Cek apakah ada link yang sama dalam artikel
+        $existingLink = YoutubeLink::where('link', $validatedData['link'])
+            ->where('article_id', $request->id)
+            ->exists();
+
+        if ($existingLink) {
+            // Jika ada link yang sama dalam artikel, tampilkan pesan error
+            session()->flash('error', 'URL tidak boleh sama');
+            return redirect()->back();
+        }
+        if (!$this->validateUrl($request->link)) {
+            // URL tidak valid, lakukan sesuatu di sini
+            session()->flash('error', 'URL tidak valid');
+            return redirect()->back();
+        } else {
+            $youtube = new YoutubeLink;
+            $youtube->article_id = $request->id;
+            $youtube->link = $request->link;
+            $youtube->title = $request->title;
+            $youtube->save();
+            // Lakukan penyimpanan ke dalam database atau tempat penyimpanan lainnya
+
+            // Berikan respons yang sesuai ke klien
+            session()->flash('success', 'URL Berhasil Ditambahkan');
+            return redirect()->back();
+        }
     }
 }

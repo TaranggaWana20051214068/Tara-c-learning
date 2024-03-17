@@ -17,27 +17,30 @@
                 <h1 class="card-title mt-2">{{ $article->title }}</h1>
                 <p>{!! nl2br($article->content) !!}</p>
                 @if ($links->count() > 0 || $article->thumbnail_image_name)
-                    <div class="centered">
+                    <div class="container-sm text-center">
                         <h4 class="mt-2">Lampiran</h4>
-                        @if ($article->thumbnail_image_name)
-                            <a href="{{ Storage::url('images/articles/' . $article->thumbnail_image_name) }}"
-                                target="_blank">
-                                <i class="bi bi-file-earmark-medical" style="font-size: 3rem;"></i>
-                                <br>
-                                {{ $article->thumbnail_image_name }}
-                            </a>
-                        @endif
-
-                        <div style="display:flex;flex-wrap: wrap;justify-content: space-around;" id="players-container">
+                        <div class="row">
+                            <div class="col">
+                                @if ($article->thumbnail_image_name)
+                                    <a href="{{ Storage::url('images/articles/' . $article->thumbnail_image_name) }}"
+                                        target="_blank">
+                                        <i class="bi bi-file-earmark-medical" style="font-size: 3rem;"></i>
+                                        <br>
+                                        {{ $article->thumbnail_image_name }}
+                                    </a>
+                                @endif
+                            </div>
+                            <div class="col">
+                                <div id="players-container">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @endif
             </div>
 
         </div>
-        <div class="thumbnail">
-        </div>
-
+        <div class="thumbnail"></div>
     </div>
 </section>
 <script>
@@ -66,34 +69,37 @@
                 @endforeach
             @endif
         ];
+        console.log(youtubeLinks);
         // 1. Memeriksa koneksi internet
-        if (checkInternetConnection()) {
-            // Jika ada koneksi internet, memuat video menggunakan IFrame Player API
-            youtubeLinks.forEach(function(videoId) {
-                var playerDiv = document.createElement('div');
-                var vId = getVidId(videoId);
-                playerDiv.id = 'player-' + vId;
-                document.getElementById('players-container').appendChild(playerDiv);
-                var player = new YT.Player(playerDiv.id, {
-                    height: 'auto',
-                    width: 'auto',
-                    host: 'https://www.youtube-nocookie.com',
-                    videoId: vId,
-                    playerVars: {
-                        'playsinline': 1
-                    }
+        if (youtubeLinks != "") {
+            if (checkInternetConnection()) {
+                // Jika ada koneksi internet, memuat video menggunakan IFrame Player API
+                youtubeLinks.forEach(function(videoId) {
+                    var playerDiv = document.createElement('div');
+                    var vId = getVidId(videoId);
+                    playerDiv.id = 'player-' + vId;
+                    document.getElementById('players-container').appendChild(playerDiv);
+                    var player = new YT.Player(playerDiv.id, {
+                        height: '150',
+                        width: '250',
+                        videoId: vId,
+                        playerVars: {
+                            'playsinline': 1,
+                            'autoplay': 0
+                        }
+                    });
                 });
-            });
-        } else {
-            // Jika tidak ada koneksi internet, tampilkan tautan menuju video YouTube
-            var playersContainer = document.getElementById('players-container');
-            youtubeLinks.forEach(function(videoId) {
-                var youtubeLink = document.createElement('a');
-                youtubeLink.href = "https://www.youtube.com/watch?v=" + videoId;
-                youtubeLink.textContent = "Tonton di YouTube";
-                playersContainer.appendChild(youtubeLink);
-                playersContainer.appendChild(document.createElement('br'));
-            });
+            } else {
+                // Jika tidak ada koneksi internet, tampilkan tautan menuju video YouTube
+                var playersContainer = document.getElementById('players-container');
+                youtubeLinks.forEach(function(videoId) {
+                    var youtubeLink = document.createElement('a');
+                    youtubeLink.href = "https://www.youtube.com/watch?v=" + videoId;
+                    youtubeLink.textContent = "Tonton di YouTube";
+                    playersContainer.appendChild(youtubeLink);
+                    playersContainer.appendChild(document.createElement('br'));
+                });
+            }
         }
     }
 

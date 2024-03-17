@@ -55,11 +55,25 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="" class='col-md-2 col-form-label'>Thumbnail</label>
+                                <div class="col-md-10">
+                                    <input type="file" class="form-control form-control-sm" id="formFileThumnail"
+                                        name='thumbnail'>
+                                    <code>Thumbnail Harus Berupa Gambar. </code>
+                                    @error('thumbnail')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Lampiran</label>
                                 <div class="col-md-10">
-                                    <input type="file" class="form-control-file" name='thumbnail'>
+                                    <input class="form-control form-control-sm" id="formFileArticle" type="file"
+                                        name="file">
                                     <code>Gambar/file/dokumen MAX 10MB</code>
-                                    @error('thumbnail')
+                                    @error('file')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -71,6 +85,9 @@
                                 <div class="col-md-10" id="youtube-links-container">
                                     <input type="text" class="form-control" id="hidden-youtube-link"
                                         name='youtube_links[]' style="display: none;" placeholder="Masukkan link YouTube">
+                                    <button type="button" class="btn btn-primary" id="submit-button">Masukkan Link
+                                        YouTube</button>
+
                                     @error('youtube_links')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -78,7 +95,6 @@
                                     @enderror
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-primary" id="submit-button">Masukkan Link YouTube</button>
                             <button type="submit" class='btn btn-primary float-right'>Submit</button>
                         </form>
 

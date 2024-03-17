@@ -19,10 +19,15 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
+    <link href="{{ URL::asset('assets/plugins/sweet-alert2/sweetalert2.min.css') }}" rel="stylesheet">
+
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/front.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/icons.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <script src="{{ URL::asset('assets/js/jquery.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/sweet-alert2/sweetalert2.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/pages/sweet-alert.init.js') }}"></script>
     @stack('styles')
 </head>
 
@@ -67,7 +72,7 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ route('article.index') }}">Materi</a>
-                                <a class="dropdown-item" href="{{ route('article.index') }}">Soal Latihan</a>
+                                <a class="dropdown-item" href="{{ route('soal.index') }}">Soal Latihan</a>
                             </div>
                         </li>
 

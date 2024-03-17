@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Challenges;
 use App\Models\YoutubeLink;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Day;
 use App\Models\Article;
+use App\Http\Controllers\SoalController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -19,7 +21,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        // $this->middleware('auth');
+        $this->middleware('auth');
     }
 
     /**
@@ -73,5 +75,21 @@ class HomeController extends Controller
     public function profile()
     {
         return view('profile');
+    }
+    public function questions_index()
+    {
+        $questions = Challenges::orderBy('id', 'desc')->paginate(10);
+        return view('soal.index', compact('questions'));
+    }
+    public function questions_show($id)
+    {
+        $question = Challenges::findOrFail($id);
+        // Mengatur nilai apiKey
+        $apiKey = env('API_KEY_COMPILER');
+        $soalController = new SoalController();
+        $soalController->show();
+        $user = Auth::user();
+        $link = 'https://onecompiler.com/embed/challenges/' . $question->challenges_id . '/apiKey=' . $apiKey . '&userApiToken=' . $user->user_api_token;
+        return view('soal.detail', compact('question', 'link'));
     }
 }

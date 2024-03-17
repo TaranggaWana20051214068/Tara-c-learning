@@ -57,20 +57,42 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="" class='col-md-2 col-form-label'>Lampiran</label>
+                                <label for="" class='col-md-2 col-form-label'>Thumbnail</label>
                                 <div class="col-md-10">
-                                    <input type="file" class="form-control-file" name='thumbnail'>
+                                    <input type="file" class="form-control form-control-sm" id="formFileThumnail"
+                                        name='thumbnail'>
+                                    <code>Thumbnail Harus Berupa Gambar. </code>
+                                    <br>
                                     @error('thumbnail')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
                                     @if ($article->thumbnail_image_name)
-                                        <a href="{{ Storage::url('images/articles/' . $article->thumbnail_image_name) }}"
+                                        <img src="{{ Storage::url('images/articles/' . $article->thumbnail_image_name) }}"
+                                            alt="current image" class="img-thumbnail" style="max-width: 7rem"
+                                            srcset="">
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="" class='col-md-2 col-form-label'>Lampiran</label>
+                                <div class="col-md-10">
+                                    <input class="form-control form-control-sm" id="formFileArticle" type="file"
+                                        name="file">
+                                    <code>Gambar/file/dokumen MAX 10MB</code>
+                                    <br>
+                                    @error('thumbnail')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                    @if ($article->file_name)
+                                        <a href="{{ Storage::url('images/articles/file/' . $article->file_name) }}"
                                             target="_blank">
                                             <i class="bi bi-file-earmark-medical" style="font-size: 3rem;"></i>
                                             <br>
-                                            {{ $article->thumbnail_image_name }}
+                                            {{ $article->file_name }}
                                         </a>
                                     @endif
                                 </div>
@@ -83,6 +105,10 @@
                                             name="youtube_links[]"
                                             @if ($link == null) style="display: none;" @endif>
                                     @endforeach
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">
+                                        Tambah Link Youtube
+                                    </button>
                                     <input type="text" class="form-control" id="hidden-youtube-link"
                                         name='youtube_links[]' style="display: none;" placeholder="Masukkan link YouTube">
                                     @error('youtube_links')
@@ -92,7 +118,6 @@
                                     @enderror
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-primary" id="submit-button">Masukkan Link YouTube</button>
                             <button type="submit" class='btn btn-primary float-right'>Submit</button>
                         </form>
 
@@ -102,46 +127,37 @@
             </div> <!-- end col -->
 
         </div> <!-- end row -->
+    @section('modal-title')
+        Masukkan URL
+    @endsection
 
-    </div> <!-- container-fluid -->
+    {{-- Set nilai variabel Blade untuk konten modal --}}
+    @section('modal-content')
+
+        <form action="{{ route('admin.articles.url') }}" method="post">
+            @csrf
+            <input class="form-control" name="link" type="text" placeholder="Masukkan URL" aria-label="link">
+            <input type="hidden" name="id" value="{{ $article->id }}">
+            <input type="hidden" name="title" value="{{ $article->title }}">
+        @endsection
+        @section('modal-content-bottom')
+        </form>
+    @endsection
+
+</div> <!-- container-fluid -->
+
+<script src="{{ URL::asset('assets/pages/article-youtube.js') }}"></script>
+
 @endsection
 @section('script-bottom')
+@if (session('success'))
     <script>
-        // Fungsi untuk menambahkan inputan link YouTube baru
-        function addYoutubeLinkInput(url) {
-            var container = document.getElementById('youtube-links-container');
-            var inputs = container.getElementsByTagName('input');
-            var hiddenInput = document.getElementById('hidden-youtube-link');
-            var input = document.createElement('input');
-
-            // Hapus semua input sebelum menambahkan yang baru
-            if (inputs.length > 1) {
-                input.name = 'youtube_links[]';
-            } else {
-                input.name = 'ss';
-            }
-            input.type = 'text';
-            input.className = 'form-control';
-            input.value = url; // Memasukkan nilai URL ke dalam input
-            container.appendChild(input);
-            hiddenInput.value = url;
-
-        }
+        $.SweetAlert.showSucc("{{ session('success') }}");
     </script>
+@endif
+@if (session('error'))
     <script>
-        document.getElementById('submit-button').addEventListener('click', async function() {
-            const {
-                value: url
-            } = await Swal.fire({
-                input: "url",
-                inputLabel: "URL address",
-                inputPlaceholder: "Enter the URL",
-                showCancelButton: true
-            });
-            if (url) {
-                addYoutubeLinkInput(url);
-                document.getElementById('submit-button').style.display = 'none';
-            }
-        });
+        $.SweetAlert.showErr("{{ session('error') }}");
     </script>
+@endif
 @endsection

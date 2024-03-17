@@ -1,6 +1,6 @@
 {
     "connector": "local",
-    "extends": ["accessibility", "progressive-web-apps", "development"],
+    "extends": ["web-recommended"],
     "formatters": ["html", "summary"],
     "hints": {
         "axe": "error",

@@ -10,7 +10,6 @@ $(".btn-delete").click(function () {
         confirmButtonText: "Hapus",
     }).then((result) => {
         if (result.value) {
-            Swal.fire("Dihapus!", "Berhasil menghapus data.", "success");
             that.parent("form").submit();
         }
     });
@@ -36,11 +35,4 @@ function validateUrl(url) {
 
     // Validasi URL menggunakan pola regex
     return urlPattern.test(url);
-}
-
-function showSuccToast() {
-    Toast.fire({
-        icon: "success",
-        title: "Berhasil!",
-    });
 }
