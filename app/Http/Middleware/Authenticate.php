@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Closure;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class Authenticate extends Middleware
 {
@@ -15,20 +15,21 @@ class Authenticate extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
      */
-    public function handle($request, Closure $next, ...$guards)
-    {
-        if (!Auth::check()) {
-            // Jika belum, arahkan ke halaman login
-            return redirect()->route('login');
-        }
+    // public function handle($request, Closure $next, ...$guard): Response
+    // {
+    //     if (!Auth::check()) {
+    //         // Jika belum, arahkan ke halaman login
+    //         return redirect()->route('login');
+    //     }
 
-        return $next($request);
-    }
+    //     return $next($request);
+    // }
     protected function redirectTo($request)
     {
         if (!$request->expectsJson()) {
             return route('login');
         }
+
     }
 
 }

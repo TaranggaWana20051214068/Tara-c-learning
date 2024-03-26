@@ -6,28 +6,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\User;
 
-class Question extends Model
+class Code extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'language',
+        'output',
+        'score',
         'user_id',
         'author_id',
-        'judul',
-        'deskripsi',
+        'question_id',
+        'kode',
     ];
-
 
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
     }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function codes()
+
+    public function question()
     {
-        return $this->hasMany(Code::class);
+        return $this->belongsTo(Question::class, 'question_id');
     }
 }

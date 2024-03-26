@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,6 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ScheduleSeeder::class);
         $this->call(ArticleSeeder::class);
         $this->call(SettingSeeder::class);
-        $this->call(ChallengeSeeder::class);
+        $this->call(QuestionsTableSeeder::class);
     }
 }

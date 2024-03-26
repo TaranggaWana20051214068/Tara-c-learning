@@ -12,15 +12,12 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('question', function (Blueprint $table) {
+        Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('challenge_id')->references('id')->on('challenges');
-            $table->string('user_id');
-            $table->string('status_hasil')->nullable();
-            $table->integer('score')->nullable();
-            $table->string('access_code')->nullable();
-            $table->integer('tab_changes')->nullable();
-            $table->foreignId('completed_by')->nullable()->constrained('users');
+            $table->string('judul');
+            $table->text('deskripsi');
+            $table->foreignId('author_id')->nullable()->constrained('users');
+            $table->foreignId('article_id')->nullable()->constrained();
             $table->timestamp('created_at')->nullable();
         });
     }

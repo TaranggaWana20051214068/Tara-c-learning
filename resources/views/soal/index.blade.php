@@ -13,26 +13,24 @@
             <div class="divider"></div>
         </div>
         <div class="section-body">
-            <div class="row row-cols-2 row-cols-md-3 g-4 text-center ">
+            <div class="row row-cols-1 row-cols-md-2 g-1">
                 @foreach ($questions as $question)
                     <div class="col" style="margin-bottom: 1rem;">
-                        <div class="card text-primary footer-article-cards article-cards h-100">
-                            <div class="article-imgs">
-                                {{-- <img src="{{ Storage::url('images/articles/' . $question->thumbnail_image_name) }}"
-                                    alt="" class="card-img-top article-img"> --}}
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title"><a
-                                        href="{{ route('soal.show', ['id' => $question->id]) }} ">{{ $question->title }}</a>
-                                </h5>
-
-                                <a href="{{ route('soal.show', ['id' => $question->id]) }}"
-                                    class="btn btn-primary">Lihat</a>
-                            </div>
-                            <div class="card-footer footer-article-cards" style="background-color: #ccc;">
-                                <div class="card-author">
-                                    <i class="bi bi-person-circle"></i> <span>{{ $question->author->name }}</span>
-                                </div>
+                        <div class="card text-primary article-cards h-100">
+                            <div class="card-body row">
+                                <h3 href="{{ route('soal.show', ['id' => $question->id]) }}"
+                                    class="card-title col order-first">{{ $question->judul }}</h3>
+                                @if (isset($question->user->id))
+                                    <p class="col-1 col-sm-2 order-last">Status :
+                                        {{ $question->score ? '<span class="text-warning">Selesai</span>' : '<span class="text-warning">Menunggu Penilaian</span>' }}
+                                    </p>
+                                    <p class="col-1 col-sm-2 ">Score :
+                                        {{ $question->score ? $question->score : '<span class="text-warning">Belum dinilai</span>' }}
+                                    </p>
+                                @else
+                                    <a class="btn btn-primary float-right"
+                                        href="{{ route('soal.show', ['id' => $question->id]) }}">Mulai</a>
+                                @endif
                             </div>
                         </div>
                     </div>

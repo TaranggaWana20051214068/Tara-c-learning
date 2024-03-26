@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SoalController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Authenticate;
@@ -38,7 +39,8 @@ Route::prefix('/articles')->group(function () {
 });
 Route::prefix('/questions')->group(function () {
     Route::get('/', 'HomeController@questions_index')->name('soal.index');
-    Route::get('/{id}', 'HomeController@questions_show')->name('soal.show');
+    Route::get('/{id}', 'SoalController@questions_show')->name('soal.show');
+    Route::post('/{id}', 'SoalController@questions_code')->name('soal.questions_code');
 });
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => 'auth'], function () {

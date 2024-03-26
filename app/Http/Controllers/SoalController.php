@@ -2,66 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
+use App\Models\Question;
 
 class SoalController extends Controller
 {
-    public function show()
+
+    public function questions_show($id)
     {
-        $user = Auth::user();
-
-        // Periksa apakah user_api_token kosong
-        if (empty ($user->user_api_token)) {
-            // Jika kosong, panggil fungsi createUser() untuk membuat pengguna baru
-            $apiToken = $this->createUser($user->name, $user->email);
-
-            // Simpan user_api_token yang diperoleh ke dalam kolom user_api_token dalam tabel users
-            if ($apiToken) {
-                $user->update(['user_api_token' => $apiToken]);
-
-                // Lanjutkan dengan menampilkan halaman soal atau melakukan tindakan lain yang diperlukan
-                session()->flash('success', 'User Berhasil Ditambahkan.');
-            } else {
-                // Tangani jika terjadi kesalahan saat membuat pengguna
-                session()->flash('error', 'Gagal membuat pengguna baru. Silakan coba lagi.');
-            }
-        }
+        $question = Question::findOrFail($id);
+        $link = 'https://onecompiler.com/embed/php?listenToEvents=true&hideLanguageSelection=true&hideNew=true&hideNewFileOption=true&disableCopyPaste=true&hideTitle=true&codeChangeEvent=true';
+        return view('soal.detail', compact('question', 'link'));
     }
-
-    public function createUser($name, $email)
+    public function questions_code(Request $request, $id)
     {
-        $client = new Client();
-        $url = 'https://onecompiler.com/api/v1/createUser';
+        $request->validate([
+            'language' => 'required',
+            'filee' => 'required|json',
+            'stderr' => 'nullable|string',
+            'stdin' => 'nullable|string',
+        ]);
+        if ($request->stderr) {
+            $i = $request->stderr;
+            return response()->json(['error' => $i], 422);
+        }
+        $language = $request->language;
+        $files = $request->files;
+        $stdin = $request->stdin;
+        session()->flash('success', "code benar $language and stdin: $stdin");
+        return response()->json(['success' => 'Code berhasil disimpan.'], 200);
+        ;
+    }
+    public function runCode($language, $stdin = null, $files)
+    {
         $accessToken = env('API_KEY_COMPILER');
-
         try {
-            $response = $client->post($url, [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $accessToken,
-                ],
-                'json' => [
-                    'name' => $name,
-                    'email' => $email,
-                ],
+            $response = Http::post('https://onecompiler.com/api/v1/run?access_token=' . $accessToken, [
+                'language' => $language,
+                'stdin' => $stdin,
+                'files' => $files,
             ]);
 
-            $statusCode = $response->getStatusCode();
-            $body = json_decode($response->getBody()->getContents(), true);
+            $responseData = $response->json();
 
-            // Simpan data yang diperlukan dari respon
-            if (isset ($body['api']['token'])) {
-                return $body['api']['token'];
+            if ($response->successful()) {
+                // Jika tidak ada exception, kembalikan stdout
+                if ($responseData['exception'] === null) {
+                    return $responseData['stdout'];
+                } else {
+                    // Jika ada exception, kembalikan stderr
+                    return $responseData['stderr'];
+                }
             } else {
-                return null;
+                // Tangani jika permintaan tidak berhasil
+                throw new \Exception('Gagal mengirim permintaan: ' . $response->status());
             }
         } catch (\Exception $e) {
-            // Tangani kesalahan yang terjadi saat mengirim permintaan
-            return null;
+            // Tangani jika terjadi kesalahan dalam menjalankan permintaan
+            return $e->getMessage();
         }
     }
-
 }

@@ -14,18 +14,27 @@ $(".btn-delete").click(function () {
         }
     });
 });
-function showSucc(text) {
+function showSucc(title = "Behasil!", text) {
     Swal.fire({
         icon: "success",
-        title: "Behasil!",
+        title: title,
         text: text,
     });
 }
-function showError(text) {
+function showError(title = "Oops...", text) {
     Swal.fire({
         icon: "error",
-        title: "Oops...",
+        title: title,
         text: text,
+    });
+}
+function sweetNotButton(icon, text) {
+    Swal.fire({
+        position: "center",
+        icon: icon,
+        title: text,
+        showConfirmButton: false,
+        timer: 1000,
     });
 }
 function validateUrl(url) {
@@ -35,4 +44,66 @@ function validateUrl(url) {
 
     // Validasi URL menggunakan pola regex
     return urlPattern.test(url);
+}
+function showConfirmButton(title, text, text2) {
+    Swal.fire({
+        title: title,
+        text: text,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: "Berhasil!",
+                text: text2,
+                icon: "success",
+            });
+        }
+    });
+}
+function formAjax(form, direct) {
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(form);
+        $(this)
+            .find("#language, #filee")
+            .each(function () {
+                if ($(this).val() === "") {
+                    return showError(
+                        "Missing!",
+                        "Running Code Terlebih Dahulu!"
+                    );
+                }
+            });
+        $.ajax({
+            url: form.action,
+            method: form.method,
+            data: formData,
+            contentType: false, // Memastikan bahwa tipe konten tidak diatur secara otomatis
+            processData: false, // Memastikan bahwa data FormData tidak diproses secara otomatis
+            success: function (response) {
+                sweetNotButton("success", response.success);
+                setTimeout(function () {
+                    window.location.href = direct;
+                }, 1000);
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 422) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response && response.error) {
+                        showError("Terdapat Kesalahan : " + response.error);
+                        $("#error")
+                            .html(
+                                '<i class="bi bi-exclamation-circle"></i> Terdapat Kesalahan: ' +
+                                    response.error
+                            )
+                            .show();
+                    }
+                }
+            },
+        });
+    });
 }
