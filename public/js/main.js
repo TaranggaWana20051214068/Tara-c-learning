@@ -107,3 +107,39 @@ function formAjax(form, direct) {
         });
     });
 }
+
+function formAjaxAdmin(form, direct = null, reload = null, ex) {
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(form);
+        $.ajax({
+            url: form.action,
+            method: form.method,
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                sweetNotButton("success", response.success);
+                ex;
+                if (reload != null) {
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                }
+                if (direct != null) {
+                    setTimeout(function () {
+                        window.location.href = direct;
+                    }, 1000);
+                }
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 422) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response && response.error) {
+                        showError("Terdapat Kesalahan : " + response.error);
+                    }
+                }
+            },
+        });
+    });
+}

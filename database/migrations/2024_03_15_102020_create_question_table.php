@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->text('deskripsi');
             $table->foreignId('author_id')->nullable()->constrained('users');
             $table->foreignId('article_id')->nullable()->constrained();
-            $table->timestamp('created_at')->nullable();
+            $table->timestamps();
         });
     }
 

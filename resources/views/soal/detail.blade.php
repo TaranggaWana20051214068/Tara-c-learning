@@ -25,6 +25,7 @@
                 <input type="hidden" name="stdin" id="stdin">
                 <input type="hidden" name="filee" id="filee">
                 <input type="hidden" name="stderr" id="stderr">
+                <input type="hidden" name="output" id="output">
                 <div class="card">
                     <h5 class="card-header">
                         {{ $question->judul }}
@@ -66,6 +67,7 @@
                         document.getElementById('stderr').value = e.data.result.output;
                     } else {
                         document.getElementById('stderr').value = '';
+                        document.getElementById('output').value = e.data.result.output;
                     }
                     if (e.data.stdin != undefined) {
                         document.getElementById('stdin').value = e.data.stdin;

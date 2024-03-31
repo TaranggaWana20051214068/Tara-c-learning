@@ -13,6 +13,7 @@ class Question extends Model
     protected $fillable = [
         'user_id',
         'author_id',
+        'article_id',
         'judul',
         'deskripsi',
     ];
@@ -22,9 +23,9 @@ class Question extends Model
     {
         return $this->belongsTo(User::class, 'author_id');
     }
-    public function user()
+    public function article_title()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'article_id');
     }
     public function codes()
     {

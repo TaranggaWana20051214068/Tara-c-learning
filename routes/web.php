@@ -52,6 +52,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => 'auth
         Route::resource('/schedules', 'ScheduleController');
         Route::resource('/pickets', 'PicketController');
         Route::resource('/articles', 'ArticleController');
+        Route::resource('/questions', 'SoalController');
+        Route::post('/questions/{id}/nilai', 'SoalController@nilai')->name('questions.nilai');
+        Route::post('/questions/{id}', 'SoalController@editNilai')->name('questions.editNilai');
         Route::get('/settings', 'SettingController@index')->name('settings.index');
         Route::put('/settings', 'SettingController@update')->name('settings.update');
     });
@@ -61,6 +64,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['middleware' => Authenticate::class], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/articles', 'HomeController@article_index')->name('article.index');
+    Route::get('/questions', 'HomeController@questions_index')->name('soal.index');
 });
 Auth::routes();
 

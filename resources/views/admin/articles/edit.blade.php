@@ -139,6 +139,7 @@
             <input class="form-control" name="link" type="text" placeholder="Masukkan URL" aria-label="link">
             <input type="hidden" name="id" value="{{ $article->id }}">
             <input type="hidden" name="title" value="{{ $article->title }}">
+
         @endsection
         @section('modal-content-bottom')
         </form>

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 use App\Models\Question;
+use App\Models\Code;
 
 class SoalController extends Controller
 {
@@ -13,7 +15,7 @@ class SoalController extends Controller
     public function questions_show($id)
     {
         $question = Question::findOrFail($id);
-        $link = 'https://onecompiler.com/embed/php?listenToEvents=true&hideLanguageSelection=true&hideNew=true&hideNewFileOption=true&disableCopyPaste=true&hideTitle=true&codeChangeEvent=true';
+        $link = 'https://onecompiler.com/embed/php?listenToEvents=true&hideLanguageSelection=true&hideNew=true&hideNewFileOption=true&disableCopyPaste=true&hideTitle=true&codeChangeEvent=true&hideStdin=true';
         return view('soal.detail', compact('question', 'link'));
     }
     public function questions_code(Request $request, $id)
@@ -23,45 +25,22 @@ class SoalController extends Controller
             'filee' => 'required|json',
             'stderr' => 'nullable|string',
             'stdin' => 'nullable|string',
+            'output' => 'nullable|string',
         ]);
+        $files = $request->filee;
+        $fileeArray = json_decode($files, true);
         if ($request->stderr) {
-            $i = $request->stderr;
-            return response()->json(['error' => $i], 422);
+            return response()->json(['error' => $request->stderr], 422);
         }
-        $language = $request->language;
-        $files = $request->files;
-        $stdin = $request->stdin;
-        session()->flash('success', "code benar $language and stdin: $stdin");
-        return response()->json(['success' => 'Code berhasil disimpan.'], 200);
-        ;
+        $create = Code::create([
+            'language' => $request->language,
+            'output' => $request->output,
+            'author_id' => Auth::user()->id,
+            'question_id' => $id,
+            'files' => $files,
+            'kode' => $fileeArray[0]['content'],
+        ]);
+        return response()->json(['success' => 'Code berhasil disimpan.' . $request->output], 200);
     }
-    public function runCode($language, $stdin = null, $files)
-    {
-        $accessToken = env('API_KEY_COMPILER');
-        try {
-            $response = Http::post('https://onecompiler.com/api/v1/run?access_token=' . $accessToken, [
-                'language' => $language,
-                'stdin' => $stdin,
-                'files' => $files,
-            ]);
 
-            $responseData = $response->json();
-
-            if ($response->successful()) {
-                // Jika tidak ada exception, kembalikan stdout
-                if ($responseData['exception'] === null) {
-                    return $responseData['stdout'];
-                } else {
-                    // Jika ada exception, kembalikan stderr
-                    return $responseData['stderr'];
-                }
-            } else {
-                // Tangani jika permintaan tidak berhasil
-                throw new \Exception('Gagal mengirim permintaan: ' . $response->status());
-            }
-        } catch (\Exception $e) {
-            // Tangani jika terjadi kesalahan dalam menjalankan permintaan
-            return $e->getMessage();
-        }
-    }
 }

@@ -50,6 +50,18 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
+                <li class="sidebar-item  {{ 'admin.articles.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                    <a href="{{ route('admin.articles.index') }}" class="sidebar-link ">
+                        <i class="bi bi-book-half"></i>
+                        <span>Materi </span>
+                    </a>
+                </li>
+                <li class="sidebar-item  {{ 'admin.questions.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                    <a href="{{ route('admin.questions.index') }}" class="sidebar-link ">
+                        <i class="bi bi-pen"></i>
+                        <span>Soal </span>
+                    </a>
+                </li>
                 <li class="sidebar-item  {{ 'admin.users.index' === Route::currentRouteName() ? 'active' : '' }} ">
                     <a href="{{ route('admin.users.index') }}" class="sidebar-link ">
                         <i class="bi bi-people-fill"></i>
@@ -80,18 +92,16 @@
                         <span>Jadwal Piket </span>
                     </a>
                 </li>
-                <li class="sidebar-item  {{ 'admin.articles.index' === Route::currentRouteName() ? 'active' : '' }} ">
-                    <a href="{{ route('admin.articles.index') }}" class="sidebar-link ">
-                        <i class="bi bi-file-earmark-fill"></i>
-                        <span>Materi </span>
-                    </a>
-                </li>
-                <li class="sidebar-item  {{ 'admin.settings.index' === Route::currentRouteName() ? 'active' : '' }} ">
-                    <a href="{{ route('admin.settings.index') }}" class="sidebar-link ">
-                        <i class="bi bi-gear-fill"></i>
-                        <span>Pengaturan Website </span>
-                    </a>
-                </li>
+
+                @if (auth()->user()->role === 'admin')
+                    <li
+                        class="sidebar-item  {{ 'admin.settings.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                        <a href="{{ route('admin.settings.index') }}" class="sidebar-link ">
+                            <i class="bi bi-gear-fill"></i>
+                            <span>Pengaturan Website </span>
+                        </a>
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

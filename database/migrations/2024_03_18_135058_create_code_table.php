@@ -16,11 +16,11 @@ return new class extends Migration {
             $table->id();
             $table->string('language');
             $table->string('output')->nullable();
+            $table->text('kode');
+            $table->json('files');
             $table->integer('score')->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('author_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('question_id')->constrained('questions')->onDelete('cascade');
-            $table->text('kode');
             $table->timestamps();
         });
     }
