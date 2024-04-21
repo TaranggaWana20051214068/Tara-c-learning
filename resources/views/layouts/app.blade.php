@@ -20,13 +20,14 @@
 
     <!-- Styles -->
 
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/front.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/icons.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ URL::asset('assets/css/icons.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ URL::asset('assets/css/app.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/plugins/sweet-alert2/sweetalert2.min.css') }}" rel="stylesheet">
     <script src="{{ URL::asset('assets/js/jquery.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/sweet-alert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('assets/pages/sweet-alert.init.js') }}"></script>
     @stack('styles')
 </head>
@@ -116,6 +117,7 @@
                             href="#">Khai</a></div>
                 </div>
             </div>
+            @include('layouts.footer-script')
         </footer>
     </div>
 </body>

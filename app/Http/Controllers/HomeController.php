@@ -79,9 +79,14 @@ class HomeController extends Controller
     }
     public function questions_index()
     {
-        $questions = Question::with('codes')->orderBy('id', 'desc')->paginate(10);
-
-        return view('soal.index', compact('questions'));
+        $userId = auth()->id();
+        $questions = Question::whereDoesntHave('codes', function ($query) use ($userId) {
+            $query->where('author_id', $userId);
+        })->orderBy('id', 'desc')->paginate(10);
+        $nilai = Question::whereHas('codes', function ($query) use ($userId) {
+            $query->where('author_id', $userId);
+        })->orderBy('id', 'desc')->paginate(10);
+        return view('soal.index', compact('questions', 'nilai'));
     }
 
 

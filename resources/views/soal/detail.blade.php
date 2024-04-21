@@ -28,16 +28,17 @@
                 <input type="hidden" name="output" id="output">
                 <div class="card">
                     <h5 class="card-header">
-                        {{ $question->judul }}
+                        <span class="text-primary">{{ strtoupper($question->judul) }}</span>
                     </h5>
                     <div class="card-stacked">
                         <div class="card-content">
-                            <p class="card-text">{{ $question->deskripsi }}</p>
+                            <p class="card-text" style="margin-left: 1.6rem">{{ $question->deskripsi }}</p>
                             <iframe id="oc-editor" frameBorder="0" height="400px" width="100%"
                                 src="{{ $link }}"></iframe>
                         </div>
                         <div class="card-action">
-                            <button type="submit" id="btn" class='btn-lg btn-primary float-right'>Selesai</button>
+                            <button type="submit" id="btn" class='btn-lg btn-primary float-right'
+                                style="margin:10px;">Selesai</button>
                         </div>
                     </div>
                 </div>
