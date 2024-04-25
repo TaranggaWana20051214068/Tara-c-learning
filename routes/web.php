@@ -53,6 +53,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => 'auth
         Route::resource('/pickets', 'PicketController');
         Route::resource('/articles', 'ArticleController');
         Route::resource('/questions', 'SoalController');
+        Route::resource('/projects', 'ProjectController');
         Route::post('/questions/{id}/nilai', 'SoalController@nilai')->name('questions.nilai');
         Route::post('/questions/{id}', 'SoalController@editNilai')->name('questions.editNilai');
         Route::get('/settings', 'SettingController@index')->name('settings.index');

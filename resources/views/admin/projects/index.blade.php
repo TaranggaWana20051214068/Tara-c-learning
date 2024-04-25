@@ -2,7 +2,7 @@
 
 @section('css')
 @endsection
-@section('title', 'Soal')
+@section('title', 'Project')
 
 @section('content')
     <div class="container-fluid">
@@ -10,10 +10,10 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Soal</h4>
+                    <h4 class="page-title">Project</h4>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Soal</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Project</a></li>
                     </ol>
 
 
@@ -27,8 +27,8 @@
                 <div class="card m-b-20">
                     <div class="card-body">
 
-                        <h4 class="mt-0 header-title">Daftar Soal</h4>
-                        <p class="text-muted m-b-30 font-14">Berikut adalah daftar seluruh soal</p>
+                        <h4 class="mt-0 header-title">Project</h4>
+                        <p class="text-muted m-b-30 font-14">Berikut adalah daftar seluruh project</p>
 
                         <div class="row mb-3">
                             <div class="col-md-4">
@@ -39,7 +39,7 @@
                             </div>
                             <div class="col-md-2 ml-auto">
                                 <a class="btn btn-primary float-right"
-                                    href="{{ route('admin.questions.create') }}">Tambah</a>
+                                    href="{{ route('admin.projects.create') }}">Tambah</a>
                             </div>
                         </div>
                         @if (session('success'))
@@ -56,29 +56,31 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Judul</th>
-                                        <th>Deskripsi Soal</th>
-                                        <th>Materi</th>
-                                        <th>Tanggal</th>
+                                        <th>Deskripsi</th>
+                                        <th>Tugas</th>
+                                        <th>Siswa</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($questions as $question)
+                                    @foreach ($projects as $project)
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
-                                            <td>{{ $question->judul }}</td>
-                                            <td>{{ substr($question->deskripsi, 0, 50) }}..</td>
-                                            <td>{{ $question->article_title }}</td>
-                                            <td>{{ Carbon\Carbon::parse($question->created_at)->format('d F Y H:i:s') }}
+                                            <td>{{ $project->judul }}</td>
+                                            <td>{{ substr($project->deskripsi, 0, 50) }}..</td>
+                                            <td><a href="{{ route('admin.projects.show', ['project' => $project->id]) }}"
+                                                    class='btn btn-outline-primary mr-2'><i
+                                                        class="bi bi-pencil-square"></i></a></a>
+                                            </td>
+                                            <td><a href="{{ route('admin.projects.show', ['project' => $project->id]) }}"
+                                                    class='btn btn-outline-primary mr-2'><i class="bi bi-people"></i></a>
                                             </td>
                                             <td>
                                                 <div class='d-inline-flex'>
-                                                    <a href="{{ route('admin.questions.show', ['question' => $question->id]) }}"
-                                                        class='btn btn-info mr-2'><i class="bi bi-pencil-square"></i></a>
-                                                    <a href="{{ route('admin.questions.edit', ['question' => $question->id]) }}"
+                                                    <a href="{{ route('admin.projects.edit', ['project' => $project->id]) }}"
                                                         class='btn btn-warning mr-2'><i class="bi bi-pencil-fill"></i></a>
                                                     <form
-                                                        action="{{ route('admin.questions.destroy', ['question' => $question->id]) }}"
+                                                        action="{{ route('admin.projects.destroy', ['project' => $project->id]) }}"
                                                         method="post">
                                                         @csrf
                                                         @method('delete')
@@ -89,11 +91,22 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    @forelse ($projects as $project)
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class='text-center'>Data tidak ditemukan, Mohon <a
+                                                    href="{{ route('admin.projects.create') }}">Tambah
+                                                    Data</a></td>
+                                        </tr>
+                                    @endforelse
+                                    <tr>
+                                        <div></div>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="paginate float-right mt-3">
-                            {{ $questions->links() }}
+                            {{ $projects->links() }}
                         </div>
                     </div>
                 </div>

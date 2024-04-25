@@ -9,7 +9,7 @@
 <section class="students">
     <div class="container">
         <div class="section-header">
-            <h1>Daftar Soal</h1>
+            <h1>Latihan Soal</h1>
             <div class="divider"></div>
             @if ($nilai->isNotEmpty())
                 <button type="button" class="waves-effect waves-light btn btn-warning" data-bs-toggle="modal"

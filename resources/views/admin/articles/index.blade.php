@@ -68,8 +68,6 @@
                                     @foreach ($articles as $article)
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
-                                            <td><img src="{{ Storage::url('images/articles/' . $article->thumbnail_image_name) }}"
-                                                    alt="" style="width:50px"></td>
                                             <td>
                                                 @if ($article->file_name)
                                                     <a href="{{ Storage::url('images/articles/file/' . $article->file_name) }}"

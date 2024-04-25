@@ -62,6 +62,12 @@
                         <span>Soal </span>
                     </a>
                 </li>
+                <li class="sidebar-item  {{ 'admin.projects.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                    <a href="{{ route('admin.projects.index') }}" class="sidebar-link ">
+                        <i class="bi bi-briefcase-fill"></i>
+                        <span>Project </span>
+                    </a>
+                </li>
                 <li class="sidebar-item  {{ 'admin.users.index' === Route::currentRouteName() ? 'active' : '' }} ">
                     <a href="{{ route('admin.users.index') }}" class="sidebar-link ">
                         <i class="bi bi-people-fill"></i>
