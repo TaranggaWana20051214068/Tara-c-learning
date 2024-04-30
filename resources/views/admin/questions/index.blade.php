@@ -59,6 +59,7 @@
                                         <th>Deskripsi Soal</th>
                                         <th>Materi</th>
                                         <th>Tanggal</th>
+                                        <th>Pengumpulan</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -72,9 +73,12 @@
                                             <td>{{ Carbon\Carbon::parse($question->created_at)->format('d F Y H:i:s') }}
                                             </td>
                                             <td>
+                                                <a href="{{ route('admin.questions.show', ['question' => $question->id]) }}"
+                                                    class='btn btn-outline-primary mr-2'>Lihat <i
+                                                        class="bi bi-pencil-square"></i></a>
+                                            </td>
+                                            <td>
                                                 <div class='d-inline-flex'>
-                                                    <a href="{{ route('admin.questions.show', ['question' => $question->id]) }}"
-                                                        class='btn btn-info mr-2'><i class="bi bi-pencil-square"></i></a>
                                                     <a href="{{ route('admin.questions.edit', ['question' => $question->id]) }}"
                                                         class='btn btn-warning mr-2'><i class="bi bi-pencil-fill"></i></a>
                                                     <form
@@ -113,6 +117,11 @@
     @if (session('success'))
         <script>
             $.SweetAlert.showSucc("{{ session('success') }}");
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            $.SweetAlert.showErr("{{ session('error') }}");
         </script>
     @endif
 @endsection

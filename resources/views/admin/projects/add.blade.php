@@ -53,7 +53,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <h4 class="mt-0 header-title">Tugas<button type="button" class='btn btn-primary float-right'
+                            {{-- <h4 class="mt-0 header-title">Tugas<button type="button" class='btn btn-primary float-right'
                                     data-bs-toggle="modal" data-bs-target="#modalEx">Tambah Tugas</button></h4>
                             <br>
                             <div class="modal" tabindex="-1" id="modalEx">
@@ -101,7 +101,7 @@
                                 </thead>
                                 <tbody id="table">
                                 </tbody>
-                            </table>
+                            </table> --}}
                             <button type="submit" class='btn btn-primary float-right'>Submit</button>
                         </form>
 
@@ -115,7 +115,7 @@
     </div> <!-- container-fluid -->
 @endsection
 @section('script-bottom')
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             var tugasCount = 1; // Inisialisasi jumlah tugas
             function tambahTugas(judul, deskripsi) {
@@ -138,6 +138,6 @@
                 $("#modalEx").modal("hide");
             });
         });
-    </script>
+    </script> --}}
 
 @endsection

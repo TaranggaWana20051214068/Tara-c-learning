@@ -91,7 +91,7 @@ class SoalController extends Controller
 
         $create = Question::find($id)->update([
             'judul' => $request->judul,
-            'deskripsi' => $request->judul,
+            'deskripsi' => $request->deskripsi,
             'article_id' => $request->materi,
         ]);
 
@@ -106,8 +106,14 @@ class SoalController extends Controller
     public function show(request $request, $id)
     {
         $question = Question::with(['codes', 'author'])->findOrFail($id);
-        // $codes = $question->codes()->paginate(10);
         $codes = Code::where('question_id', $id)->orderBy('id', 'asc')->paginate(10);
+
+        // Check if there are any codes for the question
+        if ($codes->isEmpty()) {
+            $request->session()->flash('error', 'Belum ada yang menyelesaikan Soal ini');
+            return redirect()->back();
+        }
+
         $search = $request->get('search');
         $questions = Code::leftJoin('questions', 'codes.question_id', '=', 'questions.id')
             ->where('codes.question_id', $id)
@@ -122,6 +128,7 @@ class SoalController extends Controller
         $questions->appends(['search' => $search]);
         return view('admin.questions.detail', compact('question', 'codes'));
     }
+
     /**
      * Update the specified resource in storage.
      * @param  \Illuminate\Http\Request  $request

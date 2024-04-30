@@ -70,31 +70,38 @@
                                             <td>{{ substr($project->deskripsi, 0, 50) }}..</td>
                                             <td><a href="{{ route('admin.projects.show', ['project' => $project->id]) }}"
                                                     class='btn btn-outline-primary mr-2'><i
-                                                        class="bi bi-pencil-square"></i></a></a>
+                                                        class="bi bi-pencil-square"></i></a>
                                             </td>
                                             <td><a href="{{ route('admin.projects.show', ['project' => $project->id]) }}"
                                                     class='btn btn-outline-primary mr-2'><i class="bi bi-people"></i></a>
                                             </td>
                                             <td>
-                                                <div class='d-inline-flex'>
-                                                    <a href="{{ route('admin.projects.edit', ['project' => $project->id]) }}"
-                                                        class='btn btn-warning mr-2'><i class="bi bi-pencil-fill"></i></a>
-                                                    <form
-                                                        action="{{ route('admin.projects.destroy', ['project' => $project->id]) }}"
-                                                        method="post">
-                                                        @csrf
-                                                        @method('delete')
-                                                        <button type="button" class='btn btn-danger btn-delete'><i
-                                                                class="bi bi-trash"></i></button>
-                                                    </form>
-                                                </div>
+                                                @if (!isset($cekTugas[$project->id]))
+                                                    <a href="{{ route('admin.projects.show', ['project' => $project->id]) }}"
+                                                        class='btn btn-outline-danger mr-2'>Isi Tugas <i
+                                                            class="bi bi-exclamation-triangle-fill"></i></a>
+                                                @else
+                                                    <div class='d-inline-flex'>
+                                                        <a href="{{ route('admin.projects.edit', ['project' => $project->id]) }}"
+                                                            class='btn btn-warning mr-2'><i
+                                                                class="bi bi-pencil-fill"></i></a>
+                                                        <form
+                                                            action="{{ route('admin.projects.destroy', ['project' => $project->id]) }}"
+                                                            method="post">
+                                                            @csrf
+                                                            @method('delete')
+                                                            <button type="button" class='btn btn-danger btn-delete'><i
+                                                                    class="bi bi-trash"></i></button>
+                                                        </form>
+                                                    </div>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
                                     @forelse ($projects as $project)
                                     @empty
                                         <tr>
-                                            <td colspan="5" class='text-center'>Data tidak ditemukan, Mohon <a
+                                            <td colspan="6" class='text-center'>Data tidak ditemukan, Mohon <a
                                                     href="{{ route('admin.projects.create') }}">Tambah
                                                     Data</a></td>
                                         </tr>

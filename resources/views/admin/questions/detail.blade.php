@@ -60,34 +60,33 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if ($codes->isNotEmpty())
-                                        @foreach ($codes as $code)
-                                            <tr>
-                                                <th scope="row">{{ $loop->iteration }}</th>
-                                                <td>{{ $code->author->name }}</td>
-                                                <td>{{ $code->output }}..</td>
-                                                <td>{{ $code->score }}</td>
-                                                <td>
-                                                    @if (is_null($code->score))
-                                                        <a class="btn btn-warning" data-bs-toggle="modal"
-                                                            data-bs-target="#staticBackdrop"><i
-                                                                class="bi bi-exclamation-triangle"></i></a>
-                                                    @else
-                                                        <a class='btn btn-info' data-bs-toggle="modal"
-                                                            data-bs-target="#exampleModal"><i
-                                                                class="bi bi-pencil-fill"></i></a>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
+                                    @foreach ($codes as $code)
+                                        <tr>
+                                            <th scope="row">{{ $loop->iteration }}</th>
+                                            <td>{{ $code->author->name }}</td>
+                                            <td>{{ $code->output }}..</td>
+                                            <td>{{ $code->score }}</td>
+                                            <td>
+                                                @if (is_null($code->score))
+                                                    <a class="btn btn-warning" data-bs-toggle="modal"
+                                                        data-bs-target="#staticBackdrop"><i
+                                                            class="bi bi-exclamation-triangle"></i></a>
+                                                @else
+                                                    <a class='btn btn-info' data-bs-toggle="modal"
+                                                        data-bs-target="#exampleModal"><i class="bi bi-pencil-fill"></i></a>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    @forelse ($codes as $code)
+                                    @empty
                                         <tr>
                                             <td colspan="5"
                                                 class="table-resposive text-lg-center text-white text-bg-info">Belum Ada
                                                 siswa yang menyelesaikan
                                             </td>
                                         </tr>
-                                    @endif
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

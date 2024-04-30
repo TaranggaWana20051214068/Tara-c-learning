@@ -7,20 +7,50 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\Tugas;
+use App\Models\Attachment;
 
 class ProjectController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->get('search');
-        $projects = Project::where('judul', 'LIKE', "%$search%")->orderBy('id', 'asc')->paginate(10);
+        $projects = Project::where('judul', 'LIKE', "%$search%")->orderBy('id', 'desc')->paginate(10);
         $projects->appends(['search' => $search]);
-        return view('admin.projects.index', compact('projects'));
+
+        // Check if there are any tasks with project_id from the projects table
+        $projectIds = $projects->pluck('id');
+        $cekTugas = Tugas::whereIn('project_id', $projectIds)
+            ->get()
+            ->groupBy('project_id')
+            ->map(function ($tasks) {
+                return $tasks->count() > 0;
+            });
+
+        return view('admin.projects.index', compact('projects', 'cekTugas'));
     }
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $projects = Project::findOrFail($id);
+        $tugas = Tugas::where('project_id', $id)->with('attachments')->get();
+
+        // Get attachments for the tasks
+        $attachmentIds = $tugas->pluck('id');
+        $attachments = Attachment::whereIn('tugas_id', $attachmentIds)->get();
+
+        return view('admin.projects.tugas', compact('projects', 'tugas', 'attachments', 'id'));
+    }
+
+
 
     public function create()
     {
-        return view('admin.projects.add', compact('articles'));
+        return view('admin.projects.add');
     }
     /**
      * Show the form for creating a new resource.
@@ -42,24 +72,107 @@ class ProjectController extends Controller
         session()->flash('success', "Sukses tambah Project $request->judul");
         return redirect()->route('admin.projects.index');
     }
-
-    public function addTugas(Request $request)
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $project = Project::findOrFail($id);
+        return view('admin.projects.edit', compact('project'));
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'judul' => 'required|array',
-            'deskripsi' => 'required|array',
-            'project_id' => 'required'
+            'judul' => 'required',
+            'deskripsi' => 'required',
         ]);
-        $namaTugas = $request->nama_tugas;
-        $deskripsiTugas = $request->deskripsi_tugas;
-        foreach ($namaTugas as $key => $nama) {
+
+        $create = Project::find($id)->update([
+            'judul' => $request->judul,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        session()->flash('success', "Sukses update project $request->judul");
+        return redirect()->route('admin.projects.index');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $subject = Project::findOrFail($id);
+        $subject->delete();
+
+        session()->flash('success', 'Sukses Menghapus Data');
+        return redirect()->back();
+    }
+    public function tugas(Request $request, $id)
+    {
+        if ($request->jenis === "add") {
+            $request->validate([
+                'judul' => 'required',
+                'deskripsi' => 'required',
+                'deadline' => 'required',
+                'project_id' => 'required'
+            ]);
             $tugas = new Tugas();
-            $tugas->nama_tugas = $nama;
-            $tugas->deskripsi = $deskripsiTugas[$key];
+            $tugas->nama_tugas = $request->judul;
+            $tugas->deskripsi = $request->deskripsi;
+            $tugas->deadline = $request->deadline;
             $tugas->project_id = $request->project_id;
             $tugas->save();
+            session()->flash('success', "Sukses tambah Tugas $request->judul");
+            return redirect()->back();
+        } else if ($request->jenis === "edit") {
+            $request->validate([
+                'judul' => 'required',
+                'deskripsi' => 'required',
+                'deadline' => 'required',
+                'tugas_id' => 'required',
+            ]);
+            $create = Tugas::find($id)->update([
+                'nama_tugas' => $request->judul,
+                'deskripsi' => $request->deskripsi,
+                'deadline' => $request->deadline,
+            ]);
+            $tugas = Tugas::findOrFail($id);
+            session()->flash('success', "Sukses Update Tugas $request->judul");
+            return redirect()->route('admin.projects.show', ['project' => $tugas->project_id]);
+        } else if ($request->jenis === "nilai") {
+            $request->validate([
+                'nilai' => 'required|numeric|between:1,100',
+                'catatan' => 'required|string'
+            ]);
+            $tugas = Tugas::findorFail($id);
+            $tugas->nilai = $request->nilai;
+            $tugas->catatan = $request->catatan;
+            $tugas->save();
+            session()->flash('success', "Sukses Menilai Tugas $tugas->nama_tugas");
+            return redirect()->back();
+        } else {
+            $tugas = Tugas::findOrFail($id);
+            $tugas->delete();
+            session()->flash('success', 'Sukses Menghapus Data');
+            return redirect()->back();
         }
-        session()->flash('success', "Sukses tambah Tugas $request->judul");
-        return redirect()->route('admin.projects.indexTugas');
+    }
+    public function editTugas($id)
+    {
+        $tugas = Tugas::findOrFail($id);
+        return view('admin.projects.editTugas', compact('tugas'));
     }
 }

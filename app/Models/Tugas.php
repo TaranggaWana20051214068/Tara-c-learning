@@ -24,6 +24,6 @@ class Tugas extends Model
 
     public function attachments()
     {
-        return $this->hasMany('App\Attachment');
+        return $this->hasMany(Attachment::class, 'tugas_id');
     }
 }
