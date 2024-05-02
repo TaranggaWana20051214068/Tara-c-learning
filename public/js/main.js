@@ -143,3 +143,38 @@ function formAjaxAdmin(form, direct = null, reload = null, ex) {
         });
     });
 }
+function formAjaxProject(form, direct = null) {
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(form);
+        $.ajax({
+            url: form.action,
+            method: form.method,
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                sweetNotButton("success", response.success);
+                if (direct) {
+                    setTimeout(function () {
+                        window.location.href = direct;
+                    }, 1000);
+                }
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 422) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response && response.error) {
+                        showError("Terdapat Kesalahan : " + response.error);
+                        $("#error")
+                            .html(
+                                '<i class="bi bi-exclamation-circle"></i> Terdapat Kesalahan: ' +
+                                    response.error
+                            )
+                            .show();
+                    }
+                }
+            },
+        });
+    });
+}

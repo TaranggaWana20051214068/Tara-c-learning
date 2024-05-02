@@ -56,7 +56,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($tugas as $data)
+                                    @forelse ($tugas as $data)
                                         <tr>
                                             <td scope="row">{{ $loop->iteration }}</td>
                                             <td>{{ $data->nama_tugas }}</td>
@@ -164,12 +164,11 @@
                                             </div>
                                         </div>
                                         {{-- modal form nilai end --}}
-                                    @endforeach
-                                    @forelse ($tugas as $data)
                                     @empty
                                         <tr>
-                                            <td colspan="6" class='text-center'>Data tidak ditemukan, Mohon <a
-                                                    class="icon-link" data-bs-toggle="modal" data-bs-target="#add">Tambah
+                                            <td colspan="7" class='text-center'>Data tidak ditemukan, Mohon <a
+                                                    class="btn" style="text-decoration: underline; color: blue;"
+                                                    data-bs-toggle="modal" data-bs-target="#add">Tambah
                                                     Data</a></td>
                                         </tr>
                                     @endforelse

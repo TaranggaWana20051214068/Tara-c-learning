@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 class Kelompok extends Model
 {
@@ -14,6 +15,10 @@ class Kelompok extends Model
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(Project::class);
+    }
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 }

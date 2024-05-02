@@ -42,6 +42,12 @@ Route::prefix('/questions')->group(function () {
     Route::get('/{id}', 'SoalController@questions_show')->name('soal.show');
     Route::post('/{id}', 'SoalController@questions_code')->name('soal.questions_code');
 });
+Route::prefix('/projects')->group(function () {
+    Route::get('/', 'HomeController@projects_index')->name('project.index');
+    Route::post('/', 'ProjectController@joinProject')->name('project.join');
+    Route::get('/{id}', 'ProjectController@projects_show')->name('project.show');
+    Route::post('/{id}', 'ProjectController@projects_code')->name('project.add');
+});
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::name('admin.')->group(function () {

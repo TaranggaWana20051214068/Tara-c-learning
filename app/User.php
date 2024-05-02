@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Kelompok;
 
 class User extends Authenticatable
 {
@@ -44,5 +45,9 @@ class User extends Authenticatable
     public function username()
     {
         return "username";
+    }
+    public function kelompok()
+    {
+        return $this->belongsToMany(Kelompok::class);
     }
 }

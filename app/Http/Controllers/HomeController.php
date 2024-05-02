@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Challenges;
+use App\Models\Project;
 use App\Models\Question;
 use App\Models\YoutubeLink;
 use Illuminate\Http\Request;
@@ -88,6 +89,18 @@ class HomeController extends Controller
         })->orderBy('id', 'desc')->paginate(10);
         return view('soal.index', compact('questions', 'nilai'));
     }
+
+    public function projects_index()
+    {
+        $projects = Project::whereDoesntHave('kelompok.users', function ($query) {
+            $query->where('users.id', auth()->id());
+        })->orderBy('id', 'desc')->paginate(10);
+        $takenProjects = Project::whereHas('kelompok.users', function ($query) {
+            $query->where('users.id', auth()->id());
+        })->orderBy('id', 'desc')->paginate(10);
+        return view('projects.index', compact('projects', 'takenProjects'));
+    }
+
 
 
 }

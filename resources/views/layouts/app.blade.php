@@ -71,7 +71,7 @@
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ route('article.index') }}">Materi</a>
                                 <a class="dropdown-item" href="{{ route('soal.index') }}">Soal Latihan</a>
-                                <a class="dropdown-item" href="{{ route('soal.index') }}">Project</a>
+                                <a class="dropdown-item" href="{{ route('project.index') }}">Project</a>
                             </div>
                         </li>
 

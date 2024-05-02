@@ -13,10 +13,11 @@ class Project extends Model
         'status',
     ];
 
-    public function kelompoks()
+    public function kelompok()
     {
-        return $this->hasMany('App\Kelompok');
+        return $this->hasOne(Kelompok::class);
     }
+
 
     public function tugas()
     {
