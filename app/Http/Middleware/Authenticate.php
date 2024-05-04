@@ -24,12 +24,23 @@ class Authenticate extends Middleware
 
     //     return $next($request);
     // }
-    protected function redirectTo($request)
+    public function handle($request, Closure $next, ...$guard): Response
     {
-        if (!$request->expectsJson()) {
-            return route('login');
+        if ($request->is('login')) {
+            return $next($request);
+        }
+        if (!Auth::check()) {
+            return redirect()->route('login');
         }
 
+        return $next($request);
     }
+    // protected function redirectTo($request)
+    // {
+    //     if (!$request->expectsJson()) {
+    //         return route('login');
+    //     }
+
+    // }
 
 }

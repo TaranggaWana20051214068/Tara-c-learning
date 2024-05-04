@@ -21,11 +21,10 @@ use App\Http\Controllers\Admin\ArticleController;
 Auth::routes(['register' => false]);
 
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('home');
-    }
-    return redirect()->route('login');
+    return auth()->check() ? redirect()->route('home') : redirect()->route('login');
 });
+
+
 Route::prefix('students')->group(function () {
     Route::get('/', 'HomeController@student_index')->name('student.index');
     Route::get('/{id}', 'HomeController@student_show')->name('student.show');
@@ -46,10 +45,10 @@ Route::prefix('/projects')->group(function () {
     Route::get('/', 'HomeController@projects_index')->name('project.index');
     Route::post('/', 'ProjectController@joinProject')->name('project.join');
     Route::get('/{id}', 'ProjectController@projects_show')->name('project.show');
-    Route::post('/{id}', 'ProjectController@projects_code')->name('project.add');
+    Route::post('/{id}', 'ProjectController@projects_tugas')->name('project.tugas');
 });
 
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => 'auth'], function () {
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'role:admin,guru']], function () {
     Route::name('admin.')->group(function () {
         Route::get('/', 'HomeController@index')->name('dashboard');
         Route::resource('/users', 'UserController');
@@ -70,11 +69,13 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => 'auth
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::group(['middleware' => Authenticate::class], function () {
-    Route::get('/home', 'HomeController@index')->name('home');
-    Route::get('/articles', 'HomeController@article_index')->name('article.index');
-    Route::get('/questions', 'HomeController@questions_index')->name('soal.index');
-});
+// Route::group(['middleware' => ['auth']], function () {
+//     Route::get('/home', 'HomeController@index')->name('home');
+//     Route::get('/articles', 'HomeController@article_index')->name('article.index');
+//     Route::get('/questions', 'HomeController@questions_index')->name('soal.index');
+//     Route::prefix('/projects');
+// });
+
 Auth::routes();
 
 Route::get('/admin', 'admin\HomeController@index')->middleware('role:admin,guru')->name('admin.dashboard');

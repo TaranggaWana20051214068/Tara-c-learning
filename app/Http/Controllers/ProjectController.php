@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Kelompok;
 use App\Models\Tugas;
+use App\User;
+use Str;
 
 class ProjectController extends Controller
 {
@@ -33,9 +35,30 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $tasks = Tugas::where('project_id', $id)->get();
         $kelompok = $project->kelompok;
-        $users = $kelompok->users;
+        $users = User::whereHas('kelompok', function ($query) use ($id) {
+            $query->where('project_id', $id);
+        })->get();
         return view('projects.detail', compact('project', 'tasks', 'users'));
     }
+    public function projects_tugas(Request $request, $id)
+    {
+        $request->validate([
+            'file' => 'required|file',
+        ]);
+        $filename = $request->file('file')->getClientOriginalName();
+        if (preg_match('/[@\-]/', $filename)) {
+            return response()->json(['error' => 'Nama file tidak boleh mengandung karakter @ atau -'], 422);
+        }
+        if ($request->file('file')->getSize() > 10 * 1024 * 1024) {
+            return response()->json(['error' => 'File terlalu besar. Ukuran file maksimal adalah 10MB'], 422);
+        }
+        $tasks = Tugas::findOrFail($id);
+        $files = $request->file('file');
+        $files->storeAs('/images/projects/tugas', $filename, 'public');
+        $tasks->file = $filename;
+        $tasks->save();
 
+        return response()->json(['success' => "Berhasil Menyelesaikan Tugas $tasks->nama_tugas"], 200);
+    }
 
 }

@@ -155,7 +155,7 @@ function formAjaxProject(form, direct = null) {
             processData: false,
             success: function (response) {
                 sweetNotButton("success", response.success);
-                if (direct) {
+                if (direct != null) {
                     setTimeout(function () {
                         window.location.href = direct;
                     }, 1000);

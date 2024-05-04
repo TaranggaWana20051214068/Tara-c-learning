@@ -17,11 +17,19 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-
         $user = Auth::user();
-        if ($user && in_array($user->role, $roles)) {
-            return $next($request);
+
+        if ($user) {
+            $userRoles = is_array($user->role) ? $user->role : [$user->role];
+
+            foreach ($userRoles as $role) {
+                if (in_array($role, $roles)) {
+                    return $next($request);
+                }
+            }
         }
-        abort(403, 'Unauthorized');
+
+        abort(403, 'Unauthorized: You do not have the required role to access this resource.');
     }
+
 }
