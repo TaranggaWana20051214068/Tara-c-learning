@@ -72,7 +72,7 @@
                                                     class='btn btn-outline-primary mr-2'><i
                                                         class="bi bi-pencil-square"></i></a>
                                             </td>
-                                            <td><a href="{{ route('admin.projects.show', ['project' => $project->id]) }}"
+                                            <td><a href="{{ route('admin.projects.tampilSiswa', ['id' => $project->id]) }}"
                                                     class='btn btn-outline-primary mr-2'><i class="bi bi-people"></i></a>
                                             </td>
                                             <td>

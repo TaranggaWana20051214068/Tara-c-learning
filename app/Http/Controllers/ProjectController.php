@@ -8,6 +8,7 @@ use App\Models\Kelompok;
 use App\Models\Tugas;
 use App\User;
 use Str;
+use App\Models\Attachment;
 
 class ProjectController extends Controller
 {
@@ -33,12 +34,13 @@ class ProjectController extends Controller
     public function projects_show($id)
     {
         $project = Project::findOrFail($id);
-        $tasks = Tugas::where('project_id', $id)->get();
+        $tasks = Tugas::where('project_id', $id)->with('attachments')->get();
         $kelompok = $project->kelompok;
         $users = User::whereHas('kelompok', function ($query) use ($id) {
             $query->where('project_id', $id);
         })->get();
-        return view('projects.detail', compact('project', 'tasks', 'users'));
+        $attachments = Attachment::whereIn('tugas_id', $tasks->pluck('id'))->get();
+        return view('projects.detail', compact('project', 'tasks', 'users', 'attachments'));
     }
     public function projects_tugas(Request $request, $id)
     {
@@ -52,13 +54,20 @@ class ProjectController extends Controller
         if ($request->file('file')->getSize() > 10 * 1024 * 1024) {
             return response()->json(['error' => 'File terlalu besar. Ukuran file maksimal adalah 10MB'], 422);
         }
+
         $tasks = Tugas::findOrFail($id);
         $files = $request->file('file');
         $files->storeAs('/images/projects/tugas', $filename, 'public');
-        $tasks->file = $filename;
-        $tasks->save();
+
+        // Membuat instance baru dari model Attachment
+        $attachment = new Attachment;
+        $attachment->file_name = $filename;
+        $attachment->user_id = auth()->id();
+        $attachment->tugas_id = $tasks->id;
+        $attachment->save();
 
         return response()->json(['success' => "Berhasil Menyelesaikan Tugas $tasks->nama_tugas"], 200);
     }
+
 
 }

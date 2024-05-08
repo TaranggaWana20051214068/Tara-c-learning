@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use DB;
 use App\Models\Tugas;
 use App\Models\Attachment;
+use App\Models\Kelompok;
+use App\User;
 
 class ProjectController extends Controller
 {
@@ -174,5 +176,24 @@ class ProjectController extends Controller
     {
         $tugas = Tugas::findOrFail($id);
         return view('admin.projects.editTugas', compact('tugas'));
+    }
+    public function siswaShow(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+        $search = $request->get('search');
+        $students = Kelompok::where('project_id', $id)
+            ->where('nama_siswa', 'LIKE', "%$search%")
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        $students->appends(['search' => $search]);
+        return view('admin.projects.detail', compact('students', 'project'));
+    }
+
+    public function siswa($id)
+    {
+        $kelompok = Kelompok::findOrFail($id);
+        $kelompok->delete();
+        session()->flash('success', 'Sukses Menghapus Data');
+        return redirect()->back();
     }
 }

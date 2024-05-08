@@ -80,7 +80,7 @@
                         <span>Siswa</span>
                     </a>
                 </li>
-                <li class="sidebar-item  {{ 'admin.subjects.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                {{-- <li class="sidebar-item  {{ 'admin.subjects.index' === Route::currentRouteName() ? 'active' : '' }} ">
                     <a href="{{ route('admin.subjects.index') }}" class="sidebar-link ">
                         <i class="bi bi-book-fill"></i>
                         <span>Mata Pelajaran </span>
@@ -97,7 +97,7 @@
                         <i class="bi bi-speedometer"></i>
                         <span>Jadwal Piket </span>
                     </a>
-                </li>
+                </li> --}}
 
                 @if (auth()->user()->role === 'admin')
                     <li

@@ -57,12 +57,17 @@
                             <a class="nav-link" href="{{ route('home') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('jadwal.piket') }}">Jadwal Piket</a>
+                            {{-- <a class="nav-link" href="{{ route('jadwal.piket') }}">Jadwal Piket</a> --}}
+                            <a class="nav-link" href="{{ route('article.index') }}">Materi</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('jadwal.pelajaran') }}">Jadwal Pelajaran</a>
+                            {{-- <a class="nav-link" href="{{ route('jadwal.pelajaran') }}">Jadwal Pelajaran</a> --}}
+                            <a class="nav-link" href="{{ route('soal.index') }}">Soal Latihan</a>
                         </li>
-                        <li class="nav-item dropdown">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('project.index') }}">Project</a>
+                        </li>
+                        {{-- <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Pembelajaran
@@ -72,8 +77,7 @@
                                 <a class="dropdown-item" href="{{ route('soal.index') }}">Soal Latihan</a>
                                 <a class="dropdown-item" href="{{ route('project.index') }}">Project</a>
                             </div>
-                        </li>
-
+                        </li> --}}
                         @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>

@@ -60,6 +60,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::resource('/questions', 'SoalController');
         Route::resource('/projects', 'ProjectController');
         Route::post('/projects/{id}', 'ProjectController@tugas')->name('projects.tugas');
+        Route::post('/projects/siswa/{id}', 'ProjectController@siswa')->name('projects.siswa');
+        Route::get('/projects/siswa/{id}', 'ProjectController@siswaShow')->name('projects.tampilSiswa');
         Route::get('/projects/{id}/editTugas', 'ProjectController@editTugas')->name('projects.editTugas');
         Route::post('/questions/{id}/nilai', 'SoalController@nilai')->name('questions.nilai');
         Route::post('/questions/{id}', 'SoalController@editNilai')->name('questions.editNilai');

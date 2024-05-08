@@ -12,9 +12,14 @@
                     <div class="card-detail">
                         <span><i class="bi bi-person-circle"></i> {{ $article->author->name }}</span> <span
                             class='ml-10'>{{ Carbon\Carbon::parse($article->created_at)->format('d F Y H:i:s') }}</span>
+
                     </div>
                     <h1 class="card-title mt-2">{{ $article->title }}</h1>
                     <p>{!! nl2br($article->content) !!}</p>
+                    @foreach ($questionIds as $questionId)
+                        <a href="{{ route('soal.show', ['id' => $questionId]) }}" class="btn btn-primary">Latihan
+                            Soal</a>
+                    @endforeach
                     @if ($links->count() > 0 || $article->thumbnail_image_name)
                         <div class="container-sm text-center">
                             <h4 class="mt-2">Lampiran</h4>

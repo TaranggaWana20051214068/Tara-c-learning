@@ -137,14 +137,20 @@ class SoalController extends Controller
      */
     public function nilai(Request $request, $id)
     {
-        if ($request->has('score') && empty($request->score)) {
-            $pesan = 'Nilai tidak boleh kosong!';
-            return response()->json(['error' => $pesan], 422);
-        }
+
         if (is_null($id)) {
             return response()->json(['error' => 'ID tidak valid'], 422);
         }
 
+        if ($request->has('score')) {
+            if ($request->score < 1 || $request->score > 100) {
+                $pesan = 'Nilai harus antara 1 dan 100!';
+                return response()->json(['error' => $pesan], 422);
+            }
+        } else {
+            $pesan = 'Nilai tidak boleh kosong!';
+            return response()->json(['error' => $pesan], 422);
+        }
         $create = Code::find($id)->update([
             'score' => $request->score,
         ]);

@@ -46,14 +46,17 @@
                                                                 style="font-size: 2rem; color: rgb(76, 130, 231);"></i>
                                                             Tugas : {{ $task->nama_tugas }}
                                                         </h5>
-                                                        @if (empty($task->file))
-                                                            <code class="float-end">
-                                                                Deadline:
-                                                                {{ \Carbon\Carbon::parse($task->deadline)->format('d-m-Y') }}
-                                                                @if (\Carbon\Carbon::now()->gt($task->deadline) && empty($task->file))
-                                                                    (Terlambat)
-                                                                @endif
-                                                            </code>
+                                                        @if ($task->attachments->isEmpty())
+                                                            <p class="float-end"> Deadline:
+                                                                <code>
+                                                                    {{ \Carbon\Carbon::parse($task->deadline)->format('d-m-Y') }}
+                                                                    @if (\Carbon\Carbon::now()->gt($task->deadline))
+                                                                        (Terlambat)
+                                                                    @endif
+                                                                </code>
+                                                            </p>
+                                                        @elseif ($attachments->where('tugas_id', $task->id)->first()->nilai === null)
+                                                            <h5 class="text-warning">Menunggu Penilaian</h5>
                                                         @else
                                                             <h5 class="text-success">Selesai</h5>
                                                         @endif
@@ -72,14 +75,16 @@
                                                         </div>
                                                         <div class="modal-body">
                                                             <h4>{{ $task->nama_tugas }}</h4>
-                                                            <code>Deadline:
-                                                                {{ \Carbon\Carbon::parse($task->deadline)->format('d-m-Y') }}
-                                                                @if (\Carbon\Carbon::now()->gt($task->deadline) && empty($task->file))
-                                                                    (Terlambat)
-                                                                @endif
-                                                            </code>
+                                                            <p> Deadline:
+                                                                <code>
+                                                                    {{ \Carbon\Carbon::parse($task->deadline)->format('d-m-Y') }}
+                                                                    @if (\Carbon\Carbon::now()->gt($task->deadline))
+                                                                        (Terlambat)
+                                                                    @endif
+                                                                </code>
+                                                            </p>
                                                             <p>{{ $task->deskripsi }}</p>
-                                                            @if (empty($task->file))
+                                                            @if ($task->attachments->isEmpty())
                                                                 <form id="TugasForm"
                                                                     action="{{ route('project.tugas', ['id' => $task->id]) }}"
                                                                     method="post">
@@ -104,10 +109,10 @@
                                                         </div>
                                                         </form>
                                                     @else
-                                                        <a href="{{ Storage::url('images/projects/tugas/' . $task->file) }}"
+                                                        <a href="{{ Storage::url('images/projects/tugas/' . $attachments->where('tugas_id', $task->id)->first()->file_name) }}"
                                                             id="downloadLink" download>
                                                             <i class="bi bi-file-code" style="font-size: 2rem"></i>
-                                                            {{ $task->file }}
+                                                            {{ $attachments->where('tugas_id', $task->id)->first()->file_name }}
                                                         </a>
                                                     </div>
                                                     <div class="modal-footer">

@@ -60,7 +60,8 @@ class HomeController extends Controller
     {
         $article = Article::findOrFail($id);
         $links = YoutubeLink::where('article_id', $id)->orderBy('id', 'desc')->pluck('link');
-        return view('articles.detail', compact('article', 'links'));
+        $questionIds = Question::where('article_id', $id)->pluck('id');
+        return view('articles.detail', compact('article', 'links', 'questionIds'));
     }
 
     public function jadwal_pelajaran()
@@ -76,7 +77,9 @@ class HomeController extends Controller
     }
     public function profile()
     {
-        return view('profile');
+        $id = Auth::user()->id;
+        $student = Student::findOrFail($id);
+        return view('profile', compact('student'));
     }
     public function questions_index()
     {

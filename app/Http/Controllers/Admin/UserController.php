@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Student;
 
 class UserController extends Controller
 {
@@ -59,9 +60,17 @@ class UserController extends Controller
             'role' => $request->roles
         ]);
 
+        if ($request->roles === 'siswa') {
+            Student::create([
+                'name' => $request->name,
+                // Tambahkan kolom lain yang diperlukan
+            ]);
+        }
+
         session()->flash('success', "Sukses tambah data user $request->name");
         return redirect()->route('admin.users.index');
     }
+
 
     /**
      * Display the specified resource.
