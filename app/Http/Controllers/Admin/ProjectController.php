@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
-use DB;
 use App\Models\Tugas;
 use App\Models\Attachment;
 use App\Models\Kelompok;
-use App\User;
 
 class ProjectController extends Controller
 {

@@ -178,3 +178,41 @@ function formAjaxProject(form, direct = null) {
         });
     });
 }
+function formAjaxQuiz(form, judul, deskripsi, jawaban) {
+    function tambahTugas(judul, deskripsi, jawaban) {
+        var newRow = $("<tr>");
+        newRow.append("<td>" + judul + "</td>");
+        newRow.append("<td>" + deskripsi + "</td>");
+        newRow.append("<td>" + jawaban + "</td>");
+        $("#table").append(newRow);
+    }
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(form);
+        $.ajax({
+            url: form.action,
+            method: form.method,
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                sweetNotButton("success", response.success);
+                tambahTugas(judul, deskripsi, jawaban);
+                $("#pertanyaan").val("");
+                $("#choice-1").val("");
+                $("#choice-2").val("");
+                $("#choice-3").val("");
+                $("#choice-4").val("");
+                $("#correct").val("");
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 422) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response && response.error) {
+                        showError("Terdapat Kesalahan : " + response.error);
+                    }
+                }
+            },
+        });
+    });
+}

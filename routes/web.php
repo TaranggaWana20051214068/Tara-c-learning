@@ -59,6 +59,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::resource('/articles', 'ArticleController');
         Route::resource('/questions', 'SoalController');
         Route::resource('/projects', 'ProjectController');
+        Route::resource('/quizs', 'QuizController');
+        Route::post('/quizs/create', 'QuizController@addQuiz')->name('quizs.addQuiz');
+        Route::post('/quizs/{category}', 'QuizController@showCategory')->name('quizs.detail');
         Route::post('/projects/{id}', 'ProjectController@tugas')->name('projects.tugas');
         Route::post('/projects/siswa/{id}', 'ProjectController@siswa')->name('projects.siswa');
         Route::get('/projects/siswa/{id}', 'ProjectController@siswaShow')->name('projects.tampilSiswa');

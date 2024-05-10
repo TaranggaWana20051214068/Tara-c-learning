@@ -58,7 +58,7 @@
                 </li>
                 <li class="sidebar-item  {{ 'admin.questions.index' === Route::currentRouteName() ? 'active' : '' }} ">
                     <a href="{{ route('admin.questions.index') }}" class="sidebar-link ">
-                        <i class="bi bi-pen"></i>
+                        <i class="bi bi-pen-fill"></i>
                         <span>Soal </span>
                     </a>
                 </li>
@@ -68,16 +68,22 @@
                         <span>Project </span>
                     </a>
                 </li>
-                <li class="sidebar-item  {{ 'admin.users.index' === Route::currentRouteName() ? 'active' : '' }} ">
-                    <a href="{{ route('admin.users.index') }}" class="sidebar-link ">
-                        <i class="bi bi-people-fill"></i>
-                        <span>Pengguna</span>
+                <li class="sidebar-item  {{ 'admin.quizs.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                    <a href="{{ route('admin.quizs.index') }}" class="sidebar-link ">
+                        <i class="bi bi-patch-question-fill"></i>
+                        <span>Quiz </span>
                     </a>
                 </li>
                 <li class="sidebar-item  {{ 'admin.students.index' === Route::currentRouteName() ? 'active' : '' }} ">
                     <a href="{{ route('admin.students.index') }}" class="sidebar-link ">
                         <i class="bi bi-person-fill"></i>
                         <span>Siswa</span>
+                    </a>
+                </li>
+                <li class="sidebar-item  {{ 'admin.users.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                    <a href="{{ route('admin.users.index') }}" class="sidebar-link ">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Pengguna</span>
                     </a>
                 </li>
                 {{-- <li class="sidebar-item  {{ 'admin.subjects.index' === Route::currentRouteName() ? 'active' : '' }} ">

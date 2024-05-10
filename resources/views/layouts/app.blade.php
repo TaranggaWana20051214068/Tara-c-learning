@@ -36,7 +36,7 @@
         <nav class="navbar navbar-expand-md ">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <img src="@yield('logo', Storage::url('/images/logo/' . config('web_config')['WEB_LOGO']))" alt="Logo" height="30">
+                    <img src="@yield('logo', Storage::url('/images/logo/' . config('web_config')['WEB_LOGO']))" alt="Logo" style="height: 2rem;" height="30">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
