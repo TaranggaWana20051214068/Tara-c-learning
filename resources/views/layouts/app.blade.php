@@ -15,7 +15,7 @@
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="shortcut icon" href="{{ Storage::url('images/front/favicon_c.png') }}">
+    <link rel="shortcut icon" href="{{ Storage::url('images/logo/favicon_c_new.png') }}">
 
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
