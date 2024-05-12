@@ -71,7 +71,7 @@
                                 <label for="" class='col-md-2 col-form-label'>Lampiran</label>
                                 <div class="col-md-10">
                                     <input class="form-control form-control-sm" id="formFileArticle" type="file"
-                                        name="file">
+                                        name="file_name">
                                     <code>Gambar/file/dokumen MAX 10MB</code>
                                     @error('file')
                                         <span class="invalid-feedback" role="alert">

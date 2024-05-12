@@ -20,17 +20,17 @@
                         <a href="{{ route('soal.show', ['id' => $questionId]) }}" class="btn btn-primary">Latihan
                             Soal</a>
                     @endforeach
-                    @if ($links->count() > 0 || $article->thumbnail_image_name)
+                    @if ($links->count() > 0 || $article->file_name)
                         <div class="container-sm text-center">
                             <h4 class="mt-2">Lampiran</h4>
                             <div class="row">
                                 <div class="col">
-                                    @if ($article->thumbnail_image_name)
-                                        <a href="{{ Storage::url('images/articles/' . $article->thumbnail_image_name) }}"
+                                    @if ($article->file_name)
+                                        <a href="{{ Storage::url('images/articles/file/' . $article->file_name) }}"
                                             target="_blank">
                                             <i class="bi bi-file-earmark-medical" style="font-size: 3rem;"></i>
                                             <br>
-                                            {{ $article->thumbnail_image_name }}
+                                            {{ $article->file_name }}
                                         </a>
                                     @endif
                                 </div>

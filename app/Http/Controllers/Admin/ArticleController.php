@@ -49,7 +49,6 @@ class ArticleController extends Controller
             'title' => 'required',
             'content' => 'required',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'file' => 'file',
         ]);
         // Simpan artikel
         $article = new Article;
@@ -64,8 +63,8 @@ class ArticleController extends Controller
         $photo->storeAs('/images/articles', $image_name, 'public');
         $article->thumbnail_image_name = $image_name;
 
-        if ($request->hasFile('file')) {
-            $photo = $request->file('file');
+        if ($request->hasFile('file_name')) {
+            $photo = $request->file('file_name');
             $image_extension = $photo->extension();
             $image_name = Str::slug($request->title) . "." . $image_extension;
             $photo->storeAs('/images/articles/file', $image_name, 'public');
