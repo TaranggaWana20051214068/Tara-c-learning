@@ -30,7 +30,7 @@ Route::prefix('students')->group(function () {
     Route::get('/{id}', 'HomeController@student_show')->name('student.show');
 });
 Route::get('jadwal-pelajaran', 'HomeController@jadwal_pelajaran')->name('jadwal.pelajaran');
-Route::get('profile', 'HomeController@profile')->name('profile');
+Route::get('profile', 'HomeController@profile')->name('user.profile');
 Route::get('jadwal-piket', 'HomeController@jadwal_piket')->name('jadwal.piket');
 Route::prefix('/articles')->group(function () {
     Route::get('/', 'HomeController@article_index')->name('article.index');
@@ -47,6 +47,11 @@ Route::prefix('/projects')->group(function () {
     Route::get('/{id}', 'ProjectController@projects_show')->name('project.show');
     Route::post('/{id}', 'ProjectController@projects_tugas')->name('project.tugas');
 });
+Route::prefix('/quizs')->group(function () {
+    Route::get('/', 'QuizController@index')->name('quiz.index');
+    Route::get('/{category}', 'QuizController@show')->name('quiz.show');
+    Route::post('/{category}', 'QuizController@add')->name('quiz.add');
+});
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'role:admin,guru']], function () {
     Route::name('admin.')->group(function () {
@@ -61,7 +66,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::resource('/projects', 'ProjectController');
         Route::resource('/quizs', 'QuizController');
         Route::post('/quizs/create', 'QuizController@addQuiz')->name('quizs.addQuiz');
-        Route::post('/quizs/{category}', 'QuizController@showCategory')->name('quizs.detail');
+        Route::get('/quizs/detail/{category}', 'QuizController@show')->name('quizs.detail');
+        Route::get('/quizs/siswa/{category}', 'QuizController@siswa')->name('quizs.siswa');
         Route::post('/projects/{id}', 'ProjectController@tugas')->name('projects.tugas');
         Route::post('/projects/siswa/{id}', 'ProjectController@siswa')->name('projects.siswa');
         Route::get('/projects/siswa/{id}', 'ProjectController@siswaShow')->name('projects.tampilSiswa');

@@ -157,7 +157,9 @@
 @section('script-bottom')
     <script>
         $(document).ready(function() {
-            $("#btnSimpan").click(function() {
+            var form = document.getElementById('form');
+            form.addEventListener("submit", function(event) {
+                event.preventDefault();
                 var judul = $("#pertanyaan").val();
                 var choice1 = $("#choice-1").val();
                 var choice2 = $("#choice-2").val();
@@ -165,10 +167,41 @@
                 var choice4 = $("#choice-4").val();
                 var jawaban = $("#correct").val();
                 deskripsi = [choice1, choice2, choice3, choice4];
-                var form = document.getElementById('form');
-                formAjaxQuiz(form, judul, deskripsi, jawaban);
-
+                var formData = new FormData(form);
+                $.ajax({
+                    url: form.action,
+                    method: form.method,
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        sweetNotButton("success", response.success);
+                        tambahTugas(judul, deskripsi, jawaban);
+                        $("#pertanyaan").val("");
+                        $("#choice-1").val("");
+                        $("#choice-2").val("");
+                        $("#choice-3").val("");
+                        $("#choice-4").val("");
+                        $("#correct").val("");
+                    },
+                    error: function(xhr, status, error) {
+                        if (xhr.status === 422) {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response && response.error) {
+                                showError("Terdapat Kesalahan : " + response.error);
+                            }
+                        }
+                    },
+                });
             });
+
+            function tambahTugas(judul, deskripsi, jawaban) {
+                var newRow = $("<tr>");
+                newRow.append("<td>" + judul + "</td>");
+                newRow.append("<td>" + deskripsi + "</td>");
+                newRow.append("<td>" + jawaban + "</td>");
+                $("#table").append(newRow);
+            }
         });
     </script>
 @endsection

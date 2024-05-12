@@ -49,7 +49,8 @@ class UserController extends Controller
             'username' => 'required|unique:users',
             'password' => 'required',
             'email' => 'required|email',
-            'role' => 'required'
+            'roles' => 'required',
+            'image_name' => 'nullable'
         ]);
 
         $create = User::create([
@@ -57,13 +58,14 @@ class UserController extends Controller
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'email' => $request->email,
-            'role' => $request->roles
+            'role' => $request->roles,
+            'profile_pic' => $request->image_name
         ]);
-
         if ($request->roles === 'siswa') {
             Student::create([
                 'name' => $request->name,
-                // Tambahkan kolom lain yang diperlukan
+                'description' => '',
+                'image_name' => $request->input('image_name') ? $request->input('image_name') : 'default.png',
             ]);
         }
 

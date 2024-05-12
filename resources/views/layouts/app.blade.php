@@ -67,6 +67,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('project.index') }}">Project</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('quiz.index') }}">Quiz</a>
+                        </li>
                         {{-- <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -78,29 +81,29 @@
                                 <a class="dropdown-item" href="{{ route('project.index') }}">Project</a>
                             </div>
                         </li> --}}
-                        @guest
+                        {{-- @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
-                        @else
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    {{ Auth::user()->name }}
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    @if (auth()->user()->role !== 'siswa')
-                                        <a class="dropdown-item" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                                    @endif
-                                    <a class="dropdown-item" href="{{ route('profile') }}">Profile</a>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button class="dropdown-item"><i class="icon-mid bi bi-box-arrow-left me-2"></i>
-                                            Logout</button>
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
+                        @else --}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @if (auth()->user()->role !== 'siswa')
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                                @endif
+                                <a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button class="dropdown-item"><i class="icon-mid bi bi-box-arrow-left me-2"></i>
+                                        Logout</button>
+                                </form>
+                            </div>
+                        </li>
+                        {{-- @endguest --}}
                     </ul>
                 </div>
             </div>

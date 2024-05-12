@@ -19,7 +19,6 @@ return new class extends Migration {
             $table->integer('nilai')->nullable();
             $table->text('catatan')->nullable();
             $table->dateTime('deadline')->nullable();
-            $table->string('file')->nullable();
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
             $table->timestamps();
         });

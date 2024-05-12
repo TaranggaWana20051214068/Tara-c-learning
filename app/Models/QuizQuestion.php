@@ -14,4 +14,12 @@ class QuizQuestion extends Model
         'category'
     ];
     protected $table = 'quiz_questions';
+    public function choices()
+    {
+        return $this->hasMany(Choice::class, 'q_question_id');
+    }
+    public function userAnswers()
+    {
+        return $this->hasMany(UserAnswer::class, 'q_question_id');
+    }
 }

@@ -34,14 +34,26 @@ class ProjectController extends Controller
     public function projects_show($id)
     {
         $project = Project::findOrFail($id);
-        $tasks = Tugas::where('project_id', $id)->with('attachments')->get();
+        $taskss = Tugas::where('project_id', $id)
+            ->with('attachments')
+            ->get();
+        $tasks = $taskss->filter(function ($task) {
+            return $task->attachments->isNotEmpty();
+        });
+        $incompleteTasks = $taskss->filter(function ($task) {
+            return $task->attachments->isEmpty();
+        });
+        $nextTask = $incompleteTasks->first();
         $kelompok = $project->kelompok;
         $users = User::whereHas('kelompok', function ($query) use ($id) {
             $query->where('project_id', $id);
         })->get();
-        $attachments = Attachment::whereIn('tugas_id', $tasks->pluck('id'))->get();
-        return view('projects.detail', compact('project', 'tasks', 'users', 'attachments'));
+        $attachments = Attachment::whereIn('tugas_id', $taskss->pluck('id'))->get();
+        $progress = $taskss->count() > 0 ? ($tasks->count() / $taskss->count()) * 100 : 0;
+
+        return view('projects.detail', compact('project', 'nextTask', 'tasks', 'users', 'attachments', 'progress'));
     }
+
     public function projects_tugas(Request $request, $id)
     {
         $request->validate([

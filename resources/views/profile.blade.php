@@ -20,9 +20,40 @@
                         class="bi bi-pencil-square"></i></a>
             </div>
             <div class="col-md-9 sm:mt-5">
-                <h1 class='mb-3'>{{ $student->name }}</h1>
-                <p> Caption <br>
-                    {!! nl2br($student->description ? $student->description : 'No caption.') !!}</p>
+                <h1 class='mb-3'>{{ $user->name }}</h1>
+                <div class="card mb-5">
+                    <div class="card-header">
+                        <h3>Nilai</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="bordered">
+                            <thead>
+                                <tr>
+                                    <th data-field="id">Name</th>
+                                    <th data-field="name">Item Name</th>
+                                    <th data-field="price">Item Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Alvin</td>
+                                    <td>Eclair</td>
+                                    <td>.87</td>
+                                </tr>
+                                <tr>
+                                    <td>Alan</td>
+                                    <td>Jellybean</td>
+                                    <td>.76</td>
+                                </tr>
+                                <tr>
+                                    <td>Jonathan</td>
+                                    <td>Lollipop</td>
+                                    <td>.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

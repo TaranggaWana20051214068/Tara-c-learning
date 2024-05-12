@@ -131,6 +131,7 @@
         Masukkan URL
     @endsection
 
+
     {{-- Set nilai variabel Blade untuk konten modal --}}
     @section('modal-content')
 
@@ -142,8 +143,11 @@
 
         @endsection
         @section('modal-content-bottom')
-        </form>
-    @endsection
+        @section('modal-button')
+            kirim
+        @endsection
+    </form>
+@endsection
 
 </div> <!-- container-fluid -->
 
@@ -152,13 +156,13 @@
 @endsection
 @section('script-bottom')
 @if (session('success'))
-    <script>
-        $.SweetAlert.showSucc("{{ session('success') }}");
-    </script>
+<script>
+    $.SweetAlert.showSucc("{{ session('success') }}");
+</script>
 @endif
 @if (session('error'))
-    <script>
-        $.SweetAlert.showErr("{{ session('error') }}");
-    </script>
+<script>
+    $.SweetAlert.showErr("{{ session('error') }}");
+</script>
 @endif
 @endsection

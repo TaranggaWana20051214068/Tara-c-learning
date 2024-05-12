@@ -2,7 +2,7 @@
 
 @section('css')
 @endsection
-@section('title', 'Quiz')
+@section('title', 'Siswa')
 
 @section('content')
     <div class="container-fluid">
@@ -10,10 +10,11 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Quiz</h4>
+                    <h4 class="page-title">Siswa</h4>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Quiz</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.quizs.index') }}">Quiz</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Siswa</a></li>
                     </ol>
 
 
@@ -27,8 +28,8 @@
                 <div class="card m-b-20">
                     <div class="card-body">
 
-                        <h4 class="mt-0 header-title">Quiz</h4>
-                        <p class="text-muted m-b-30 font-14">Berikut adalah daftar judul quiz</p>
+                        <h4 class="mt-0 header-title">Daftar Siswa</h4>
+                        <p class="text-muted m-b-30 font-14">Berikut adalah daftar siswa yang menyelesaikan.</p>
 
                         <div class="row mb-3">
                             <div class="col-md-4">
@@ -37,9 +38,9 @@
                                     <button type="submit" class='btn btn-primary'>Cari</button>
                                 </form>
                             </div>
-                            <div class="col-md-2 ml-auto">
+                            {{-- <div class="col-md-2 ml-auto">
                                 <a class="btn btn-primary float-right" href="{{ route('admin.quizs.create') }}">Tambah</a>
-                            </div>
+                            </div> --}}
                         </div>
                         @if (session('success'))
                             <div class="alert alert-success d-flex align-items-center" role="alert">
@@ -54,47 +55,29 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Judul</th>
-                                        <th>Total Pertanyaan</th>
-                                        <th>Action</th>
+                                        <th>Nama</th>
+                                        <th>Tanggal</th>
+                                        <th>Score</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($quizs as $quiz)
+                                    @forelse ($data as $item)
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
-                                            <td>{{ $quiz->category }}</td>
-                                            <td>{{ $quiz->total }}</td>
-                                            <td>
-                                                <div class='d-inline-flex'>
-                                                    <a href="{{ route('admin.quizs.siswa', ['category' => $quiz->category]) }}"
-                                                        class="btn btn-warning mr-2">Siswa
-                                                        <i class="bi bi-people"></i></a>
-                                                    <a href="{{ route('admin.quizs.detail', ['category' => $quiz->category]) }}"
-                                                        class="btn btn-info text-white">Lihat Soal
-                                                        <i class="bi bi-arrow-right-circle"></i></a>
-                                                    {{-- <form action="{{ route('admin.quizs.destroy', ['quiz' => $quiz->id]) }}"
-                                                        method="post">
-                                                        @csrf
-                                                        @method('delete')
-                                                        <button type="button" class='btn btn-danger btn-delete'><i
-                                                                class="bi bi-trash"></i></button>
-                                                    </form> --}}
-                                                </div>
-                                            </td>
+                                            <td>{{ $item['student_name'] }}</td>
+                                            <td>{{ $item['completed_at'] }}</td>
+                                            <td>{{ $item['score'] }}</td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class='text-center'>Data tidak ditemukan, Mohon <a
-                                                    href="{{ route('admin.quizs.create') }}">Tambah
-                                                    Data</a></td>
+                                            <td colspan="4" class='text-center'>Belum ada siswa yang menyelesaikan.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
                         <div class="paginate float-right mt-3">
-                            {{ $quizs->links() }}
+                            {{ $paginator->links() }}
                         </div>
                     </div>
                 </div>

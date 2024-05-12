@@ -41,7 +41,7 @@
                              <a class="dropdown-item" href="{{ route('home') }}">Home</a>
                          </li>
                          <li>
-                             <a class="dropdown-item" href="{{ route('profile') }}">Profile</a>
+                             <a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a>
                          </li>
                          <li>
                              <form method="POST" action="{{ route('logout') }}">

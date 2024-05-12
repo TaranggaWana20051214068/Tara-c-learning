@@ -13,7 +13,6 @@ class Tugas extends Model
         'nilai',
         'catatan',
         'deadline',
-        'file',
         'project_id',
     ];
 

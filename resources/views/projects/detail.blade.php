@@ -33,10 +33,17 @@
                         <div id="tasks" class="tab-pane fade">
                             <br>
                             <h5>Daftar Tugas</h5>
+                            progress:
+                            <div class="progress" role="progressbar" aria-valuenow="{{ $progress }}" aria-valuemin="0"
+                                aria-valuemax="100">
+                                <div class="progress-bar"style="width: {{ $progress }}%;">
+                                    {{ $progress }}%</div>
+                            </div>
                             <hr>
                             <div class="container">
                                 <div class="row">
                                     <div class="row row-cols-1 row-cols-md-1 g-2">
+                                        {{-- TUGAS SELESAI START --}}
                                         @forelse($tasks as $task)
                                             <a class="modal-trigger" href="#modalProject{{ $task->id }}"
                                                 data-bs-toggle="modal">
@@ -55,10 +62,10 @@
                                                                     @endif
                                                                 </code>
                                                             </p>
-                                                        @elseif ($attachments->where('tugas_id', $task->id)->first()->nilai === null)
+                                                        @elseif ($task->nilai === null)
                                                             <h5 class="text-warning">Menunggu Penilaian</h5>
                                                         @else
-                                                            <h5 class="text-success">Selesai</h5>
+                                                            <h5 class="text-primary">Nilai: {{ $task->nilai }}</h5>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -108,7 +115,7 @@
                                                             <button type="submit" class="btn btn-primary">Selesai</button>
                                                         </div>
                                                         </form>
-                                                    @else
+                                                    @elseif($task->nilai === null)
                                                         <a href="{{ Storage::url('images/projects/tugas/' . $attachments->where('tugas_id', $task->id)->first()->file_name) }}"
                                                             id="downloadLink" download>
                                                             <i class="bi bi-file-code" style="font-size: 2rem"></i>
@@ -119,6 +126,20 @@
                                                         <button type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal">Close</button>
                                                     </div>
+                                                @else
+                                                    <p>Nilai : {{ $task->nilai }}</p>
+                                                    <p>catatan: <br>
+                                                        {{ $task->catatan }}</p>
+                                                    <a href="{{ Storage::url('images/projects/tugas/' . $attachments->where('tugas_id', $task->id)->first()->file_name) }}"
+                                                        id="downloadLink" download>
+                                                        <i class="bi bi-file-code" style="font-size: 2rem"></i>
+                                                        {{ $attachments->where('tugas_id', $task->id)->first()->file_name }}
+                                                    </a>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                </div>
                                         @endif
                                     </div>
                                 </div>
@@ -127,6 +148,76 @@
                         @empty
                             <h5>Belum ada tugas yang diunggah.</h5>
                             @endforelse
+                            {{-- TUGAS SELESAI END --}}
+
+                            {{-- TUGAS BARU START --}}
+                            <a class="modal-trigger" href="#modalProject{{ $nextTask->id }}" data-bs-toggle="modal">
+                                <div class="card">
+                                    <div class="card-body row row-cols-md-2">
+                                        <h5 class="card-title"> <i class="bi bi-journal-text"
+                                                style="font-size: 2rem; color: rgb(76, 130, 231);"></i>
+                                            Tugas : {{ $nextTask->nama_tugas }}
+                                        </h5>
+                                        <p class="float-end"> Deadline:
+                                            <code>
+                                                {{ \Carbon\Carbon::parse($task->deadline)->format('d-m-Y') }}
+                                                @if (\Carbon\Carbon::now()->gt($task->deadline))
+                                                    (Terlambat)
+                                                @endif
+                                            </code>
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                            <!-- Modal Structure -->
+                            <div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                id="modalProject{{ $nextTask->id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{{ $nextTask->nama_tugas }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4>{{ $nextTask->nama_tugas }}</h4>
+                                            <p> Deadline:
+                                                <code>
+                                                    {{ \Carbon\Carbon::parse($task->deadline)->format('d-m-Y') }}
+                                                    @if (\Carbon\Carbon::now()->gt($task->deadline))
+                                                        (Terlambat)
+                                                    @endif
+                                                </code>
+                                            </p>
+                                            <p>{{ $nextTask->deskripsi }}</p>
+                                            <form id="TugasForm"
+                                                action="{{ route('project.tugas', ['id' => $nextTask->id]) }}"
+                                                method="post">
+                                                @csrf
+                                                <input type="file" name="file" id="file"
+                                                    class="form-control @error('file') is-invalid @enderror"
+                                                    value="{{ old('file') }}">
+                                                @error('file')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                                <code>Max ukuran file 10MB</code>
+                                                <br>
+                                                <code>Pastikan file benar karena tidak dapat
+                                                    diubah.</code>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Selesai</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- modal End --}}
+                            {{-- TUGAS BARU END --}}
                         </div>
                     </div>
                 </div>

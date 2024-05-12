@@ -77,9 +77,8 @@ class HomeController extends Controller
     }
     public function profile()
     {
-        $id = Auth::user()->id;
-        $student = Student::findOrFail($id);
-        return view('profile', compact('student'));
+        $user = Auth::user();
+        return view('profile', compact('user'));
     }
     public function questions_index()
     {
