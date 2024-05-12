@@ -1,6 +1,6 @@
 <meta content="C-Learning" name="description" />
 <meta content="Khai" name="author" />
-<link rel="shortcut icon" href="{{ URL::asset('assets/images/favicon.ico') }}">
+<link rel="shortcut icon" href="{{ Storage::url('images/front/favicon_c.png') }}">
 
 @yield('css')
 

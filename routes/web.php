@@ -89,6 +89,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Auth::routes();
 
-Route::get('/admin', 'admin\HomeController@index')->middleware('role:admin,guru')->name('admin.dashboard');
+// Route::get('/admin', 'admin\HomeController@index')->middleware('role:admin,guru')->name('admin.dashboard');
 // Route::post('/articles', 'admin\ArticleController@url')->name('admin.articles.edit');
 Route::post('/articles', [ArticleController::class, 'url'])->name('admin.articles.url');

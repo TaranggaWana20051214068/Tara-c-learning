@@ -216,8 +216,8 @@ class SoalController extends Controller
      */
     public function destroy($id)
     {
-        $subject = Code::findOrFail($id);
-        $subject->delete();
+        $question = Question::findOrFail($id);
+        $question->delete();
 
         session()->flash('success', 'Sukses Menghapus Data');
         return redirect()->back();

@@ -33,10 +33,30 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $students = Student::orderBy('id', 'asc')->limit(4)->get();
-        $articles = Article::orderBy('id', 'desc')->limit(3)->get();
-        return view('home', compact('students', 'articles'));
+        $menus = [
+            (object) [
+                'image_name' => 'image_menu_1.png',
+                'judul' => 'Materi',
+                'description' => 'Pembelajaran interaktif dengan kemudahaan akses materi pembelajaran dimana saja dan kapan saja.',
+            ],
+            (object) [
+                'image_name' => 'image_menu_2.png',
+                'judul' => 'Tugas & Project',
+                'description' => 'Pembelajaran interaktif yang memudahkan siswa berinteraksi langsung dengan materi.',
+            ],
+            (object) [
+                'image_name' => 'image_menu_3.png',
+                'judul' => 'Video Interaktif',
+                'description' => 'Penyajian video tutorial yang dapat menunjang pengalaman belajar siswa.',
+            ],
+        ];
+        $ttg = [
+            'image_name' => 'bg_ttg.png',
+            'description' => '"C-Learning: Platform pembelajaran daring yang menyediakan  sumber belajar lengkap untuk membantu siswa meningkatkan prestasi dan nilai akademik dalam bidang pengetahuan maupun keterampilan”',
+        ];
+        return view('home', compact('menus', 'ttg'));
     }
+
 
     public function student_index(Request $request)
     {
