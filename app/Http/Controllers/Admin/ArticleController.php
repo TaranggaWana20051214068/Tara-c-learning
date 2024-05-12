@@ -135,10 +135,10 @@ class ArticleController extends Controller
         $article->title = $request->title;
         $article->content = $request->content;
         if ($request->hasFile('thumbnail')) {
-            Storage::delete('public/images/articles/' . $article->image_name);
+            Storage::delete('public/images/articles/' . $article->thumbnail_image_name);
             $photo = $request->file('thumbnail');
             $image_extension = $photo->extension();
-            $image_name = Str::slug($request->name) . "." . $image_extension;
+            $image_name = Str::slug($request->title) . "." . $image_extension;
             $photo->storeAs('/images/articles', $image_name, 'public');
             $article->thumbnail_image_name = $image_name;
         }
