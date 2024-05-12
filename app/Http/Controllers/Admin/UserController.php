@@ -52,7 +52,9 @@ class UserController extends Controller
             'roles' => 'required',
             'image_name' => 'nullable'
         ]);
-
+        $photo = $request->file('image_name');
+        $image_name = $request->file('image_name')->getClientOriginalName();
+        $photo->storeAs('/images/students', $image_name, 'public');
         $create = User::create([
             'name' => $request->name,
             'username' => $request->username,
@@ -62,6 +64,7 @@ class UserController extends Controller
             'profile_pic' => $request->image_name
         ]);
         if ($request->roles === 'siswa') {
+            $photo->storeAs('/images/faces', $image_name, 'public');
             Student::create([
                 'name' => $request->name,
                 'description' => '',
@@ -134,8 +137,12 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
+        $name = $user->name;
         $user->delete();
-
+        $siswa = Student::where('name', $name)->first();
+        if ($siswa) {
+            $siswa->delete();
+        }
         session()->flash('success', 'Sukses Menghapus Data');
         return redirect()->back();
     }
