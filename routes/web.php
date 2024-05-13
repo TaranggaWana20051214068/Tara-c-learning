@@ -93,8 +93,6 @@ Auth::routes();
 // Route::post('/articles', 'admin\ArticleController@url')->name('admin.articles.edit');
 Route::post('/articles', [ArticleController::class, 'url'])->name('admin.articles.url');
 Route::get('/symlink', function () {
-    $targetFolder = base_path() . '/storage/app/public';
-    $linkFoltder = $_SERVER['DOCUMENT_ROOT'] . '/storage';
-    symlink($targetFolder, $linkFoltder);
+    Artisan::call('storage:link');
 });
 
