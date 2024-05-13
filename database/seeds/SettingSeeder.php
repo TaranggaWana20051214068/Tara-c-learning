@@ -19,7 +19,7 @@ class SettingSeeder extends Seeder
             ['key' => 'WEB_FAVICON', 'value' => 'favicon_c.png'],
             ['key' => 'HERO_TEXT_HEADER', 'value' => 'Selamat Datang di'],
             ['key' => 'HERO_TEXT_DESCRIPTION', 'value' => 'C-Learning adalah media pembelajaran yang dapat kamu akses sebagai sumber referensi materi serta dilengkapi berbagai latihan soal yang memudahkan kamu dalam proses pembelajaran.'],
-            ['key' => 'HERO_BACKGROUND_IMAGE', 'value' => 'cool-background.svg'],
+            ['key' => 'HERO_BACKGROUND_IMAGE', 'value' => 'background.png'],
         ]);
     }
 }

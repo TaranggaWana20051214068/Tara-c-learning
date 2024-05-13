@@ -12,6 +12,12 @@
         .form-check-label {
             font-size: 1.2em;
         }
+
+        .img {
+            width: 50%;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+        }
     </style>
 @endpush
 
@@ -39,6 +45,10 @@
                                 <div class="question" id="question-{{ $index }}"
                                     style="{{ $index > 0 ? 'display: none;' : '' }}">
                                     <h4 class='mb-3'>{{ $item['question_text'] }}</h4>
+                                    @if ($item['file'])
+                                        <img class="img mb-3" src="{{ Storage::url('/images/quizs/' . $item['file']) }}"
+                                            alt="question-file-{{ $index }}">
+                                    @endif
                                     @foreach ($item['choices'] as $choiceIndex => $choice)
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"

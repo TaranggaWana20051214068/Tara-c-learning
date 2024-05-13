@@ -96,7 +96,7 @@
                             <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Gambar</label>
                                 <div class="col-md-10">
-                                    <input type="file" class="form-control-file" name='photo'>
+                                    <input type="file" class="form-control" name='photo'>
                                     @error('photo')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

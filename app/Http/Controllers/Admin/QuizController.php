@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use DB;
 use App\Models\Choice;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Storage;
+use Str;
 
 class QuizController extends Controller
 {
@@ -35,17 +37,28 @@ class QuizController extends Controller
             return response()->json(['error' => 'Judul tidak boleh Kosong'], 422);
         } else if (empty($request->question)) {
             return response()->json(['error' => 'Pertanyaan tidak boleh kosong'], 422);
-        } else if (empty($request->choices) || !is_array($request->choices) || count($request->choices) != 4) {
-            return response()->json(['error' => 'pilihan tidak boleh kosong dan harus berisi 4 item'], 422);
-        } else if (empty($request->correct) || !is_numeric($request->correct) || $request->correct < 1 || $request->correct > 4) {
-            return response()->json(['error' => 'Pilih jawaban benar dulu dan harus berupa angka antara 1 dan 4'], 422);
+        } else if (empty($request->choices) || !is_array($request->choices) || count($request->choices) != 5) {
+            return response()->json(['error' => 'pilihan tidak boleh kosong dan harus berisi 5 item'], 422);
+        } else if (empty($request->correct) || !is_numeric($request->correct) || $request->correct < 1 || $request->correct > 5) {
+            return response()->json(['error' => 'Pilih jawaban benar dulu dan harus berupa angka antara 1 dan 5'], 422);
+        } else if ($request->hasFile('file')) {
+            $photo = $request->file('file');
+            if ($photo->getSize() > 2000000) { // ukuran dalam bytes
+                return response()->json(['error' => 'Ukuran file tidak boleh lebih dari 2MB'], 422);
+            }
         }
         // Membuat pertanyaan baru
-        $quizQuestion = QuizQuestion::create([
-            'pertanyaan' => $request->question,
-            'category' => $request->category,
-        ]);
-
+        $quizQuestion = new QuizQuestion;
+        $quizQuestion->pertanyaan = $request->question;
+        $quizQuestion->category = $request->category;
+        if ($request->hasFile('file')) {
+            $photo = $request->file('file');
+            $image_extension = $photo->extension();
+            $image_name = Str::slug($request->category) . "-" . uniqid() . "." . $image_extension;
+            $photo->storeAs('/images/quizs', $image_name, 'public');
+            $quizQuestion->file = $image_name;
+        }
+        $quizQuestion->save();
         // Membuat pilihan jawaban
         foreach ($request->choices as $index => $choice_text) {
             $is_correct = ($request->correct == $index + 1);
@@ -92,13 +105,22 @@ class QuizController extends Controller
         $validated = $request->validate([
             'category' => 'required|string',
             'question' => 'required|string',
+            'file' => 'nullable|max:2048',
         ]);
 
         // Perbarui pertanyaan
-        $quizQuestion->update([
-            'pertanyaan' => $validated['question'],
-            'category' => $validated['category'],
-        ]);
+        $quizQuestion = QuizQuestion::find($id);
+        $quizQuestion->pertanyaan = $validated['question'];
+        $quizQuestion->category = $validated['category'];
+        if ($request->hasFile('file')) {
+            Storage::delete('public/images/quizs/' . $quizQuestion->file);
+            $photo = $request->file('file');
+            $image_extension = $photo->extension();
+            $image_name = Str::slug($request->category) . "-" . uniqid() . "." . $image_extension;
+            $photo->storeAs('/images/quizs', $image_name, 'public');
+            $quizQuestion->file = $image_name;
+        }
+        $quizQuestion->save();
         session()->flash('success', "Sukses Mengubah Data");
         return redirect()->route('admin.quizs.detail', ['category' => $quizQuestion->category]);
     }

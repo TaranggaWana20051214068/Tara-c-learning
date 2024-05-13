@@ -29,7 +29,7 @@
                         <h4 class="mt-0 header-title">Ubah Soal</h4>
 
                         <form action="{{ route('admin.quizs.update', ['quiz' => $quiz->id]) }}" method="POST"
-                            class='mt-3'>
+                            class='mt-3' enctype="multipart/form-data">
                             @csrf
                             @method('put')
                             <div class="form-group row">
@@ -56,6 +56,19 @@
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="" class='col-md-2 col-form-label'>file</label>
+                                <div class="col-md-10">
+                                    <input type="file" class="form-control" name='file'>
+                                    @error('file')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                    <img src="{{ Storage::url('images/quizs/' . $quiz->file) }} " alt=""
+                                        srcset="" style="width: 100px">
                                 </div>
                             </div>
                             {{-- @foreach ($quiz->choices as $index => $choice)

@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="col-7 col-md-6 d-none d-md-block">
-                <img class="img-fluid image float-end" style="width: 80%;"
+                <img class="img-fluid image float-end"
                     src="{{ Storage::url('images/front/' . config('web_config')['HERO_BACKGROUND_IMAGE']) }}"
                     alt="">
             </div>

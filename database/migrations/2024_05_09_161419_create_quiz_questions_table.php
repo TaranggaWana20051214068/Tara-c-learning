@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->string('pertanyaan');
             $table->string('category');
+            $table->string('file')->nullable();
             $table->timestamps();
         });
     }

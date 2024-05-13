@@ -11,7 +11,8 @@ class QuizQuestion extends Model
 
     protected $fillable = [
         'pertanyaan',
-        'category'
+        'category',
+        'file'
     ];
     protected $table = 'quiz_questions';
     public function choices()

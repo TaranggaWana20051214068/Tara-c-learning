@@ -39,6 +39,7 @@ class QuizController extends Controller
                 'no_urut' => $index + 1,
                 'id' => $question->id,
                 'question_text' => $question->pertanyaan,
+                'file' => $question->file,
                 'choices' => $question->choices->map(function ($choice) {
                     return [
                         'id' => $choice->id,
