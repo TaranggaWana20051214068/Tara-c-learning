@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Student;
+use Str;
+use Storage;
 
 class UserController extends Controller
 {
@@ -52,24 +54,33 @@ class UserController extends Controller
             'roles' => 'required',
             'image_name' => 'nullable'
         ]);
-        $photo = $request->file('image_name');
-        $image_name = $request->file('image_name')->getClientOriginalName();
-        $photo->storeAs('/images/students', $image_name, 'public');
-        $create = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'email' => $request->email,
-            'role' => $request->roles,
-            'profile_pic' => $request->image_name
-        ]);
-        if ($request->roles === 'siswa') {
+
+        $user = new User;
+        $user->name = $request->name;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->role = $request->roles;
+        $user->password = Hash::make($request->password);
+        if ($request->hasFile('image_name')) {
+            $photo = $request->file('image_name');
+            $image_extension = $photo->extension();
+            $image_name = Str::slug($request->name) . "." . $image_extension;
             $photo->storeAs('/images/faces', $image_name, 'public');
-            Student::create([
-                'name' => $request->name,
-                'description' => '',
-                'image_name' => $request->input('image_name') ? $request->input('image_name') : 'default.png',
-            ]);
+            $user->profile_pic = $image_name;
+        }
+        $user->save();
+        if ($request->roles === 'siswa') {
+            $student = new Student;
+            $student->name = $request->name;
+            $student->description = '';
+            if ($request->hasFile('image_name')) {
+                $photo = $request->file('image_name');
+                $image_extension = $photo->extension();
+                $image_name = Str::slug($request->name) . "." . $image_extension;
+                $photo->storeAs('/images/students', $image_name, 'public');
+            }
+            $student->image_name = $request->hasFile('image_name') ? $image_name : 'default.png';
+            $student->save();
         }
 
         session()->flash('success', "Sukses tambah data user $request->name");
@@ -116,13 +127,20 @@ class UserController extends Controller
             'password' => 'nullable',
             'email' => 'required|email'
         ]);
-
-        $create = User::find($id)->update([
-            'name' => $request->name,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'email' => $request->email
-        ]);
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        if ($request->hasFile('photo')) {
+            Storage::delete('public/images/faces/' . $user->profile_pic);
+            $photo = $request->file('photo');
+            $image_extension = $photo->extension();
+            $image_name = Str::slug($request->name) . "." . $image_extension;
+            $photo->storeAs('/images/faces', $image_name, 'public');
+            $user->profile_pic = $image_name;
+        }
+        $user->save();
 
         session()->flash('success', "Sukses ubah data user $request->name");
         return redirect()->route('admin.users.index');

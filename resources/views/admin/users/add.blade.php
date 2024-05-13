@@ -20,7 +20,7 @@
                     <h4 class="page-title">Pengguna</h4>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Pengguna</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:window.history.back();">Pengguna</a></li>
                         <li class="breadcrumb-item">Tambah</li>
                     </ol>
 
@@ -37,7 +37,8 @@
 
                         <h4 class="mt-0 header-title">Tambah Pengguna</h4>
 
-                        <form action="{{ route('admin.users.store') }}" method="POST" class='mt-3'>
+                        <form action="{{ route('admin.users.store') }}" method="POST" class='mt-3'
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Nama</label>
