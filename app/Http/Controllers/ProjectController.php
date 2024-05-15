@@ -13,18 +13,15 @@ use App\Models\logbooks;
 
 class ProjectController extends Controller
 {
-    public function joinProject(Request $request)
+    public function joinProject($id)
     {
-        $request->validate([
-            'project_id' => 'required'
-        ]);
         $user = auth()->user();
-        $project = Project::find($request->project_id);
+        $project = Project::findOrFail($id);
 
         // Membuat Kelompok baru
         $kelompok = new Kelompok();
         $kelompok->nama_siswa = $user->name;
-        $kelompok->project_id = $request->project_id;
+        $kelompok->project_id = $id;
         $kelompok->save();
 
         // Menambahkan pengguna ke kelompok

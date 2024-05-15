@@ -43,7 +43,7 @@ Route::prefix('/questions')->group(function () {
 });
 Route::prefix('/projects')->group(function () {
     Route::get('/', 'HomeController@projects_index')->name('project.index');
-    Route::post('/', 'ProjectController@joinProject')->name('project.join');
+    Route::post('/join/{id}', 'ProjectController@joinProject')->name('project.join');
     Route::get('/{id}', 'ProjectController@projects_show')->name('project.show');
     Route::post('/{id}', 'ProjectController@projects_tugas')->name('project.tugas');
     Route::post('/{id}/jadwal', 'ProjectController@projects_jadwal')->name('project.jadwal');

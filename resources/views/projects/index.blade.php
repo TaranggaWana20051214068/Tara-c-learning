@@ -76,19 +76,19 @@
                             </div>
                             <div class="modal-body">
                                 @forelse ($projects as $data)
-                                    <div class="card text-primary">
-                                        <div class="card-body">
-                                            <h3 href="{{ route('project.show', ['id' => $data->id]) }}"
-                                                class="card-title">
-                                                {{ $data->judul }}</h3>
-                                            <form action="{{ route('project.join') }}" method="POST" id="myForm">
+                                    <form action="{{ route('project.join', ['id' => $data->id]) }}" method="POST"
+                                        id="myForm">
+                                        <div class="card text-primary">
+                                            <div class="card-body">
+                                                <h3 href="{{ route('project.show', ['id' => $data->id]) }}"
+                                                    class="card-title">
+                                                    {{ $data->judul }}</h3>
                                                 @csrf
                                                 @method('POST')
-                                                <input type="hidden" name="project_id" value="{{ $data->id }}">
                                                 <button type="submit" class="btn btn-primary">Pilih</button>
-                                            </form>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </form>
                                 @empty
                                     <h5>Tidak ada Project yang bisa kamu pilih.</h5>
                                 @endforelse
