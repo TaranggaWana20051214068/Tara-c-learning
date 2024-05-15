@@ -162,17 +162,17 @@ function formAjaxProject(form, direct = null) {
                 }
             },
             error: function (xhr, status, error) {
-                if (xhr.status === 422) {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response && response.error) {
+                var response = JSON.parse(xhr.responseText);
+                if (response && response.error) {
+                    if (xhr.status === 422) {
                         showError("Terdapat Kesalahan : " + response.error);
+                    } else if (xhr.status === 500) {
+                        showError(
+                            "Terjadi kesalahan pada server : " + response.error
+                        );
+                    } else {
+                        showError("Terjadi kesalahan : " + response.error);
                     }
-                } else if (xhr.status === 500) {
-                    showError(
-                        "Terjadi kesalahan pada server : " + response.error
-                    );
-                } else {
-                    showError("Terjadi kesalahan : " + response.error);
                 }
             },
         });

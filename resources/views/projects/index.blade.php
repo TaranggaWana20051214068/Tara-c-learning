@@ -81,8 +81,9 @@
                                             <h3 href="{{ route('project.show', ['id' => $data->id]) }}"
                                                 class="card-title">
                                                 {{ $data->judul }}</h3>
-                                            <form action="{{ route('project.join') }}" method="post" id="myForm">
+                                            <form action="{{ route('project.join') }}" method="POST" id="myForm">
                                                 @csrf
+                                                @method('POST')
                                                 <input type="hidden" name="project_id" value="{{ $data->id }}">
                                                 <button type="submit" class="btn btn-primary">Pilih</button>
                                             </form>
