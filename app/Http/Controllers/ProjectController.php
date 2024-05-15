@@ -9,6 +9,7 @@ use App\Models\Tugas;
 use App\User;
 use Str;
 use App\Models\Attachment;
+use App\Models\logbooks;
 
 class ProjectController extends Controller
 {
@@ -50,8 +51,8 @@ class ProjectController extends Controller
         })->get();
         $attachments = Attachment::whereIn('tugas_id', $taskss->pluck('id'))->get();
         $progress = $taskss->count() > 0 ? ($tasks->count() / $taskss->count()) * 100 : 0;
-
-        return view('projects.detail', compact('project', 'nextTask', 'tasks', 'users', 'attachments', 'progress'));
+        $jadwal = logbooks::where('project_id', $id)->get();
+        return view('projects.detail', compact('project', 'nextTask', 'tasks', 'users', 'attachments', 'progress', 'jadwal'));
     }
 
     public function projects_tugas(Request $request, $id)
@@ -79,6 +80,26 @@ class ProjectController extends Controller
         $attachment->save();
 
         return response()->json(['success' => "Berhasil Menyelesaikan Tugas $tasks->nama_tugas"], 200);
+    }
+    public function projects_jadwal(Request $request, $id)
+    {
+        if (!$request->title) {
+            return response()->json(['error' => 'title tidak boleh kosong'], 422);
+        } else if (!$request->description) {
+            return response()->json(['error' => 'deskripsi tidak boleh kosong'], 422);
+        } else if (!$request->date) {
+            return response()->json(['error' => 'tanggal tidak boleh kosong'], 422);
+        }
+        $userId = auth()->id();
+        $logbook = new logbooks();
+        $logbook->title = $request->title;
+        $logbook->description = $request->description;
+        $logbook->date = $request->date;
+        $logbook->project_id = $id;
+        $logbook->user_id = $userId;
+        $logbook->save();
+
+        return response()->json(['success' => "Berhasil Membuat $request->title"], 200);
     }
 
 

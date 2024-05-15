@@ -46,6 +46,7 @@ Route::prefix('/projects')->group(function () {
     Route::post('/', 'ProjectController@joinProject')->name('project.join');
     Route::get('/{id}', 'ProjectController@projects_show')->name('project.show');
     Route::post('/{id}', 'ProjectController@projects_tugas')->name('project.tugas');
+    Route::post('/{id}/jadwal', 'ProjectController@projects_jadwal')->name('project.jadwal');
 });
 Route::prefix('/quizs')->group(function () {
     Route::get('/', 'QuizController@index')->name('quiz.index');
@@ -92,7 +93,4 @@ Auth::routes();
 // Route::get('/admin', 'admin\HomeController@index')->middleware('role:admin,guru')->name('admin.dashboard');
 // Route::post('/articles', 'admin\ArticleController@url')->name('admin.articles.edit');
 Route::post('/articles', [ArticleController::class, 'url'])->name('admin.articles.url');
-Route::get('/symlink', function () {
-    Artisan::call('storage:link');
-});
 

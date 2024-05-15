@@ -223,20 +223,25 @@
                         $("#file").val("");
                     },
                     error: function(xhr, status, error) {
-                        if (xhr.status === 422) {
-                            var response = JSON.parse(xhr.responseText);
-                            if (response && response.error) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response && response.error) {
+                            if (xhr.status === 422) {
                                 showError("Terdapat Kesalahan : " + response.error);
+                            } else if (xhr.status === 500) {
+                                showError("Terjadi kesalahan pada server : " + response.error);
+                            } else {
+                                showError("Terjadi kesalahan : " + response.error);
                             }
                         }
-                    },
+                    }
                 });
             });
 
             function tambahTugas(judul, deskripsi, jawaban, fileStatus) {
                 var newRow = $("<tr>");
                 newRow.append("<td>" + judul + "</td>");
-                newRow.append("<td>" + deskripsi.join(", ") + "</td>"); // gabungkan deskripsi dengan koma
+                newRow.append("<td>" + deskripsi.join(", ") +
+                    "</td>"); // gabungkan deskripsi dengan koma
                 newRow.append("<td>" + jawaban + "</td>");
                 newRow.append("<td>" + fileStatus + "</td>");
                 $("#table").append(newRow);

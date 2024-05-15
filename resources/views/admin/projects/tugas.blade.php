@@ -34,6 +34,7 @@
                         <h4 class="mt-0 header-title">{{ $projects->judul }}</h4>
                         <p class="text-muted m-b-30 font-14">Berikut adalah daftar seluruh tugas dari project
                             {{ $projects->judul }}</p>
+                        <code>TUGAS MINIMAL 2</code>
                         @if (session('success'))
                             <div class="alert alert-success d-flex align-items-center" role="alert">
                                 <i class="bi-lg bi-check-circle flex-shrink-0 me-2"></i>

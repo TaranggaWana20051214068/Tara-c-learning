@@ -29,7 +29,7 @@
                         <h4 class="mt-0 header-title">Update Project</h4>
 
                         <form action="{{ route('admin.projects.update', ['project' => $project->id]) }}" method="POST"
-                            class='mt-3'>
+                            class='mt-3' enctype="multipart/form-data">
                             @csrf
                             @method('put')
                             <div class="form-group row">
@@ -54,6 +54,25 @@
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="" class='col-md-2 col-form-label'>Thumbnail</label>
+                                <div class="col-md-10">
+                                    <input type="file" class="form-control form-control-sm" id="formFileThumnail"
+                                        name='thumbnail'>
+                                    <code>Thumbnail Harus Berupa Gambar. </code>
+                                    <br>
+                                    @error('thumbnail')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                    @if ($project->thumbnail)
+                                        <img src="{{ Storage::url('images/projects/' . $project->thumbnail) }}"
+                                            alt="current image" class="img-thumbnail" style="max-width: 7rem"
+                                            srcset="">
+                                    @endif
                                 </div>
                             </div>
                             <button type="submit" class='btn btn-primary float-right'>Submit</button>

@@ -57,8 +57,9 @@
                             <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Thumbnail</label>
                                 <div class="col-md-10">
-                                    <input type="file" class="form-control form-control-sm" id="formFileThumnail"
-                                        name='thumbnail'>
+                                    <input type="file"
+                                        class="form-control @error('thumbnail') is-invalid @enderror form-control-sm"
+                                        id="formFileThumnail" name='thumbnail'>
                                     <code>Thumbnail Harus Berupa Gambar. </code>
                                     @error('thumbnail')
                                         <span class="invalid-feedback" role="alert">

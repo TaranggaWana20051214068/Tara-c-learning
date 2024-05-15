@@ -166,13 +166,46 @@ function formAjaxProject(form, direct = null) {
                     var response = JSON.parse(xhr.responseText);
                     if (response && response.error) {
                         showError("Terdapat Kesalahan : " + response.error);
-                        $("#error")
-                            .html(
-                                '<i class="bi bi-exclamation-circle"></i> Terdapat Kesalahan: ' +
-                                    response.error
-                            )
-                            .show();
                     }
+                } else if (xhr.status === 500) {
+                    showError(
+                        "Terjadi kesalahan pada server : " + response.error
+                    );
+                } else {
+                    showError("Terjadi kesalahan : " + response.error);
+                }
+            },
+        });
+    });
+}
+function formAjaxProjectTab(form) {
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(form);
+        $.ajax({
+            url: form.action,
+            method: form.method,
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                sweetNotButton("success", response.success);
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 422) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response && response.error) {
+                        showError("Terdapat Kesalahan : " + response.error);
+                    }
+                } else if (xhr.status === 500) {
+                    showError(
+                        "Terjadi kesalahan pada server : " + response.error
+                    );
+                } else {
+                    showError("Terjadi kesalahan : " + response.error);
                 }
             },
         });

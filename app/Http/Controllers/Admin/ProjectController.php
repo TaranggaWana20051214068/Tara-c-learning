@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Tugas;
 use App\Models\Attachment;
 use App\Models\Kelompok;
+use storage;
+use Str;
 
 class ProjectController extends Controller
 {
@@ -62,11 +64,18 @@ class ProjectController extends Controller
         $request->validate([
             'judul' => 'required',
             'deskripsi' => 'required',
+            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         $project = new Project();
         $project->judul = $request->judul;
         $project->deskripsi = $request->deskripsi;
+
+        $photo = $request->file('thumbnail');
+        $image_extension = $photo->extension();
+        $image_name = Str::slug($request->judul) . "." . $image_extension;
+        $photo->storeAs('/images/projects', $image_name, 'public');
+        $project->thumbnail = $image_name;
         $project->save();
 
         session()->flash('success', "Sukses tambah Project $request->judul");
@@ -95,12 +104,20 @@ class ProjectController extends Controller
         $request->validate([
             'judul' => 'required',
             'deskripsi' => 'required',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
-        $create = Project::find($id)->update([
-            'judul' => $request->judul,
-            'deskripsi' => $request->deskripsi,
-        ]);
+        $project = Project::find($id);
+        $project->judul = $request->judul;
+        $project->deskripsi = $request->deskripsi;
+        if ($request->hasFile('thumbnail')) {
+            Storage::delete('public/images/projects/' . $project->thumbnail);
+            $photo = $request->file('thumbnail');
+            $image_extension = $photo->extension();
+            $image_name = Str::slug($request->judul) . "." . $image_extension;
+            $photo->storeAs('/images/projects', $image_name, 'public');
+            $project->thumbnail = $image_name;
+        }
+        $project->save();
 
         session()->flash('success', "Sukses update project $request->judul");
         return redirect()->route('admin.projects.index');

@@ -28,13 +28,15 @@
 
                         <h4 class="mt-0 header-title">Tambah Project</h4>
 
-                        <form action="{{ route('admin.projects.store') }}" method="POST" class='mt-3'>
+                        <form action="{{ route('admin.projects.store') }}" method="POST" class='mt-3'
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Judul</label>
                                 <div class="col-md-10">
                                     <input type="text" name="judul"
-                                        class='form-control @error('judul') is-invalid @enderror'>
+                                        class='form-control @error('judul') is-invalid @enderror'
+                                        value="{{ old('judul') }}">
                                     @error('judul')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -45,7 +47,7 @@
                             <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Deskripsi</label>
                                 <div class="col-md-10">
-                                    <textarea name="deskripsi" id="" rows="5" class="form-control  @error('deskripsi') is-invalid @enderror"></textarea>
+                                    <textarea name="deskripsi" id="" rows="5" class="form-control  @error('deskripsi') is-invalid @enderror">{{ old('deskripsi') }}</textarea>
                                     @error('deskripsi')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -53,55 +55,20 @@
                                     @enderror
                                 </div>
                             </div>
-                            {{-- <h4 class="mt-0 header-title">Tugas<button type="button" class='btn btn-primary float-right'
-                                    data-bs-toggle="modal" data-bs-target="#modalEx">Tambah Tugas</button></h4>
-                            <br>
-                            <div class="modal" tabindex="-1" id="modalEx">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Tambah Tugas</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="recipient-name" class="col-form-label">Judul:</label>
-                                                <input type="text" class="form-control" id="recipient-name">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="message-text" class="col-form-label">Deskripsi:</label>
-                                                <textarea class="form-control" id="message-text"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="button" id="btnSimpan" class="btn btn-primary">Simpan</button>
-                                        </div>
-                                    </div>
+                            <div class="form-group row">
+                                <label for="" class='col-md-2 col-form-label'>Thumbnail</label>
+                                <div class="col-md-10">
+                                    <input type="file"
+                                        class="form-control  @error('thumbnail') is-invalid @enderror form-control-sm"
+                                        id="formFileThumnail" name='thumbnail' value="{{ old('thumbnail') }}">
+                                    <code>Thumbnail Harus Berupa Gambar. </code>
+                                    @error('thumbnail')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
-                            @error('nama_tugas')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                            @error('deskripsi_tugas')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th width="30%">Judul</th>
-                                        <th width="70%">Deskripsi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table">
-                                </tbody>
-                            </table> --}}
                             <button type="submit" class='btn btn-primary float-right'>Submit</button>
                         </form>
 
