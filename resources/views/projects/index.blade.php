@@ -109,8 +109,38 @@
 @endsection
 @section('script-bottom')
 <script>
-    var form = document.getElementById('myForm');
-    formAjaxProject(form, "{{ route('project.index') }}");
+    $(document).ready(function() {
+        var form = document.getElementById('myForm');
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            var formData = new FormData(form);
+            $.ajax({
+                url: form.action,
+                method: form.method,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    sweetNotButton("success", response.success);
+                    setTimeout(function() {
+                        window.location.href = "{{ route('project.index') }}";
+                    }, 1000);
+                },
+                error: function(xhr, status, error) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response && response.error) {
+                        if (xhr.status === 422) {
+                            showError("Terdapat Kesalahan : " + response.error);
+                        } else if (xhr.status === 500) {
+                            showError("Terjadi kesalahan pada server : " + response.error);
+                        } else {
+                            showError("Terjadi kesalahan : " + response.error);
+                        }
+                    }
+                }
+            });
+        });
+    });
 </script>
 @if (session('success'))
     <script>
