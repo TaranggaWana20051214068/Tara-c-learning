@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Project;
 
 class Tugas extends Model
 {
@@ -18,7 +19,7 @@ class Tugas extends Model
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(Project::class);
     }
 
     public function attachments()

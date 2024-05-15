@@ -196,7 +196,7 @@
                                                 <p>{{ $nextTask->deskripsi }}</p>
                                                 <form id="TugasForm"
                                                     action="{{ route('project.tugas', ['id' => $nextTask->id]) }}"
-                                                    method="post">
+                                                    method="post" enctype="multipart/form-data">
                                                     @csrf
                                                     <input type="file" name="file" id="file"
                                                         class="form-control @error('file') is-invalid @enderror"
@@ -358,19 +358,14 @@
     </section>
 @endsection
 @section('script-bottom')
-    @if ($nextTask)
-        <script>
-            var form = document.getElementById('TugasForm');
-            formAjaxProjectTab(form);
-        </script>
-    @endif
-    <script>
-        formJadwal = document.getElementById('formJadwal');
-        formAjaxProjectTab(formJadwal);
-    </script>
     @if (session('success'))
         <script>
             $.SweetAlert.showSucc("{{ session('success') }}");
+        </script>
+    @endif
+    @if ($errors->has('file') || $errors->has('title') || $errors->has('description') || $errors->has('date'))
+        <script>
+            $.SweetAlert.showErr("Kesalahan pengisian silahkan ulangi.");
         </script>
     @endif
     @if ($errors->has('judul') || $errors->has('deskripsi') || $errors->has('deadline'))

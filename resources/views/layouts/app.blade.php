@@ -28,7 +28,6 @@
     <link href="{{ URL::asset('assets/css/icons.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/css/app.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/plugins/sweet-alert2/sweetalert2.min.css') }}" rel="stylesheet">
-    <script src="{{ URL::asset('assets/js/jquery.min.js') }}"></script>
     @stack('styles')
 </head>
 

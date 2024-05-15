@@ -26,7 +26,8 @@ class ProjectController extends Controller
 
         // Menambahkan pengguna ke kelompok
         $kelompok->users()->attach($user->id);
-        return response()->json(['success' => "Berhasil gabung kelas $project->judul"], 200);
+        session()->flash('success', 'Berhasil gabung kelas ' . $project->judul);
+        return redirect()->back();
     }
 
     public function projects_show($id)
@@ -55,18 +56,16 @@ class ProjectController extends Controller
     public function projects_tugas(Request $request, $id)
     {
         $request->validate([
-            'file' => 'required|file',
+            'file' => [
+                'required',
+                'file',
+                'max:10240'
+            ],
         ]);
-        $filename = $request->file('file')->getClientOriginalName();
-        if (preg_match('/[@\-]/', $filename)) {
-            return response()->json(['error' => 'Nama file tidak boleh mengandung karakter @ atau -'], 422);
-        }
-        if ($request->file('file')->getSize() > 10 * 1024 * 1024) {
-            return response()->json(['error' => 'File terlalu besar. Ukuran file maksimal adalah 10MB'], 422);
-        }
-
         $tasks = Tugas::findOrFail($id);
         $files = $request->file('file');
+        $image_extension = $files->extension();
+        $filename = $tasks->project->judul . $id . "." . $image_extension;
         $files->storeAs('/images/projects/tugas', $filename, 'public');
 
         // Membuat instance baru dari model Attachment
@@ -75,18 +74,16 @@ class ProjectController extends Controller
         $attachment->user_id = auth()->id();
         $attachment->tugas_id = $tasks->id;
         $attachment->save();
-
-        return response()->json(['success' => "Berhasil Menyelesaikan Tugas $tasks->nama_tugas"], 200);
+        session()->flash('success', 'Berhasil Menyelesaikan Tugas ' . $tasks->nama_tugas);
+        return redirect()->back();
     }
     public function projects_jadwal(Request $request, $id)
     {
-        if (!$request->title) {
-            return response()->json(['error' => 'title tidak boleh kosong'], 422);
-        } else if (!$request->description) {
-            return response()->json(['error' => 'deskripsi tidak boleh kosong'], 422);
-        } else if (!$request->date) {
-            return response()->json(['error' => 'tanggal tidak boleh kosong'], 422);
-        }
+        $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'date' => 'required',
+        ]);
         $userId = auth()->id();
         $logbook = new logbooks();
         $logbook->title = $request->title;
@@ -95,8 +92,8 @@ class ProjectController extends Controller
         $logbook->project_id = $id;
         $logbook->user_id = $userId;
         $logbook->save();
-
-        return response()->json(['success' => "Berhasil Membuat $request->title"], 200);
+        session()->flash('success', 'Berhasil Membuat ' . $request->title);
+        return redirect()->back();
     }
 
 
