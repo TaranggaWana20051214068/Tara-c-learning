@@ -115,7 +115,10 @@
                                                                     </div>
                                                                     <div class="col-md-12">
                                                                         <h5><i class="bi bi-journal-code"></i> File:</h5>
-                                                                        <p>{{ $attachment->file_name }}</p>
+                                                                        <a href="{{ Storage::url('images/projects/tugas/' . $attachment->file_name) }}"
+                                                                            target="_blank">
+                                                                            <i class="bi bi-file-earmark-medical"></i>
+                                                                        </a>
                                                                     </div>
                                                                     <div class="col-md-12">
                                                                         <h5><i class="bi bi-file-earmark-code"></i> waktu:
@@ -158,7 +161,8 @@
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-primary">Selesai</button>
+                                                            <button type="submit"
+                                                                class="btn btn-primary">Selesai</button>
                                                         </div>
                                                     </form>
                                                 </div>
