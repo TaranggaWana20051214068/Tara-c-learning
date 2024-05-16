@@ -65,7 +65,7 @@ class ProjectController extends Controller
         $tasks = Tugas::findOrFail($id);
         $files = $request->file('file');
         $image_extension = $files->extension();
-        $filename = $tasks->project->judul . $id . "." . $image_extension;
+        $filename = $id . "-" . $tasks->project->judul . "." . $image_extension;
         $files->storeAs('/images/projects/tugas', $filename, 'public');
 
         // Membuat instance baru dari model Attachment
