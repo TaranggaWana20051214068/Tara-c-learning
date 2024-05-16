@@ -118,6 +118,7 @@
                                                                         <a href="{{ Storage::url('images/projects/tugas/' . $attachment->file_name) }}"
                                                                             target="_blank">
                                                                             <i class="bi bi-file-earmark-medical"></i>
+                                                                            {{ $attachment->file_name }}
                                                                         </a>
                                                                     </div>
                                                                     <div class="col-md-12">
