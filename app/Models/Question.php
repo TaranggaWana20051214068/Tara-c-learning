@@ -16,6 +16,7 @@ class Question extends Model
         'article_id',
         'judul',
         'deskripsi',
+        'bahasa',
     ];
 
 

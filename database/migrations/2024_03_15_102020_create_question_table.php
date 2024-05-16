@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->string('judul');
             $table->text('deskripsi');
+            $table->string('bahasa');
             $table->foreignId('author_id')->nullable()->constrained('users');
             $table->foreignId('article_id')->nullable()->constrained();
             $table->timestamps();

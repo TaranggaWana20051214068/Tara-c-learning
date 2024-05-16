@@ -15,7 +15,7 @@ class SoalController extends Controller
     public function questions_show($id)
     {
         $question = Question::findOrFail($id);
-        $link = 'https://onecompiler.com/embed/php?listenToEvents=true&hideLanguageSelection=true&hideNew=true&hideNewFileOption=true&disableCopyPaste=true&hideTitle=true&codeChangeEvent=true&hideStdin=true';
+        $link = 'https://onecompiler.com/embed/' . $question->bahasa . '?listenToEvents=true&hideLanguageSelection=true&hideNew=true&hideNewFileOption=true&disableCopyPaste=true&hideTitle=true&codeChangeEvent=true&hideStdin=true';
         return view('soal.detail', compact('question', 'link'));
     }
     public function questions_code(Request $request, $id)

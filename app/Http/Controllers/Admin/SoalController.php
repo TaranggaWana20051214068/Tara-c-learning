@@ -49,11 +49,13 @@ class SoalController extends Controller
             'judul' => 'required',
             'deskripsi' => 'required',
             'materi' => 'required',
+            'bahasa' => 'required',
         ]);
 
         $create = Question::create([
             'judul' => $request->judul,
-            'deskripsi' => $request->judul,
+            'deskripsi' => $request->deskripsi,
+            'bahasa' => $request->bahasa,
             'author_id' => Auth::user()->id,
             'article_id' => $request->materi,
         ]);
@@ -72,7 +74,12 @@ class SoalController extends Controller
     {
         $question = Question::findOrFail($id);
         $articles = Article::orderBy('id', 'asc')->get();
-        return view('admin.questions.edit', compact('question', 'articles'));
+        $bahasa = [
+            'html',
+            'php',
+            'mysql'
+        ];
+        return view('admin.questions.edit', compact('question', 'articles', 'bahasa'));
     }
     /**
      * Update the specified resource in storage.
@@ -87,11 +94,13 @@ class SoalController extends Controller
             'judul' => 'required',
             'deskripsi' => 'required',
             'materi' => 'required',
+            'bahasa' => 'required',
         ]);
 
         $create = Question::find($id)->update([
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
+            'bahasa' => $request->bahasa,
             'article_id' => $request->materi,
         ]);
 

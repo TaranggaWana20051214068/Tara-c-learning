@@ -75,6 +75,25 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="bahasa" class='col-md-2 col-form-label'>Bahasa Pemprograman</label>
+                                <div class="col-md-10">
+                                    <select name="bahasa" id="bahasa"
+                                        class="form-control @error('bahasa') is-invalid @enderror">
+                                        <option value="">Pilih bahasa</option>
+                                        @foreach ($bahasa as $item)
+                                            <option
+                                                value="{{ $item }}"{{ $item == $question->bahasa ? 'selected' : '' }}>
+                                                {{ $item }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('bahasa')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
                             <button type="submit" class='btn btn-primary float-right'>Submit</button>
                         </form>
 

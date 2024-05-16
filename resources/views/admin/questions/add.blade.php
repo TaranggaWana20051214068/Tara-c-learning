@@ -70,6 +70,23 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="" class='col-md-2 col-form-label'>Bahasa Pemrograman</label>
+                                <div class="col-md-10">
+                                    <select name="bahasa" id="bahasa"
+                                        class="form-control @error('bahasa') is-invalid @enderror">
+                                        <option value="" selected disabled>Pilih bahasa</option>
+                                        <option value="php">php</option>
+                                        <option value="html">HTML</option>
+                                        <option value="mysql">MYSQL</option>
+                                    </select>
+                                    @error('bahasa')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
                             <button type="submit" class='btn btn-primary float-right'>Submit</button>
                         </form>
 

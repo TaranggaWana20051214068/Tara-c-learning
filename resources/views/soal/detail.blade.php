@@ -33,7 +33,8 @@
                     <div class="card-stacked">
                         <div class="card-content">
                             <p class="card-text" style="margin-left: 1.6rem">{{ $question->deskripsi }}</p>
-                            <iframe id="oc-editor" frameBorder="0" height="400px" width="100%"
+                            <div id="loader" class="custom-loader"></div>
+                            <iframe onload="removeLoader()" id="oc-editor" frameBorder="0" height="400px" width="100%"
                                 src="{{ $link }}"></iframe>
                         </div>
                         <div class="card-action">
@@ -58,7 +59,14 @@
             $.SweetAlert.showErr("{{ session('error') }}");
         </script>
     @endif
-
+    <script>
+        function removeLoader() {
+            $("#loader").fadeOut(function() {
+                // fadeOut complete. Remove the loading div
+                $("#loader").remove(); //makes page more lightweight 
+            });
+        }
+    </script>
     <script>
         var btn = document.getElementById('btn');
         window.onmessage = function(e) {
