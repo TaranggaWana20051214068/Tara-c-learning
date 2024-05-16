@@ -154,7 +154,7 @@
                             {{-- TUGAS SELESAI END --}}
 
                             {{-- TUGAS BARU START --}}
-                            @if ($nextTask)
+                            @if ($task->nilai)
                                 <a class="modal-trigger" href="#modalProject{{ $nextTask->id }}" data-bs-toggle="modal">
                                     <div class="card">
                                         <div class="card-body row row-cols-md-2">

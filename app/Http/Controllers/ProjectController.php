@@ -40,7 +40,7 @@ class ProjectController extends Controller
             return $task->attachments->isNotEmpty();
         });
         $incompleteTasks = $taskss->filter(function ($task) {
-            return $task->nilai->isEmpty();
+            return $task->attachments->isEmpty();
         });
         $nextTask = $incompleteTasks->first();
         $kelompok = $project->kelompok;

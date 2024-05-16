@@ -168,6 +168,7 @@ class QuizController extends Controller
     public function destroy($id)
     {
         $quiz = QuizQuestion::findOrFail($id);
+        Storage::delete('public/images/quizs/' . $quiz->file);
         $quiz->choices()->delete();
         $quiz->delete();
 

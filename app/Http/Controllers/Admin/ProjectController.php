@@ -132,6 +132,7 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         $subject = Project::findOrFail($id);
+        Storage::delete('public/images/projects/' . $subject->thumbnail);
         $subject->delete();
 
         session()->flash('success', 'Sukses Menghapus Data');
@@ -182,6 +183,9 @@ class ProjectController extends Controller
             return redirect()->back();
         } else {
             $tugas = Tugas::findOrFail($id);
+            foreach ($tugas->attachments as $attachment) {
+                Storage::delete('public/images/projects/tugas/' . $attachment->file_name);
+            }
             $tugas->delete();
             session()->flash('success', 'Sukses Menghapus Data');
             return redirect()->back();
