@@ -20,9 +20,10 @@ use App\Http\Controllers\Admin\ArticleController;
 
 Auth::routes(['register' => false]);
 
-Route::get('/', function () {
-    return auth()->check() ? redirect()->route('home') : redirect()->route('login');
-});
+// Route::get('/', function () {
+//     return auth()->check() ? redirect()->route('home') : redirect()->route('login');
+// });
+Route::get('/', 'HomeController@index')->name('home');
 
 
 Route::prefix('students')->group(function () {
@@ -80,6 +81,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     });
 });
 
+Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 // Route::group(['middleware' => ['auth']], function () {
 //     Route::get('/home', 'HomeController@index')->name('home');
@@ -88,7 +90,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //     Route::prefix('/projects');
 // });
 
-Auth::routes();
 
 // Route::get('/admin', 'admin\HomeController@index')->middleware('role:admin,guru')->name('admin.dashboard');
 // Route::post('/articles', 'admin\ArticleController@url')->name('admin.articles.edit');

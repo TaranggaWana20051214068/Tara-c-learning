@@ -23,7 +23,7 @@
                 @endif
                 <form class="form-horizontal m-t-30" action="{{ route('login') }}" method="POST">
                     @csrf
-                    @if (session('timeout'))
+                    @if (session('lifetime'))
                         <div class="alert alert-danger" role="alert">
                             Waktu login anda expired silahkan login kembali.
                         </div>
@@ -43,7 +43,8 @@
                     <div class="form-group row m-t-20">
                         <div class="col-6">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="customControlInline">
+                                <input type="checkbox" class="custom-control-input" id="customControlInline"
+                                    name="remember">
                                 <label class="custom-control-label" for="customControlInline">Remember me</label>
                             </div>
                         </div>
