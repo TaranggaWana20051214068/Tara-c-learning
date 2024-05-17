@@ -349,3 +349,23 @@ footer {
     }
 }
 /* end loader */
+/* card soal */
+
+.btn-soal {
+    font-family: monospace;
+    font-size: 1.5rem;
+    color: #443199;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #443199;
+    background: #fafafa;
+    box-shadow: 3px 3px #443199;
+    cursor: pointer;
+    margin: 35px 0;
+}
+
+.btn-soal:active {
+    box-shadow: none;
+    transform: translate(3px, 3px);
+}

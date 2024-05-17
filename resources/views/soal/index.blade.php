@@ -19,14 +19,8 @@
         <div class="section-body">
             <div class="row row-cols-1 row-cols-md-2 g-1">
                 @foreach ($questions as $question)
-                    <div class="card text-primary h-100">
-                        <div class="card-body row row-cols-md-2">
-                            <h3 href="{{ route('soal.show', ['id' => $question->id]) }}" class="card-title">
-                                {{ $question->judul }}</h3>
-                            <a class="btn btn-primary"
-                                href="{{ route('soal.show', ['id' => $question->id]) }}">Mulai</a>
-                        </div>
-                    </div>
+                    <a class="btn-soal text-center text-decoration-none"
+                        href="{{ route('soal.show', ['id' => $question->id]) }}">{{ $question->judul }}</a>
                 @endforeach
                 <div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" id="modalNilai"
                     aria-hidden="true">
