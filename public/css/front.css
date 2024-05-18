@@ -364,8 +364,75 @@ footer {
     cursor: pointer;
     margin: 35px 0;
 }
-
 .btn-soal:active {
     box-shadow: none;
     transform: translate(3px, 3px);
+}
+/* this card is inspired form this - https://georgefrancis.dev/ */
+
+.card-soals {
+    --border-radius: 0.75rem;
+    --primary-color: #7a57fa;
+    --secondary-color: #3c3852;
+    width: 80%;
+    font-family: "Arial";
+    padding: 1rem;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    background: #fafafa;
+    box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 3%);
+    position: relative;
+}
+
+.card-soals > * + * {
+    margin-top: 1.1em;
+}
+
+.card-soals .card__content {
+    color: var(--secondary-color);
+    font-size: 0.86rem;
+}
+
+.card-soals .card__title {
+    padding: 0;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.card-soals .card__date {
+    color: #6e6b80;
+    font-size: 0.8rem;
+}
+
+.card-soals .card__arrow {
+    position: absolute;
+    background: var(--primary-color);
+    padding: 0.4rem;
+    border-top-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    bottom: 0;
+    right: 0;
+    transition: 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-soals svg {
+    transition: 0.2s;
+}
+
+/* hover */
+.card-soals:hover .card__title {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.card-soals:hover .card__arrow {
+    background: #111;
+}
+
+.card-soals:hover .card__arrow svg {
+    transform: translateX(3px);
 }

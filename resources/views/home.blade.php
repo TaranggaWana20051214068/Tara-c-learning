@@ -66,7 +66,7 @@
                 @endforeach
             </div>
             <div class='text-right mt-5'>
-                <a href="{{ route('student.index') }}">Lihat Selengkapnya <i class='bi bi-chevron-right'></i></a>
+                <a href="{{ route('article.index') }}">Lihat Selengkapnya <i class='bi bi-chevron-right'></i></a>
             </div>
         </div>
     </div>
