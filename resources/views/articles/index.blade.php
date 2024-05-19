@@ -14,7 +14,7 @@
         </div>
         <div class="section-body">
             <div class="row row-cols-1 row-cols-md-3 g-4 text-center ">
-                @foreach ($articles as $article)
+                @forelse ($articles as $article)
                     <div class="col">
                         <a href="{{ route('article.show', ['id' => $article->id]) }}">
                             <article class="article-wrapper">
@@ -47,7 +47,9 @@
                             </article>
                         </a>
                     </div>
-                @endforeach
+                @empty
+                    <h5>Tidak ada materi yang tersedia.</h5>
+                @endforelse
             </div>
             <div class="paginate float-right mt-2">
                 {{ $articles->links() }}

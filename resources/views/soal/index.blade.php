@@ -18,7 +18,7 @@
         </div>
         <div class="section-body">
             <div class="row row-cols-1 row-cols-md-2 d-flex flex-wrap">
-                @foreach ($questions as $question)
+                @forelse ($questions as $question)
                     <a class="text-decoration-none  d-flex justify-content-center"
                         href="{{ route('soal.show', ['id' => $question->id]) }}">
                         <div class="card-soals">
@@ -37,7 +37,9 @@
                             </div>
                         </div>
                     </a>
-                @endforeach
+                @empty
+                    <h5>Tidak ada soal tersedia.</h5>
+                @endforelse
                 <div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" id="modalNilai"
                     aria-hidden="true">
                     <div class="modal-dialog">
