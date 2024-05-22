@@ -168,6 +168,13 @@ class QuizController extends Controller
     public function destroy($id)
     {
         $quiz = QuizQuestion::findOrFail($id);
+
+        // Hapus semua jawaban pengguna yang terkait dengan pilihan yang akan dihapus
+        UserAnswer::whereHas('choice', function ($query) use ($quiz) {
+            $query->where('q_question_id', $quiz->id);
+        })->delete();
+
+        // Setelah itu, hapus pilihan dan pertanyaan
         Storage::delete('public/images/quizs/' . $quiz->file);
         $quiz->choices()->delete();
         $quiz->delete();
@@ -175,5 +182,6 @@ class QuizController extends Controller
         session()->flash('success', 'Sukses Menghapus Data');
         return redirect()->back();
     }
+
 
 }
