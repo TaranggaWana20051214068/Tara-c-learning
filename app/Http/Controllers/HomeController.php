@@ -98,7 +98,9 @@ class HomeController extends Controller
     public function profile()
     {
         $user = Auth::user();
-        return view('profile', compact('user'));
+        $pesan = 'is Coming Soon.';
+        return view('errors.503', compact('pesan'));
+        // return view('profile', compact('user'));
     }
     public function questions_index()
     {

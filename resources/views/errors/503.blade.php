@@ -7,23 +7,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="{{ Storage::url('images/logo/favicon_c_new.png') }}">
     <link rel="stylesheet" href="/css/404_style.css">
-    <title>404</title>
+    <title>101</title>
 </head>
 
 <body>
     <div class="content">
         <canvas class="snow" id="snow"></canvas>
         <div class="main-text">
-            @if ($exception->getMessage() == null)
-                <h1>Upss.<br>That page can't be accessed.</h1>
-            @else
-                <h1>Upss.<br>{{ $exception->getMessage() }}</h1>
-            @endif
+            <h1>Our Website {{ $pesan }}<br>Sorry, we`re working hard to finishing.</h1>
             <a href="{{ url('/') }}" class="home-link">Hitch a ride back home.</a>
         </div>
         <div class="ground">
             <div class="mound">
-                <div class="mound_text">403</div>
+                <div class="mound_text">101</div>
                 <div class="mound_spade"></div>
             </div>
         </div>

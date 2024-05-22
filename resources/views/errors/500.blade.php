@@ -251,7 +251,6 @@
             text-decoration: none;
 
             opacity: 0.6;
-            border-bottom: 1px dashed transparentize(var(--col-fg), 0.5);
 
             &:hover {
                 opacity: 1;
@@ -262,8 +261,10 @@
 
 <body class="loading">
     <h1>500</h1>
-    <h2>Unexpected Error <b>:(</b> <br>please contact admin.</h2>
-    <a href="{{ url('/') }}" class="home-link">Back</a>
+    <h2>Unexpected Error <b>:(</b> <br>please contact admin. <br> <a href="{{ url('/') }}"
+            class="home-link">Back</a>
+    </h2>
+
     <div class="gears">
         <div class="gear one">
             <div class="bar"></div>

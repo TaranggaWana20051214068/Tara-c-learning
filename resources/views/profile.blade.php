@@ -13,10 +13,10 @@
                 @if (!auth()->user()->profile_pic)
                     <i class="bi bi-person" style="font-size: 10rem; color:grey;"></i>
                 @else
-                    <img src="{{ URL::asset('assets/images/faces/' . auth()->user()->profile_pic . '') }}">
+                    <img src="{{ Storage::url('images/faces/' . auth()->user()->profile_pic) }}">
                 @endif
                 <br>
-                <a href="" class="btn btn-primary" style="margin-top: 1rem;">Edit profile <i
+                <a href="{{ route('profile.edit') }}" class="btn btn-primary" style="margin-top: 1rem;">Edit profile <i
                         class="bi bi-pencil-square"></i></a>
             </div>
             <div class="col-md-9 sm:mt-5">
