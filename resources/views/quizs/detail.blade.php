@@ -28,7 +28,7 @@
                 <div class="card text-primary h-100">
                     <div class="card-body row">
                         @foreach ($data as $index => $item)
-                            <a class="btn btn-outline-primary" style="max-width: 50px;max-height:40px;margin:5px;"
+                            <a class="btn btn-outline-primary" style="max-width: 50px; max-height:40px; margin:5px;"
                                 href="#" onclick="showQuestion({{ $index }})">{{ $item['no_urut'] }}</a>
                         @endforeach
                     </div>
@@ -41,6 +41,7 @@
                             id="form">
                             @csrf
                             @method('post')
+                            <input type="hidden" name="data" value="{{ json_encode($data) }}">
                             @foreach ($data as $index => $item)
                                 <div class="question" id="question-{{ $index }}"
                                     style="{{ $index > 0 ? 'display: none;' : '' }}">
@@ -53,7 +54,9 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
                                                 name="answers[{{ $item['id'] }}]" value="{{ $choice['id'] }}"
-                                                id="flexRadioDefault{{ $choiceIndex + 1 }}">
+                                                id="flexRadioDefault{{ $choiceIndex + 1 }}"
+                                                data-question-index="{{ $index }}"
+                                                onchange="updateButtonClass(this)">
                                             <label class="form-check-label text-secondary"
                                                 for="flexRadioDefault{{ $choiceIndex + 1 }}">
                                                 {{ $choice['choice_text'] }}
@@ -78,6 +81,17 @@
 <script>
     var currentQuestion = 0;
     var totalQuestions = {{ count($data) }};
+    var buttons = document.querySelectorAll('.btn-outline-primary');
+
+    function updateButtonActivity() {
+        buttons.forEach(function(button, index) {
+            if (index === currentQuestion) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
 
     function showQuestion(index) {
         // Sembunyikan semua pertanyaan
@@ -88,7 +102,17 @@
         // Tampilkan pertanyaan yang dipilih
         document.getElementById('question-' + index).style.display = 'block';
         currentQuestion = index;
+        updateButtonActivity();
     }
+
+    buttons.forEach(function(button, index) {
+        button.addEventListener('click', function() {
+            showQuestion(index);
+        });
+    });
+
+    // Membuat tombol pertama menjadi aktif saat dimulai
+    updateButtonActivity();
 
     document.querySelectorAll('.next-button').forEach(function(button) {
         button.addEventListener('click', function() {
@@ -97,6 +121,19 @@
             }
         });
     });
+
+    function updateButtonClass(radioButton) {
+        var questionIndex = radioButton.getAttribute('data-question-index');
+        var questionButton = document.querySelector('.card-body').children[questionIndex];
+        if (radioButton.checked) {
+            questionButton.classList.remove('btn-outline-primary');
+            questionButton.classList.add('btn-primary');
+        } else {
+            questionButton.classList.remove('btn-primary');
+            questionButton.classList.add('btn-outline-primary');
+        }
+    }
+
     var form = document.getElementById('form');
     formAjaxProject(form, "{{ route('quiz.index') }}");
 </script>

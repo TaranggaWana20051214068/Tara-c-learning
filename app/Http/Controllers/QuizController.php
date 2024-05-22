@@ -53,7 +53,26 @@ class QuizController extends Controller
     }
     public function add(Request $request)
     {
+        $data = json_decode($request->input('data'), true);
         $answers = $request->input('answers');
+
+        if (is_null($answers)) {
+            // Jika ada pertanyaan yang tidak dijawab, kembalikan respons dengan kode status 422
+            return response()->json(['error' => 'Harap jawab semua pertanyaan.'], 422);
+        }
+        // Periksa apakah semua pertanyaan telah dijawab
+        $allQuestionsAnswered = true;
+        foreach ($data as $item) {
+            if (!array_key_exists($item['id'], $answers)) {
+                $allQuestionsAnswered = false;
+                break;
+            }
+        }
+
+        if (!$allQuestionsAnswered) {
+            // Jika ada pertanyaan yang tidak dijawab, kembalikan respons dengan kode status 422
+            return response()->json(['error' => 'Harap jawab semua pertanyaan.'], 422);
+        }
 
         foreach ($answers as $questionId => $choiceId) {
             // Simpan jawaban pengguna ke database
@@ -67,6 +86,7 @@ class QuizController extends Controller
         // Redirect pengguna ke halaman berikutnya
         return response()->json(['success' => 'Kamu Berhasil Menyelesaikan Quiz.'], 200);
     }
+
 
 
 }
