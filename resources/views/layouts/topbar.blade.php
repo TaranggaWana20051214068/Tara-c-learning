@@ -24,8 +24,7 @@
                                      @if (!auth()->user()->profile_pic)
                                          <img src="{{ URL::asset('assets/images/faces/profile.gif') }}">
                                      @else
-                                         <img
-                                             src="{{ Storage::url('assets/images/faces/' . auth()->user()->profile_pic) }}">
+                                         <img src="{{ Storage::url('images/faces/' . auth()->user()->profile_pic) }}">
                                      @endif
                                  </div>
                              </div>
