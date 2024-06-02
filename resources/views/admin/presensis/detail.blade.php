@@ -40,7 +40,6 @@
                                 </form>
                             </div>
                         </div>
-                        </form>
                         @if (session('success'))
                             <div class="alert alert-success d-flex align-items-center" role="alert">
                                 <i class="bi-lg bi-check-circle flex-shrink-0 me-2"></i>
