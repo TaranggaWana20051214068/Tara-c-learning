@@ -80,7 +80,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::resource('/articles', 'ArticleController');
         Route::resource('/questions', 'SoalController');
         Route::resource('/projects', 'ProjectController');
-        Route::resource('/quizs', 'PresensiController');
+        Route::resource('/quizs', 'QuizController');
         Route::resource('/presensis', 'PresensiController');
         Route::post('/presensis/history', 'PresensiController@getHistory')->name('presensis.history');
         Route::get('/presensis/izin', 'PresensiController@geIzin')->name('presensis.detail');
