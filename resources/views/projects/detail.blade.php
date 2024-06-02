@@ -47,7 +47,7 @@
                                 <div class="row">
                                     <div class="row row-cols-1 row-cols-md-1 g-2">
                                         {{-- TUGAS SELESAI START --}}
-                                        @forelse($tasks as $task)
+                                        @foreach ($tasks as $task)
                                             <a class="modal-trigger" href="#modalProject{{ $task->id }}"
                                                 data-bs-toggle="modal">
                                                 <div class="card">
@@ -148,13 +148,11 @@
                                 </div>
                             </div>
                             {{-- modal End --}}
-                        @empty
-                            <h5>Belum ada tugas yang diunggah.</h5>
-                            @endforelse
+                            @endforeach
                             {{-- TUGAS SELESAI END --}}
 
                             {{-- TUGAS BARU START --}}
-                            @if ($task->nilai)
+                            @if ($nextTask)
                                 <a class="modal-trigger" href="#modalProject{{ $nextTask->id }}" data-bs-toggle="modal">
                                     <div class="card">
                                         <div class="card-body row row-cols-md-2">

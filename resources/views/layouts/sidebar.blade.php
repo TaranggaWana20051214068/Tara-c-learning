@@ -74,6 +74,12 @@
                         <span>Quiz </span>
                     </a>
                 </li>
+                <li class="sidebar-item  {{ 'admin.presensi.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                    <a href="{{ route('admin.presensis.index') }}" class="sidebar-link ">
+                        <i class="bi bi-calendar-check-fill"></i>
+                        <span>Presensi </span>
+                    </a>
+                </li>
                 <li class="sidebar-item  {{ 'admin.students.index' === Route::currentRouteName() ? 'active' : '' }} ">
                     <a href="{{ route('admin.students.index') }}" class="sidebar-link ">
                         <i class="bi bi-person-fill"></i>

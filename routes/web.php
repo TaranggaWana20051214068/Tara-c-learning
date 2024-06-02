@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\SoalController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -23,38 +24,51 @@ Auth::routes(['register' => false]);
 // Route::get('/', function () {
 //     return auth()->check() ? redirect()->route('home') : redirect()->route('login');
 // });
-Route::get('/', 'HomeController@index')->name('home');
+Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('/', 'HomeController@index')->name('home');
 
 
-Route::prefix('students')->group(function () {
-    Route::get('/', 'HomeController@student_index')->name('student.index');
-    Route::get('/{id}', 'HomeController@student_show')->name('student.show');
-});
-Route::get('jadwal-pelajaran', 'HomeController@jadwal_pelajaran')->name('jadwal.pelajaran');
-Route::get('profile', 'HomeController@profile')->name('user.profile');
-Route::get('jadwal-piket', 'HomeController@jadwal_piket')->name('jadwal.piket');
-Route::prefix('/articles')->group(function () {
-    Route::get('/', 'HomeController@article_index')->name('article.index');
-    Route::get('/{id}', 'HomeController@article_show')->name('article.show');
-});
-Route::prefix('/questions')->group(function () {
-    Route::get('/', 'HomeController@questions_index')->name('soal.index');
-    Route::get('/{id}', 'SoalController@questions_show')->name('soal.show');
-    Route::post('/{id}', 'SoalController@questions_code')->name('soal.questions_code');
-});
-Route::prefix('/projects')->group(function () {
-    Route::get('/', 'HomeController@projects_index')->name('project.index');
-    Route::post('/join/{id}', 'ProjectController@joinProject')->name('project.join');
-    Route::get('/{id}', 'ProjectController@projects_show')->name('project.show');
-    Route::post('/{id}', 'ProjectController@projects_tugas')->name('project.tugas');
-    Route::post('/{id}/jadwal', 'ProjectController@projects_jadwal')->name('project.jadwal');
-});
-Route::prefix('/quizs')->group(function () {
-    Route::get('/', 'QuizController@index')->name('quiz.index');
-    Route::get('/{category}', 'QuizController@show')->name('quiz.show');
-    Route::post('/{category}', 'QuizController@add')->name('quiz.add');
-});
+    Route::prefix('students')->group(function () {
+        Route::get('/', 'HomeController@student_index')->name('student.index');
+        Route::get('/{id}', 'HomeController@student_show')->name('student.show');
+    });
+    Route::get('jadwal-pelajaran', 'HomeController@jadwal_pelajaran')->name('jadwal.pelajaran');
+    Route::get('profile', 'HomeController@profile')->name('user.profile');
+    Route::get('jadwal-piket', 'HomeController@jadwal_piket')->name('jadwal.piket');
+    Route::prefix('/articles')->group(function () {
+        Route::get('/', 'HomeController@article_index')->name('article.index');
+        Route::get('/{id}', 'HomeController@article_show')->name('article.show');
+    });
+    Route::prefix('/questions')->group(function () {
+        Route::get('/', 'HomeController@questions_index')->name('soal.index');
+        Route::get('/{id}', 'SoalController@questions_show')->name('soal.show');
+        Route::post('/{id}', 'SoalController@questions_code')->name('soal.questions_code');
+    });
+    Route::prefix('/projects')->group(function () {
+        Route::get('/', 'HomeController@projects_index')->name('project.index');
+        Route::post('/join/{id}', 'ProjectController@joinProject')->name('project.join');
+        Route::get('/{id}', 'ProjectController@projects_show')->name('project.show');
+        Route::post('/{id}', 'ProjectController@projects_tugas')->name('project.tugas');
+        Route::post('/{id}/jadwal', 'ProjectController@projects_jadwal')->name('project.jadwal');
+    });
+    Route::prefix('/quizs')->group(function () {
+        Route::get('/', 'QuizController@index')->name('quiz.index');
+        Route::get('/{category}', 'QuizController@show')->name('quiz.show');
+        Route::post('/{category}', 'QuizController@add')->name('quiz.add');
+    });
+    Route::post('/articles', [ArticleController::class, 'url'])->name('admin.articles.url');
+    Route::prefix('/presensi')->group(function () {
+        Route::get('/', [PresensiController::class, 'index'])->name('presensi');
+        Route::post('/camera-snap', [PresensiController::class, 'store'])->name('camera-snap');
+        # history
+        Route::post('/get-history', [PresensiController::class, 'getHistory'])->name('get-history');
 
+        # izin
+        Route::get('/presensi-izin', [PresensiController::class, 'getIzin']);
+        Route::post('/presensi-izin/store', [PresensiController::class, 'storeizin'])->name('store-izin');
+    });
+});
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'role:admin,guru']], function () {
     Route::name('admin.')->group(function () {
         Route::get('/', 'HomeController@index')->name('dashboard');
@@ -66,7 +80,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::resource('/articles', 'ArticleController');
         Route::resource('/questions', 'SoalController');
         Route::resource('/projects', 'ProjectController');
-        Route::resource('/quizs', 'QuizController');
+        Route::resource('/quizs', 'PresensiController');
+        Route::resource('/presensis', 'PresensiController');
+        Route::post('/presensis/history', 'PresensiController@getHistory')->name('presensis.history');
+        Route::get('/presensis/izin', 'PresensiController@geIzin')->name('presensis.detail');
+        Route::post('/presensis/izin/approved', 'PresensiController@storeIzin');
         Route::post('/quizs/create', 'QuizController@addQuiz')->name('quizs.addQuiz');
         Route::get('/quizs/detail/{category}', 'QuizController@show')->name('quizs.detail');
         Route::get('/quizs/siswa/{category}', 'QuizController@siswa')->name('quizs.siswa');
@@ -83,15 +101,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
 
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-// Route::group(['middleware' => ['auth']], function () {
-//     Route::get('/home', 'HomeController@index')->name('home');
-//     Route::get('/articles', 'HomeController@article_index')->name('article.index');
-//     Route::get('/questions', 'HomeController@questions_index')->name('soal.index');
-//     Route::prefix('/projects');
-// });
+
 
 
 // Route::get('/admin', 'admin\HomeController@index')->middleware('role:admin,guru')->name('admin.dashboard');
 // Route::post('/articles', 'admin\ArticleController@url')->name('admin.articles.edit');
-Route::post('/articles', [ArticleController::class, 'url'])->name('admin.articles.url');
 

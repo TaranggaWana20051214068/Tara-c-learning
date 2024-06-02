@@ -12,7 +12,7 @@ use App\Models\Day;
 use App\Models\Article;
 use App\Http\Controllers\SoalController;
 use Illuminate\Support\Facades\Auth;
-
+use DB;
 
 class HomeController extends Controller
 {
@@ -54,6 +54,14 @@ class HomeController extends Controller
             'image_name' => 'bg_ttg.png',
             'description' => '"C-Learning: Platform pembelajaran daring yang menyediakan  sumber belajar lengkap untuk membantu siswa meningkatkan prestasi dan nilai akademik dalam bidang pengetahuan maupun keterampilan”',
         ];
+        if (Auth::user()->role === 'siswa') {
+            $today = date('Y-m-d');
+            $userName = Auth::user()->name;
+            $check = DB::table('presensis')->where([['tgl_presensi', $today], ['name', $userName]])->count();
+            if ($check == 0) {
+                session()->flash('warning-presensi', 'Anda belum presensi hari ini.');
+            }
+        }
         return view('home', compact('menus', 'ttg'));
     }
 

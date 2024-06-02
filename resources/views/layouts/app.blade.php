@@ -96,6 +96,9 @@
                                     <a class="dropdown-item" href="{{ route('admin.dashboard') }}">Dashboard</a>
                                 @endif
                                 <a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a>
+                                @if (auth()->user()->role === 'siswa')
+                                    <a class="dropdown-item" href="{{ route('presensi') }}">Presensi</a>
+                                @endif
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button class="dropdown-item"><i class="icon-mid bi bi-box-arrow-left me-2"></i>
