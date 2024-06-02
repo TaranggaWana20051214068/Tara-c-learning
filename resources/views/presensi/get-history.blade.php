@@ -18,7 +18,7 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ date('d-m-Y', strtotime($data->tgl_presensi)) }}</td>
                     <td>
-                        <span class="badge {{ $data->jam_in < '07:00' ? 'badge-success' : 'badge-danger' }}">
+                        <span class="badge {{ $data->jam_in < '07:00' ? 'badge-success' : 'badge-success' }}">
                             {{ $data->jam_in }}
                         </span>
                     </td>
