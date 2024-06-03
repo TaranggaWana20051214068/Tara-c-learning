@@ -39,8 +39,6 @@
                                         @foreach ($youtubeVideos as $youtubeVideo)
                                             @if ($youtubeVideo)
                                                 {!! $youtubeVideo !!}
-                                            @else
-                                                <p>Video tidak tersedia</p>
                                             @endif
                                         @endforeach
                                     </div>
