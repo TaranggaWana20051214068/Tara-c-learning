@@ -36,6 +36,13 @@
                                 </div>
                                 <div class="col">
                                     <div id="players-container">
+                                        @foreach ($youtubeVideos as $youtubeVideo)
+                                            @if ($youtubeVideo)
+                                                {!! $youtubeVideo !!}
+                                            @else
+                                                <p>Video tidak tersedia</p>
+                                            @endif
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -47,15 +54,15 @@
             <div class="thumbnail"></div>
         </div>
     </section>
-    <script>
+@endsection
+@section('script-bottom')
+    {{-- <script>
         var tag = document.createElement('script');
-
         tag.src = "https://www.youtube.com/player_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     </script>
     <script src="{{ URL::asset('assets/pages/article-youtube.js') }}"></script>
-
     <script>
         // Fungsi untuk memeriksa koneksi internet
         function checkInternetConnection() {
@@ -65,7 +72,6 @@
         // Fungsi untuk memuat video YouTube atau menampilkan tautan jika tidak ada koneksi internet
         function loadYouTubeVideos() {
             // Daftar link video YouTube yang tersedia
-
             var youtubeLinks = [
                 @if ($links->count() > 0)
                     @foreach ($links as $link)
@@ -73,42 +79,51 @@
                     @endforeach
                 @endif
             ];
-            console.log(youtubeLinks);
-            // 1. Memeriksa koneksi internet
-            if (youtubeLinks != "") {
+
+            if (youtubeLinks.length > 0) {
                 if (checkInternetConnection()) {
                     // Jika ada koneksi internet, memuat video menggunakan IFrame Player API
-                    youtubeLinks.forEach(function(videoId) {
-                        var playerDiv = document.createElement('div');
-                        var vId = getVidId(videoId);
-                        playerDiv.id = 'player-' + vId;
-                        document.getElementById('players-container').appendChild(playerDiv);
-                        var player = new YT.Player(playerDiv.id, {
-                            height: '150',
-                            width: '250',
-                            videoId: vId,
-                            playerVars: {
-                                'playsinline': 1,
-                                'autoplay': 0
-                            }
-                        });
+                    youtubeLinks.forEach(function(videoUrl) {
+                        var vId = getVidId(videoUrl);
+                        if (vId) {
+                            var playerDiv = document.createElement('div');
+                            playerDiv.id = 'player-' + vId;
+                            document.getElementById('players-container').appendChild(playerDiv);
+                            var player = new YT.Player(playerDiv.id, {
+                                height: '150',
+                                width: '250',
+                                videoId: vId,
+                                playerVars: {
+                                    'playsinline': 1,
+                                    'autoplay': 0
+                                }
+                            });
+                        }
                     });
                 } else {
                     // Jika tidak ada koneksi internet, tampilkan tautan menuju video YouTube
                     var playersContainer = document.getElementById('players-container');
-                    youtubeLinks.forEach(function(videoId) {
-                        var youtubeLink = document.createElement('a');
-                        youtubeLink.href = "https://www.youtube.com/watch?v=" + videoId;
-                        youtubeLink.textContent = "Tonton di YouTube";
-                        playersContainer.appendChild(youtubeLink);
-                        playersContainer.appendChild(document.createElement('br'));
+                    youtubeLinks.forEach(function(videoUrl) {
+                        var vId = getVidId(videoUrl);
+                        if (vId) {
+                            var youtubeLink = document.createElement('a');
+                            youtubeLink.href = "https://www.youtube.com/watch?v=" + vId;
+                            youtubeLink.textContent = "Tonton di YouTube";
+                            playersContainer.appendChild(youtubeLink);
+                            playersContainer.appendChild(document.createElement('br'));
+                        }
                     });
                 }
             }
         }
 
+        // Fungsi untuk mendapatkan ID video dari URL
+        function getVidId(url) {
+            var match = url.match(/[?&]v=([^&]+)/);
+            return match ? match[1] : null;
+        }
+
         // Memuat video YouTube atau menampilkan tautan jika tidak ada koneksi internet saat halaman dimuat
         window.onload = loadYouTubeVideos;
-    </script>
-
+    </script> --}}
 @endsection

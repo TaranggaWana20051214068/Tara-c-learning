@@ -87,10 +87,17 @@ class HomeController extends Controller
     public function article_show($id)
     {
         $article = Article::findOrFail($id);
-        $links = YoutubeLink::where('article_id', $id)->orderBy('id', 'desc')->pluck('link');
+        $links = YoutubeLink::where('article_id', $id)->orderBy('id', 'desc')->get();
+
+        // Mengambil embed code untuk setiap link YouTube
+        $youtubeVideos = $links->map(function ($link) {
+            return $link->getEmbedCode();
+        });
+
         $questionIds = Question::where('article_id', $id)->pluck('id');
-        return view('articles.detail', compact('article', 'links', 'questionIds'));
+        return view('articles.detail', compact('article', 'links', 'questionIds', 'youtubeVideos'));
     }
+
 
     public function jadwal_pelajaran()
     {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Cohensive\OEmbed\Facades\OEmbed;
 
 class YoutubeLink extends Model
 {
@@ -32,6 +33,14 @@ class YoutubeLink extends Model
         ]);
     }
 
+    public function getEmbedCode()
+    {
+        $embed = OEmbed::get($this->link);
+        if ($embed) {
+            return $embed->html(['width' => 250, 'height' => 150]);
+        }
+        return null;
+    }
     public function messages()
     {
         return self::$messages;

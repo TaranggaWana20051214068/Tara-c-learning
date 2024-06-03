@@ -75,39 +75,45 @@ function addYT() {
             });
         });
 }
-document
-    .getElementById("formFileThumnail")
-    .addEventListener("change", function () {
-        var fileInput = this;
-        var file = fileInput.files[0];
+document.addEventListener("DOMContentLoaded", function () {
+    var formFileThumbnail = document.getElementById("formFileThumnail");
+    var formFileArticle = document.getElementById("formFileArticle");
 
-        // Mengecek apakah file yang diunggah adalah gambar
-        if (file.type && !file.type.startsWith("image/")) {
-            // Jika bukan gambar, tampilkan pesan kesalahan
-            $.SweetAlert.showErr("Thumbnail Harus Berupa Gambar");
-            // Reset input file agar pengguna dapat memilih file yang lain
-            fileInput.value = "";
-        }
-        if (file.size > 2 * 1024 * 1024) {
-            $.SweetAlert.showErr(
-                "Ukuran file terlalu besar. Maksimum 2MB yang diizinkan."
-            );
-            // Reset input file agar pengguna dapat memilih file yang lain
-            fileInput.value = "";
-        }
-    });
-document
-    .getElementById("formFileArticle")
-    .addEventListener("change", function () {
-        var fileInput = this;
-        var file = fileInput.files[0];
-        // Mengecek apakah ukuran file tidak melebihi 10MB (10 * 1024 * 1024 byte)
-        if (file.size > 10 * 1024 * 1024) {
-            // Jika ukuran file melebihi 10MB, tampilkan pesan kesalahan
-            $.SweetAlert.showErr(
-                "Ukuran file terlalu besar. Maksimum 10MB yang diizinkan."
-            );
-            // Reset input file agar pengguna dapat memilih file yang lain
-            fileInput.value = "";
-        }
-    });
+    if (formFileThumbnail) {
+        formFileThumbnail.addEventListener("change", function () {
+            var fileInput = this;
+            var file = fileInput.files[0];
+
+            // Mengecek apakah file yang diunggah adalah gambar
+            if (file.type && !file.type.startsWith("image/")) {
+                // Jika bukan gambar, tampilkan pesan kesalahan
+                $.SweetAlert.showErr("Thumbnail Harus Berupa Gambar");
+                // Reset input file agar pengguna dapat memilih file yang lain
+                fileInput.value = "";
+            }
+            if (file.size > 2 * 1024 * 1024) {
+                $.SweetAlert.showErr(
+                    "Ukuran file terlalu besar. Maksimum 2MB yang diizinkan."
+                );
+                // Reset input file agar pengguna dapat memilih file yang lain
+                fileInput.value = "";
+            }
+        });
+    }
+
+    if (formFileArticle) {
+        formFileArticle.addEventListener("change", function () {
+            var fileInput = this;
+            var file = fileInput.files[0];
+            // Mengecek apakah ukuran file tidak melebihi 10MB (10 * 1024 * 1024 byte)
+            if (file.size > 10 * 1024 * 1024) {
+                // Jika ukuran file melebihi 10MB, tampilkan pesan kesalahan
+                $.SweetAlert.showErr(
+                    "Ukuran file terlalu besar. Maksimum 10MB yang diizinkan."
+                );
+                // Reset input file agar pengguna dapat memilih file yang lain
+                fileInput.value = "";
+            }
+        });
+    }
+});
