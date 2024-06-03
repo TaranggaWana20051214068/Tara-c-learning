@@ -94,6 +94,13 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="" class='col-md-2 col-form-label'>Role</label>
+                                <div class="col-md-10">
+                                    <input class="form-control" type="text" value="{{ $user->role }}"
+                                        aria-label="role" disabled readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Gambar</label>
                                 <div class="col-md-10">
                                     <input type="file" class="form-control" name='photo'>

@@ -157,9 +157,9 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $name = $user->name;
         $user->delete();
-        $siswa = Student::where('name', $name)->first();
-        if ($siswa) {
-            $siswa->delete();
+        if ($user->role === 'siswa') {
+            $siswa = Student::where('name', $name)->first();
+            ($siswa > 0) ? $siswa->delete() : '';
         }
         session()->flash('success', 'Sukses Menghapus Data');
         return redirect()->back();

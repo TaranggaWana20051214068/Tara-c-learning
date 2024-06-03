@@ -134,33 +134,40 @@ class QuizController extends Controller
             $query->where('category', $category);
         })
             ->whereHas('user', function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%");
+                if ($search) {
+                    $query->where('name', 'like', "%{$search}%");
+                }
             })
             ->get();
 
         $groupedAnswers = $userAnswers->groupBy('user_id');
 
-        $data = $groupedAnswers->map(function ($userAnswers, $userId) {
+        // Hitung jumlah soal dalam kategori
+        $maxScore = QuizQuestion::where('category', $category)->count();
+
+        $data = $groupedAnswers->map(function ($userAnswers, $userId) use ($maxScore) {
             $user = $userAnswers->first()->user;
             $totalScore = $userAnswers->sum(function ($userAnswer) {
                 return $userAnswer->choice->is_correct ? 1 : 0;
             });
 
+            // Normalisasi skor ke skala 100
+            $normalizedScore = $maxScore > 0 ? ($totalScore / $maxScore) * 100 : 0;
+
             return [
                 'student_name' => $user->name,
                 'completed_at' => $userAnswers->max('created_at'),
-                'score' => $totalScore,
+                'score' => $normalizedScore,
             ];
-        });
+        })->values(); // values() untuk memastikan indeks dimulai dari 0
 
         // Paginasi data
-        // Paginasi manual
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 10;
-        $currentItems = $data->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
-        $paginator = new LengthAwarePaginator($currentItems, count($data), $perPage, $currentPage, ['path' => LengthAwarePaginator::resolveCurrentPath()]);
+        $currentItems = $data->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $paginator = new LengthAwarePaginator($currentItems, $data->count(), $perPage, $currentPage, ['path' => LengthAwarePaginator::resolveCurrentPath()]);
 
-        return view('admin.quizs.siswa', compact('data', 'paginator'));
+        return view('admin.quizs.siswa', compact('paginator', 'data'));
     }
 
 
