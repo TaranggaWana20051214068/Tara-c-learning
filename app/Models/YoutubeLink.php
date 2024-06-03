@@ -35,12 +35,15 @@ class YoutubeLink extends Model
 
     public function getEmbedCode()
     {
-        $embed = OEmbed::get($this->link);
-        if ($embed) {
-            return $embed->html(['width' => 250, 'height' => 150]);
+        if ($this->link) {
+            $embed = OEmbed::get($this->link);
+            if ($embed) {
+                return $embed->html(['width' => 250, 'height' => 150]);
+            }
         }
         return null;
     }
+
     public function messages()
     {
         return self::$messages;
