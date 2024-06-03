@@ -126,7 +126,7 @@ class HomeController extends Controller
     {
         $projects = Project::whereDoesntHave('kelompok.users', function ($query) {
             $query->where('users.id', auth()->id());
-        })->orderBy('id', 'desc')->paginate(10);
+        })->orderBy('id', 'asc')->paginate(10);
         $takenProjects = Project::whereHas('kelompok.users', function ($query) {
             $query->where('users.id', auth()->id());
         })->orderBy('id', 'desc')->paginate(10);

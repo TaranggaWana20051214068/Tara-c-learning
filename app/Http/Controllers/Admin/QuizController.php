@@ -80,7 +80,7 @@ class QuizController extends Controller
         $questions = QuizQuestion::where('category', $category)
             ->where('pertanyaan', 'LIKE', "%$search%")
             ->with('choices')
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'asc')
             ->paginate(10);
         $questions->appends(['search' => $search]);
 
