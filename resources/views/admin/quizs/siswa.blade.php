@@ -66,7 +66,7 @@
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td>{{ $item['student_name'] }}</td>
                                             <td>{{ $item['completed_at'] }}</td>
-                                            <td>{{ $item['score'] }}</td>
+                                            <td>{{ number_format($item['score'], 2) }}</td>
                                         </tr>
                                     @empty
                                         <tr>

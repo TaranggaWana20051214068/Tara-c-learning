@@ -35,6 +35,7 @@ Route::group(['middleware' => ['auth']], function () {
     });
     Route::get('jadwal-pelajaran', 'HomeController@jadwal_pelajaran')->name('jadwal.pelajaran');
     Route::get('profile', 'HomeController@profile')->name('user.profile');
+    Route::get('/profile/edit', 'HomeController@profile_edit')->name('user.profileEdit');
     Route::get('jadwal-piket', 'HomeController@jadwal_piket')->name('jadwal.piket');
     Route::prefix('/articles')->group(function () {
         Route::get('/', 'HomeController@article_index')->name('article.index');

@@ -436,3 +436,47 @@ footer {
 .card-soals:hover .card__arrow svg {
     transform: translateX(3px);
 }
+
+/* profile */
+.img-circle {
+    border-radius: 50%;
+}
+.profile-user-img {
+    border: 3px solid #adb5bd;
+    margin: 0 auto;
+    padding: 3px;
+    width: 8rem;
+    aspect-ratio: 1/1;
+}
+.card-primary.card-outline {
+    border-top: 3px solid #435ebe;
+}
+.list-group {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+    border-radius: 0.25rem;
+}
+.list-group-unbordered > .list-group-item {
+    border-left: 0;
+    border-radius: 0;
+    border-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: 0.75rem 1.25rem;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+.card-title-profile {
+    float: left;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+}

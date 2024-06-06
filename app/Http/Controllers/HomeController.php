@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Challenges;
 use App\Models\Project;
 use App\Models\Question;
+use App\Models\QuizQuestion;
+use App\Models\UserAnswer;
 use App\Models\YoutubeLink;
 use Illuminate\Http\Request;
 use App\Models\Student;
@@ -13,6 +15,8 @@ use App\Models\Article;
 use App\Http\Controllers\SoalController;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Log;
 
 class HomeController extends Controller
 {
@@ -65,19 +69,6 @@ class HomeController extends Controller
         return view('home', compact('menus', 'ttg'));
     }
 
-
-    public function student_index(Request $request)
-    {
-        $students = Student::orderBy('name', 'asc')->get();
-        return view('students.index', compact('students'));
-    }
-
-    public function student_show($id)
-    {
-        $student = Student::findOrFail($id);
-        return view('students.detail', compact('student'));
-    }
-
     public function article_index()
     {
         $articles = Article::orderBy('id', 'desc')->paginate(10);
@@ -98,24 +89,57 @@ class HomeController extends Controller
         return view('articles.detail', compact('article', 'links', 'questionIds', 'youtubeVideos'));
     }
 
-
-    public function jadwal_pelajaran()
-    {
-        $days = Day::orderBy('id', 'asc')->get();
-        return view('jadwal-pelajaran', compact('days'));
-    }
-
-    public function jadwal_piket()
-    {
-        $days = Day::orderBy('id', 'asc')->get();
-        return view('jadwal-piket', compact('days'));
-    }
     public function profile()
     {
         $user = Auth::user();
+        $userId = Auth::user()->id;
         $pesan = 'is Coming Soon.';
-        return view('errors.503', compact('pesan'));
-        // return view('profile', compact('user'));
+        // return view('errors.503', compact('pesan'));
+        $nilai = Question::whereHas('codes', function ($query) use ($userId) {
+            $query->where('author_id', $userId);
+        })->orderBy('id', 'desc')->paginate(10);
+        // Ambil data jawaban pengguna berdasarkan $userId
+        $userAnswers = UserAnswer::where('user_id', $userId)->get();
+
+        // Ambil kategori-kategori yang dijawab oleh pengguna
+        $categories = $userAnswers->pluck('quizQuestion.category')->unique();
+
+        $data = [];
+
+        // Iterasi setiap kategori untuk menghitung nilai
+        foreach ($categories as $category) {
+            // Hitung jumlah soal dalam kategori
+            $maxScore = QuizQuestion::where('category', $category)->count();
+
+            // Filter jawaban pengguna berdasarkan kategori
+            $userAnswersInCategory = $userAnswers->where('quizQuestion.category', $category);
+
+            $totalScore = $userAnswersInCategory->sum(function ($userAnswer) {
+                return $userAnswer->choice->is_correct ? 1 : 0;
+            });
+
+            // Normalisasi skor ke skala 100
+            $normalizedScore = $maxScore > 0 ? ($totalScore / $maxScore) * 100 : 0;
+
+            // Tambahkan data kategori, tanggal, dan skor ke dalam array
+            $data[] = [
+                'category' => $category,
+                'completed_at' => $userAnswersInCategory->max('created_at'),
+                'score' => $normalizedScore,
+            ];
+        }
+
+        // Urutkan data berdasarkan tanggal terakhir diurutkan dari yang terbaru
+        usort($data, function ($a, $b) {
+            return strtotime($b['completed_at']) - strtotime($a['completed_at']);
+        });
+
+        // Paginasi data
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $currentItems = array_slice($data, ($currentPage - 1) * $perPage, $perPage);
+        $paginator = new LengthAwarePaginator($currentItems, count($data), $perPage, $currentPage, ['path' => LengthAwarePaginator::resolveCurrentPath()]);
+        return view('profile', compact('user', 'nilai', 'paginator'));
     }
     public function questions_index()
     {

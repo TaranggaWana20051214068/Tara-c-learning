@@ -47,7 +47,6 @@
                         </div>
                     @endif
                 </div>
-
             </div>
             <div class="thumbnail"></div>
         </div>
