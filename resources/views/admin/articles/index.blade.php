@@ -105,29 +105,6 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Content</th>
-                            <th>Updated At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($recentlyUpdatedArticles as $article)
-                            <tr>
-                                <td>{{ $article->id }}</td>
-                                <td>{{ $article->title }}</td>
-                                <td>{{ $article->content }}</td>
-                                <td>{{ $article->updated_at }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <div class="paginate float-right mt-3">
-                    {{ $recentlyUpdatedArticles->links() }}
-                </div>
 
             </div> <!-- end col -->
 

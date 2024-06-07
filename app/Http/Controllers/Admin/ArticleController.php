@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\YoutubeLink;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Article;
 use Str;
@@ -24,8 +23,7 @@ class ArticleController extends Controller
         $search = $request->get('search');
         $articles = Article::where('title', 'LIKE', "%$search%")->orderBy('id', 'desc')->paginate(10);
         $articles->appends(['search' => $search]);
-        $recentlyUpdatedArticles = Article::where('updated_at', '>=', Carbon::now()->subDays(7))->paginate(10);
-        return view('admin.articles.index', compact('articles', 'recentlyUpdatedArticles'));
+        return view('admin.articles.index', compact('articles'));
     }
 
     /**
