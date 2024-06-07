@@ -11,7 +11,7 @@ main {
     color: white;
 }
 section:not(.hero) {
-    padding: 100px 0;
+    padding: 50px 10px;
 }
 .section-header {
     margin-bottom: 3rem;

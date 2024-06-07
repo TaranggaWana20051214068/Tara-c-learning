@@ -7,6 +7,7 @@ use App\Models\Question;
 use App\Models\QuizQuestion;
 use App\Models\UserAnswer;
 use App\Models\YoutubeLink;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Article;
 use Illuminate\Support\Facades\Auth;
@@ -72,7 +73,6 @@ class HomeController extends Controller
         $articles = Article::orderBy('id', 'desc')->paginate(10);
         return view('articles.index', compact('articles'));
     }
-
     public function article_show($id)
     {
         $article = Article::findOrFail($id);
@@ -201,5 +201,6 @@ class HomeController extends Controller
     {
         return view('panduan');
     }
+
 
 }

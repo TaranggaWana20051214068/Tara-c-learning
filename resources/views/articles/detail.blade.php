@@ -6,49 +6,63 @@
 
     <section class="article">
         <div class="container">
-            <div class="card">
-                {{-- <img src="{{ Storage::url('images/articles/'.$article->thumbnail_image_name) }}" class='card-img-top'> --}}
-                <div class="card-body pt-4">
-                    <div class="card-detail">
-                        <span><i class="bi bi-person-circle"></i> {{ $article->author->name }}</span> <span
-                            class='ml-10'>{{ Carbon\Carbon::parse($article->created_at)->format('d F Y H:i:s') }}</span>
-
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="text-center">
+                                <img
+                                    class="img-fluid"src="{{ Storage::url('images/articles/' . $article->thumbnail_image_name) }}">
+                            </div>
+                            <br>
+                            <p class="text-primary text-center"><b>{{ $article->title }}</b></p>
+                        </div>
+                        <!-- /.card-body -->
                     </div>
-                    <h1 class="card-title mt-2">{{ $article->title }}</h1>
-                    <p>{!! nl2br($article->content) !!}</p>
-                    @foreach ($questionIds as $questionId)
-                        <a href="{{ route('soal.show', ['id' => $questionId]) }}" class="btn btn-primary">Latihan
-                            Soal</a>
-                    @endforeach
-                    @if ($links->count() > 0 || $article->file_name)
-                        <div class="container-sm text-center">
-                            <h4 class="mt-2">Lampiran</h4>
-                            <div class="row">
-                                <div class="col">
-                                    @if ($article->file_name)
-                                        <a href="{{ Storage::url('images/articles/file/' . $article->file_name) }}"
-                                            target="_blank">
-                                            <i class="bi bi-file-earmark-medical" style="font-size: 3rem;"></i>
-                                            <br>
-                                            {{ $article->file_name }}
-                                        </a>
-                                    @endif
+                    <div class="card">
+                        <div class="card-body">
+                            @if ($article->file_name)
+                                <a href="{{ Storage::url('images/articles/file/' . $article->file_name) }}"
+                                    class="btn btn-primary btn-block"><b>Unduh Materi</b></a>
+                            @endif
+                            @foreach ($questionIds as $questionId)
+                                <a href="{{ route('soal.show', ['id' => $questionId]) }}"
+                                    class="btn btn-primary btn-block"><b>Latihan
+                                        Soal {{ $loop->iteration }}</b></a>
+                            @endforeach
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <div class="col sm:mt-5">
+                    <div class="grid gap-3">
+                        <div class="card">
+                            <div class="card-body pt-4">
+                                <div class="card-detail">
+                                    <span><i class="bi bi-person-circle"></i> {{ $article->author->name }}</span> <span
+                                        class='ml-10'>{{ Carbon\Carbon::parse($article->created_at)->format('d F Y H:i:s') }}</span>
                                 </div>
-                                <div class="col">
-                                    <div id="players-container">
-                                        @foreach ($youtubeVideos as $youtubeVideo)
-                                            @if ($youtubeVideo)
-                                                {!! $youtubeVideo !!}
-                                            @endif
-                                        @endforeach
+                                <br>
+                                <p class="text-dark text-justify">{!! nl2br(htmlspecialchars($article->content)) !!}</p>
+                                @if ($links->count() > 0 || $article->file_name)
+                                    <div class="container-sm text-center">
+                                        <h5 class="mt-2">Lampiran</h5>
+                                        <div class="row row-cols-1 row-cols-md-2">
+                                            @foreach ($youtubeVideos as $youtubeVideo)
+                                                @if ($youtubeVideo)
+                                                    <div class="col">
+                                                        {!! $youtubeVideo !!}
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         </div>
-                    @endif
+                    </div>
                 </div>
             </div>
-            <div class="thumbnail"></div>
         </div>
     </section>
 @endsection

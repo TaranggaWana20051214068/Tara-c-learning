@@ -31,10 +31,9 @@
                         <form action="{{ route('admin.questions.store') }}" method="POST" class='mt-3'>
                             @csrf
                             <div class="form-group row">
-                                <label for="" class='col-md-2 col-form-label'>Judul</label>
+                                <label for="judul" class='col-md-2 col-form-label'>Judul</label>
                                 <div class="col-md-10">
-                                    <input type="text" name="judul"
-                                        class='form-control @error('judul') is-invalid @enderror'>
+                                    <textarea name="judul" id="" rows="3" class="form-control  @error('judul') is-invalid @enderror"></textarea>
                                     @error('judul')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -45,7 +44,7 @@
                             <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Deskripsi</label>
                                 <div class="col-md-10">
-                                    <textarea name="deskripsi" id="" rows="5" class="form-control  @error('deskripsi') is-invalid @enderror"></textarea>
+                                    <textarea name="deskripsi" id="" rows="3" class="form-control  @error('deskripsi') is-invalid @enderror"></textarea>
                                     @error('deskripsi')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

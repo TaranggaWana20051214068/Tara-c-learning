@@ -35,9 +35,7 @@
                             <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Judul</label>
                                 <div class="col-md-10">
-                                    <input type="text" name="judul"
-                                        class='form-control @error('judul') is-invalid @enderror'
-                                        value="{{ $question->judul }}">
+                                    <textarea name="judul" id="judul" rows="5" class="form-control @error('judul') is-invalid @enderror">{{ $question->judul }}</textarea>
                                     @error('judul')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
