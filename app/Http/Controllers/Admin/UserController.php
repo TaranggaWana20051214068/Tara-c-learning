@@ -60,7 +60,9 @@ class UserController extends Controller
         $user->username = $request->username;
         $user->email = $request->email;
         $user->role = $request->roles;
-        $user->password = Hash::make($request->password);
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
         if ($request->hasFile('image_name')) {
             $photo = $request->file('image_name');
             $image_extension = $photo->extension();
