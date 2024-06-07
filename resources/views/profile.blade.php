@@ -103,10 +103,10 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        @foreach ($nilai as $pertanyaan)
+                                        @forelse ($nilai as $pertanyaan)
                                             @foreach ($pertanyaan->codes as $code)
                                     <tr>
-                                        <th scope="row">{{ $loop->iteration }}</th>
+                                        <td scope="row">{{ $loop->iteration }}</td>
                                         <td>{{ $pertanyaan->judul }}</td>
                                         <td>{{ Carbon\Carbon::parse($pertanyaan->created_at)->format('d F Y') }}
                                         </td>
@@ -116,7 +116,11 @@
                                         <td>{!! $code->score ? '<span class="text-primary">' . $code->score . '</span>' : '-' !!}</td>
                                     </tr>
                                     @endforeach
-                                    @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="5">Anda belum menyelesaikan Soal.</td>
+                                    </tr>
+                                    @endforelse
                                     </tr>
                                 </tbody>
                             </table>
@@ -144,14 +148,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($paginator as $item)
+                                    @forelse ($paginator as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item['category'] }}</td>
                                             <td>{{ Carbon\Carbon::parse($item['completed_at'])->format('d F Y') }}</td>
                                             <td>{{ number_format($item['score'], 2) }}</td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">Anda belum menyelesaikan Quiz.</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -163,4 +171,16 @@
     </div>
 </section>
 
+@endsection
+@section('script-bottom')
+@if (session('success'))
+    <script>
+        showSucc('', "{{ session('success') }}");
+    </script>
+@endif
+@if (session('error'))
+    <script>
+        showError('Maaf..!', "{{ session('error') }}");
+    </script>
+@endif
 @endsection

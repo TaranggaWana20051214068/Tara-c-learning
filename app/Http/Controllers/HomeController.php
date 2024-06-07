@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Challenges;
 use App\Models\Project;
 use App\Models\Question;
 use App\Models\QuizQuestion;
 use App\Models\UserAnswer;
 use App\Models\YoutubeLink;
 use Illuminate\Http\Request;
-use App\Models\Student;
-use App\Models\Day;
 use App\Models\Article;
-use App\Http\Controllers\SoalController;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Log;
+use Illuminate\Support\Facades\Hash;
+use Str;
+use Storage;
 
 class HomeController extends Controller
 {
@@ -91,10 +89,10 @@ class HomeController extends Controller
 
     public function profile()
     {
+        // return view('errors.503', compact('pesan'));
         $user = Auth::user();
         $userId = Auth::user()->id;
         $pesan = 'is Coming Soon.';
-        // return view('errors.503', compact('pesan'));
         $nilai = Question::whereHas('codes', function ($query) use ($userId) {
             $query->where('author_id', $userId);
         })->orderBy('id', 'desc')->paginate(10);
@@ -140,6 +138,39 @@ class HomeController extends Controller
         $currentItems = array_slice($data, ($currentPage - 1) * $perPage, $perPage);
         $paginator = new LengthAwarePaginator($currentItems, count($data), $perPage, $currentPage, ['path' => LengthAwarePaginator::resolveCurrentPath()]);
         return view('profile', compact('user', 'nilai', 'paginator'));
+    }
+
+    public function profile_edit()
+    {
+        $user = Auth::user();
+        return view('profile_edit', compact('user'));
+
+    }
+    public function profile_update(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'username' => 'required',
+            'password' => 'nullable',
+            'email' => 'required|email'
+        ]);
+        $user = Auth::user();
+        $user->name = $request->name;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        if ($request->hasFile('photo')) {
+            Storage::delete('public/images/faces/' . $user->profile_pic);
+            $photo = $request->file('photo');
+            $image_extension = $photo->extension();
+            $image_name = Str::slug($request->name) . "." . $image_extension;
+            $photo->storeAs('/images/faces', $image_name, 'public');
+            $user->profile_pic = $image_name;
+        }
+        $user->save();
+
+        session()->flash('success', "Sukses ubah data $request->name");
+        return redirect()->route('user.profile');
     }
     public function questions_index()
     {
