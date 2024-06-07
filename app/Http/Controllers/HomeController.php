@@ -197,6 +197,9 @@ class HomeController extends Controller
         return view('projects.index', compact('projects', 'takenProjects'));
     }
 
-
+    public function panduan()
+    {
+        return view('panduan');
+    }
 
 }

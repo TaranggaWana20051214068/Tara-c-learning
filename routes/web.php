@@ -35,6 +35,11 @@ Route::group(['middleware' => ['auth']], function () {
     });
     Route::get('jadwal-pelajaran', 'HomeController@jadwal_pelajaran')->name('jadwal.pelajaran');
     Route::get('profile', 'HomeController@profile')->name('user.profile');
+    Route::get('panduan', 'HomeController@panduan')->name('user.panduan');
+    Route::get('/panduan/unduh-panduan', function () {
+        $filePath = storage_path('app/public/pdf/buku_panduan.pdf');
+        return response()->download($filePath, 'buku_panduan.pdf');
+    })->name('unduh-panduan');
     Route::get('/profile/edit', 'HomeController@profile_edit')->name('user.profileEdit');
     Route::put('/profile/edit', 'HomeController@profile_update')->name('user.profileUpdate');
     Route::get('jadwal-piket', 'HomeController@jadwal_piket')->name('jadwal.piket');
