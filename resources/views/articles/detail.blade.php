@@ -24,7 +24,7 @@
                             <div class="card-body">
                                 @if ($article->file_name)
                                     <a href="{{ Storage::url('images/articles/file/' . $article->file_name) }}"
-                                        class="btn btn-primary btn-block"><b>Unduh Materi</b></a>
+                                        class="btn btn-primary btn-block" download><b>Unduh Materi</b></a>
                                 @endif
                                 @foreach ($questionIds as $questionId)
                                     <a href="{{ route('soal.show', ['id' => $questionId]) }}"
