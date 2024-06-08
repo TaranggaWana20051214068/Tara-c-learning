@@ -133,7 +133,9 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->password = Hash::make($request->password);
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
         if ($request->hasFile('photo')) {
             Storage::delete('public/images/faces/' . $user->profile_pic);
             $photo = $request->file('photo');

@@ -77,14 +77,17 @@ class HomeController extends Controller
     {
         $article = Article::findOrFail($id);
         $links = YoutubeLink::where('article_id', $id)->orderBy('id', 'desc')->get();
-
+        if ($links->first() && $links->first()->link) {
+            $youtubeVideos = $links->map(function ($link) {
+                return $link->getEmbedCode();
+            });
+        } else {
+            $youtubeVideos = [];
+        }
         // Mengambil embed code untuk setiap link YouTube
-        $youtubeVideos = $links->map(function ($link) {
-            return $link->getEmbedCode();
-        });
 
         $questionIds = Question::where('article_id', $id)->pluck('id');
-        return view('articles.detail', compact('article', 'links', 'questionIds', 'youtubeVideos'));
+        return view('articles.detail', compact('article', 'questionIds', 'youtubeVideos'));
     }
 
     public function profile()

@@ -48,7 +48,8 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'thumbnail' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'youtube_links' => 'nullable',
         ]);
         // Simpan artikel
         $article = new Article;
@@ -75,16 +76,14 @@ class ArticleController extends Controller
         $article->save();
 
         // Simpan tautan YouTube jika ada
-        if (!empty($request->youtube_links)) {
-            if ($request->has('youtube_links')) {
-                foreach ($request->youtube_links as $link) {
-                    YoutubeLink::create([
-                        'article_id' => $article->id,
-                        'link' => $link,
-                        'title' => $article->title
-                        // Tambahkan kolom-kolom lain yang diperlukan
-                    ]);
-                }
+        if ($request->has('youtube_links')) {
+            foreach ($request->youtube_links as $link) {
+                YoutubeLink::create([
+                    'article_id' => $article->id,
+                    'link' => $link,
+                    'title' => $article->title
+                    // Tambahkan kolom-kolom lain yang diperlukan
+                ]);
             }
         }
 

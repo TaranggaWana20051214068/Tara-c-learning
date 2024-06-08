@@ -19,20 +19,22 @@
                         </div>
                         <!-- /.card-body -->
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            @if ($article->file_name)
-                                <a href="{{ Storage::url('images/articles/file/' . $article->file_name) }}"
-                                    class="btn btn-primary btn-block"><b>Unduh Materi</b></a>
-                            @endif
-                            @foreach ($questionIds as $questionId)
-                                <a href="{{ route('soal.show', ['id' => $questionId]) }}"
-                                    class="btn btn-primary btn-block"><b>Latihan
-                                        Soal {{ $loop->iteration }}</b></a>
-                            @endforeach
+                    @if (!empty($article->file_name) || $questionIds->isNotEmpty())
+                        <div class="card">
+                            <div class="card-body">
+                                @if ($article->file_name)
+                                    <a href="{{ Storage::url('images/articles/file/' . $article->file_name) }}"
+                                        class="btn btn-primary btn-block"><b>Unduh Materi</b></a>
+                                @endif
+                                @foreach ($questionIds as $questionId)
+                                    <a href="{{ route('soal.show', ['id' => $questionId]) }}"
+                                        class="btn btn-primary btn-block"><b>Latihan
+                                            Soal {{ $loop->iteration }}</b></a>
+                                @endforeach
+                            </div>
+                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card-body -->
-                    </div>
+                    @endif
                 </div>
                 <div class="col sm:mt-5">
                     <div class="grid gap-3">
@@ -44,10 +46,10 @@
                                 </div>
                                 <br>
                                 <p class="text-dark text-justify">{!! nl2br(htmlspecialchars($article->content)) !!}</p>
-                                @if ($links->count() > 0 || $article->file_name)
+                                @if ($youtubeVideos)
                                     <div class="container-sm text-center">
                                         <h5 class="mt-2">Lampiran</h5>
-                                        <div class="row row-cols-1 row-cols-md-2">
+                                        <div class="row">
                                             @foreach ($youtubeVideos as $youtubeVideo)
                                                 @if ($youtubeVideo)
                                                     <div class="col">

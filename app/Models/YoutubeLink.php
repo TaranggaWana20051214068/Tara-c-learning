@@ -8,7 +8,7 @@ use Cohensive\OEmbed\Facades\OEmbed;
 
 class YoutubeLink extends Model
 {
-    protected $fillable = ['article_id', 'link', 'title', 'description'];
+    protected $fillable = ['article_id', 'link', 'title'];
 
     // Definisikan relasi dengan model Article
     public static $rules = [
