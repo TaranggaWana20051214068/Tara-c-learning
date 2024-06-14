@@ -45,7 +45,7 @@
                             @foreach ($data as $index => $item)
                                 <div class="question" id="question-{{ $index }}"
                                     style="{{ $index > 0 ? 'display: none;' : '' }}">
-                                    <h4 class='mb-3 text-black'>{{ $item['question_text'] }}</h4>
+                                    <h4 class='mb-3'>{{ $item['question_text'] }}</h4>
                                     @if ($item['file'])
                                         <img class="img mb-3" src="{{ Storage::url('/images/quizs/' . $item['file']) }}"
                                             alt="question-file-{{ $index }}">

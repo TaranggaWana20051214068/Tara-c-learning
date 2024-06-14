@@ -112,7 +112,7 @@
                                         </td>
                                         <td>{!! $code->score
                                             ? '<span class="badge bg-primary">Selesai</span>'
-                                            : '<span class="badge bg-danger">Menunggu Penilaian</span>' !!}</td>
+                                            : '<span class="badge bg-warning text-dark">Menunggu Penilaian</span>' !!}</td>
                                         <td>{!! $code->score ? '<span class="text-primary">' . $code->score . '</span>' : '-' !!}</td>
                                     </tr>
                                     @endforeach

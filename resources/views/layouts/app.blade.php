@@ -27,11 +27,13 @@
     <link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/css/icons.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/css/app.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ URL::asset('assets/css/app-dark.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/plugins/sweet-alert2/sweetalert2.min.css') }}" rel="stylesheet">
     @stack('styles')
 </head>
 
 <body>
+    <script src="{{ URL::asset('assets/js/initTheme.js') }}"></script>
     <div id="app">
         <nav class="navbar navbar-expand-md ">
             <div class="container">

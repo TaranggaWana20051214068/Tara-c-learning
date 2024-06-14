@@ -180,14 +180,22 @@ class HomeController extends Controller
     public function questions_index()
     {
         $userId = auth()->id();
-        $questions = Question::whereDoesntHave('codes', function ($query) use ($userId) {
-            $query->where('author_id', $userId);
-        })->orderBy('id', 'desc')->paginate(10);
-        $nilai = Question::whereHas('codes', function ($query) use ($userId) {
-            $query->where('author_id', $userId);
-        })->orderBy('id', 'desc')->paginate(10);
-        return view('soal.index', compact('questions', 'nilai'));
+
+        // Ambil semua pertanyaan dengan informasi 'codes' terkait
+        $questions = Question::with([
+            'codes' => function ($query) use ($userId) {
+                $query->where('author_id', $userId);
+            }
+        ])->orderBy('id', 'desc')->paginate(10);
+
+        // Siapkan data 'nilai' untuk setiap pertanyaan
+        $questions->each(function ($question) use ($userId) {
+            $question->nilai = $question->codes->first() ? $question->codes->first()->score : null;
+        });
+
+        return view('soal.index', compact('questions'));
     }
+
 
     public function projects_index()
     {

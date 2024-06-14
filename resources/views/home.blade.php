@@ -88,7 +88,7 @@
                         <div class="hero-text">
                             <img src="{{ Storage::url('images/logo/' . config('web_config')['WEB_LOGO']) }}"
                                 alt="Logo" style="height: 3rem; margin-bottom:15px;">
-                            <p class="text-secondary">{{ $ttg['description'] }}</p>
+                            <p class="text-secondary text-justify">{{ $ttg['description'] }}</p>
                             <a href="{{ route('article.index') }}" class="btn btn-primary btn-md"
                                 style="border-radius: 12px;">Belajar Sekarang!</a>
                         </div>

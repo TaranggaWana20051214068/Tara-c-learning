@@ -2,6 +2,11 @@
 @section('content')
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+        <style>
+            .card {
+                --bs-card-color: #000000;
+            }
+        </style>
     @endpush
 
     <section class="article">
@@ -52,7 +57,8 @@
                                                 data-bs-toggle="modal">
                                                 <div class="card">
                                                     <div class="card-body row row-cols-md-2">
-                                                        <h5 class="card-title"> <i class="bi bi-journal-text"
+                                                        <h5 class="card-title" style="color: rgb(76, 130, 231);"> <i
+                                                                class="bi bi-journal-text"
                                                                 style="font-size: 2rem; color: rgb(76, 130, 231);"></i>
                                                             Tugas : {{ $task->nama_tugas }}
                                                         </h5>
@@ -156,7 +162,8 @@
                                 <a class="modal-trigger" href="#modalProject{{ $nextTask->id }}" data-bs-toggle="modal">
                                     <div class="card">
                                         <div class="card-body row row-cols-md-2">
-                                            <h5 class="card-title"> <i class="bi bi-journal-text"
+                                            <h5 class="card-title" style="color: rgb(76, 130, 231);"> <i
+                                                    class="bi bi-journal-text"
                                                     style="font-size: 2rem; color: rgb(76, 130, 231);"></i>
                                                 Tugas : {{ $nextTask->nama_tugas }}
                                             </h5>
@@ -177,7 +184,7 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">{{ $nextTask->nama_tugas }}</h5>
+                                                <h5 class="modal-title text-primary">{{ $nextTask->nama_tugas }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
@@ -248,7 +255,7 @@
                             class="bi bi-plus-circle"></i> </a> </h5>
                 <hr>
                 <div class="row g-2">
-                    <table class="striped" style="border-collapse: collapse; width: 100%;">
+                    <table class="striped table-responsive-sm" style="border-collapse: collapse; width: 100%;">
                         <thead style="background-color: #f2f2f2;">
                             <tr>
                                 <th style="border: 1px solid #ddd; padding: 8px;">Title</th>
