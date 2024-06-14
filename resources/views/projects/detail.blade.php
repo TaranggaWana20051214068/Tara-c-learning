@@ -234,10 +234,10 @@
             </div>
             <div id="people" class="tab-pane fade">
                 <br>
-                <h5>Teman Kelas</h5>
+                <h5>Guru</h5>
                 <hr>
                 <div class="row row-cols-1 row-cols-md-1 g-2">
-                    @foreach ($users as $user)
+                    @foreach ($users->where('role', '!=', 'siswa') as $user)
                         <div class="avatar avatar-md">
                             @if (!$user->profile_pic)
                                 <img src="{{ URL::asset('assets/images/faces/profile.gif') }}">
@@ -248,6 +248,22 @@
                         </div>
                     @endforeach
                 </div>
+                <br>
+                <h5>Teman Kelas</h5>
+                <hr>
+                <div class="row row-cols-1 row-cols-md-1 g-2">
+                    @foreach ($users->where('role', 'siswa') as $user)
+                        <div class="avatar avatar-md">
+                            @if (!$user->profile_pic)
+                                <img src="{{ URL::asset('assets/images/faces/profile.gif') }}">
+                            @else
+                                <img src="{{ URL::asset('assets/images/faces/' . $user->profile_pic . '') }}">
+                            @endif
+                            <h3 style="margin-left: 15px">{{ $user->name }}</h3>
+                        </div>
+                    @endforeach
+                </div>
+
             </div>
             <div id="jadwal" class="tab-pane fade">
                 <br>

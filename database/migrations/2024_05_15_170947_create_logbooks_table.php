@@ -14,8 +14,15 @@ return new class extends Migration {
     {
         Schema::create('logbooks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+
+            $table->foreignId('project_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreignId('user_id')
+                ->constrained();
+
             $table->string('title');
             $table->text('description');
             $table->date('date');
