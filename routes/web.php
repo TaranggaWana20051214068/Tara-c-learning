@@ -95,6 +95,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::post('/quizs/create', 'QuizController@addQuiz')->name('quizs.addQuiz');
         Route::get('/quizs/detail/{category}', 'QuizController@show')->name('quizs.detail');
         Route::get('/quizs/siswa/{category}', 'QuizController@siswa')->name('quizs.siswa');
+        Route::delete('/quizs/siswa/{user_id}/{category}', 'QuizController@destroy_siswa')->name('quizs.destroy_siswa');
         Route::post('/projects/{id}', 'ProjectController@tugas')->name('projects.tugas');
         Route::post('/projects/siswa/{id}', 'ProjectController@siswa')->name('projects.siswa');
         Route::get('/projects/siswa/{id}', 'ProjectController@siswaShow')->name('projects.tampilSiswa');

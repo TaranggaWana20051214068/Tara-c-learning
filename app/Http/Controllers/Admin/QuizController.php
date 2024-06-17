@@ -155,6 +155,7 @@ class QuizController extends Controller
             $normalizedScore = $maxScore > 0 ? ($totalScore / $maxScore) * 100 : 0;
 
             return [
+                'user_id' => $userId,
                 'student_name' => $user->name,
                 'completed_at' => $userAnswers->max('created_at'),
                 'score' => $normalizedScore,
@@ -167,11 +168,20 @@ class QuizController extends Controller
         $currentItems = $data->slice(($currentPage - 1) * $perPage, $perPage)->all();
         $paginator = new LengthAwarePaginator($currentItems, $data->count(), $perPage, $currentPage, ['path' => LengthAwarePaginator::resolveCurrentPath()]);
 
-        return view('admin.quizs.siswa', compact('paginator', 'data'));
+        return view('admin.quizs.siswa', compact('paginator', 'data', 'category'));
     }
 
 
-
+    public function destroy_siswa($user_id, $category)
+    {
+        UserAnswer::whereHas('quizQuestion', function ($query) use ($category) {
+            $query->where('category', $category);
+        })
+            ->where('user_id', $user_id)
+            ->delete();
+        session()->flash('success', 'Sukses Menghapus Data');
+        return redirect()->back();
+    }
     public function destroy($id)
     {
         $quiz = QuizQuestion::findOrFail($id);

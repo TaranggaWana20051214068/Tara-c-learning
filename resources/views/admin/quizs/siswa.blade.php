@@ -58,6 +58,7 @@
                                         <th>Nama</th>
                                         <th>Tanggal</th>
                                         <th>Score</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -67,10 +68,20 @@
                                             <td>{{ $item['student_name'] }}</td>
                                             <td>{{ $item['completed_at'] }}</td>
                                             <td>{{ number_format($item['score'], 2) }}</td>
+                                            <td>
+                                                <form
+                                                    action="{{ route('admin.quizs.destroy_siswa', ['user_id' => $item['user_id'], 'category' => $category]) }}"
+                                                    method="post">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="button" class='btn btn-danger btn-delete'><i
+                                                            class="bi bi-trash"></i></button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class='text-center'>Belum ada siswa yang menyelesaikan.</td>
+                                            <td colspan="5" class='text-center'>Belum ada siswa yang menyelesaikan.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
