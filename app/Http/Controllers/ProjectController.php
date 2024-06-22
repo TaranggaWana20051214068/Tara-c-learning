@@ -59,7 +59,7 @@ class ProjectController extends Controller
             'file' => [
                 'required',
                 'file',
-                'max:10240'
+                'max:100000'
             ],
         ]);
         $tasks = Tugas::findOrFail($id);
