@@ -8,24 +8,31 @@ use App\Models\QuizQuestion;
 
 class QuizController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->get('search');
         $userId = auth()->id(); // Dapatkan id pengguna yang sedang login
 
-        $quizs = QuizQuestion::where('category', 'LIKE', "%$search%")
-            ->select('category')
-            ->groupBy('category')
-            ->orderBy('category', 'desc')
+        $quizs = QuizQuestion::with('userAnswers')
             ->whereDoesntHave('userAnswers', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
-            ->paginate(10);
-
-        $quizs->appends(['search' => $search]);
+            ->select('category')
+            ->groupBy('category')
+            ->orderBy('category', 'desc')
+            ->get();
+        // $quizs = QuizQuestion::with('userAnswers')
+        // ->whereDoesntHave('userAnswers', function ($query) use ($userId) {
+        //     $query->where('user_id', $userId);
+        // })
+        // ->where('category', 'LIKE', "%$search%")
+        // ->select('category')
+        // ->groupBy('category')
+        // ->orderBy('category', 'desc')
+        // ->get();
 
         return view('quizs.index', compact('quizs'));
     }
+
 
 
     public function show($category)

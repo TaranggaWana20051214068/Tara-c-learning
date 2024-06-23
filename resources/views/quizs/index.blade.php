@@ -50,9 +50,6 @@
                     <h5>Tidak ada Quiz yang tersedia.</h5>
                 @endforelse
             </div>
-            <div class="paginate float-right mt-2">
-                {{ $quizs->links() }}
-            </div>
         </div>
     </div>
 </section>
