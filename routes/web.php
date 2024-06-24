@@ -27,6 +27,7 @@ Auth::routes(['register' => false]);
 Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/updated-jawaban', 'HomeController@updatedJawaban')->name('updated-jawaban');
 
 
     Route::prefix('students')->group(function () {

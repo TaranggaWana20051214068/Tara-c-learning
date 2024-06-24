@@ -67,6 +67,19 @@ class HomeController extends Controller
         }
         return view('home', compact('menus', 'ttg'));
     }
+    public function updatedJawaban()
+    {
+        $tanggal_baru = '2023-06-03 00:00:00'; // Ganti dengan tanggal yang diinginkan
+        $table_name = 'user_answers'; // Ganti dengan nama tabel yang ingin diubah
+
+        DB::table($table_name)
+            ->update([
+                'created_at' => $tanggal_baru,
+                'updated_at' => $tanggal_baru
+            ]);
+
+        return 'Nilai created_at dan updated_at berhasil diubah untuk tabel ' . $table_name;
+    }
 
     public function article_index()
     {
