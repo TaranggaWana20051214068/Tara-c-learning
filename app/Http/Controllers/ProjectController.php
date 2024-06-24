@@ -96,5 +96,10 @@ class ProjectController extends Controller
         return redirect()->back();
     }
 
-
+    public function jadwal_destroy(logbooks $logbooks)
+    {
+        $logbooks->delete();
+        session()->flash('success', 'Berhasil Menghapus Jadwal');
+        return redirect()->back();
+    }
 }

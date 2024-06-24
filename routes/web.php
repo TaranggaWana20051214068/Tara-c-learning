@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{id}', 'ProjectController@projects_show')->name('project.show');
         Route::post('/{id}', 'ProjectController@projects_tugas')->name('project.tugas');
         Route::post('/{id}/jadwal', 'ProjectController@projects_jadwal')->name('project.jadwal');
+        Route::delete('/{logbooks}', 'ProjectController@jadwal_destroy')->name('project.jadwal_destroy');
     });
     Route::prefix('/quizs')->group(function () {
         Route::get('/', 'QuizController@index')->name('quiz.index');
