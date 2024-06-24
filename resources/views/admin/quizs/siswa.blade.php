@@ -66,7 +66,8 @@
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td>{{ $item['student_name'] }}</td>
-                                            <td>{{ $item['completed_at'] }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item['completed_at'])->locale('id')->isoFormat('dddd, D MMMM Y') }}
+                                            </td>
                                             <td>{{ number_format($item['score'], 2) }}</td>
                                             <td>
                                                 <form
