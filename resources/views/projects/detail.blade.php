@@ -279,7 +279,9 @@
                                 <th style="border: 1px solid #ddd; padding: 8px;">Description</th>
                                 <th style="border: 1px solid #ddd; padding: 8px;">Date</th>
                                 <th style="border: 1px solid #ddd; padding: 8px;">Pembuat</th>
-                                <th style="border: 1px solid #ddd; padding: 8px;"></th>
+                                @if (Auth::user()->role != 'guru')
+                                    <th style="border: 1px solid #ddd; padding: 8px;"></th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -292,24 +294,29 @@
                                         {{ \Carbon\Carbon::parse($item->date)->locale('id')->isoFormat('dddd, D MMMM Y') }}
                                     </td>
                                     <td style="border: 1px solid #ddd; padding: 8px;">{{ $item->user->name }}</td>
-                                    <td style="width:5%;border: 1px solid #ddd; padding: 8px;">
-                                        <form action="{{ route('project.jadwal_destroy', ['logbooks' => $item->id]) }}"
-                                            method="post">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="button" class='btn btn-danger btn-delete'><i
-                                                    class="bi bi-trash"></i></button>
-                                        </form>
-                                    </td>
+                                    @if (Auth::user()->role != 'guru')
+                                        <td style="width:5%;border: 1px solid #ddd; padding: 8px;">
+                                            <form
+                                                action="{{ route('project.jadwal_destroy', ['logbooks' => $item->id]) }}"
+                                                method="post">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="button" class='btn btn-danger btn-delete'><i
+                                                        class="bi bi-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    @endif
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                    <td colspan="{{ Auth::user()->role == 'guru' ? '5' : '6' }}"
+                                        style="border: 1px solid #ddd; padding: 8px; text-align: center;">
                                         Belum ada jadwal kamu nih.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+
                     {{-- modal form Jadwal start --}}
                     <div class="modal modal-lg modal-centered fade" id="add" data-bs-backdrop="static"
                         data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
@@ -377,6 +384,9 @@
                         </div>
                     </div>
                     {{-- modal form Jadwal end  --}}
+                </div>
+                <div class="paginate float-right mt-3">
+                    {{ $jadwal->links() }}
                 </div>
             </div>
         </div>

@@ -49,7 +49,7 @@ class ProjectController extends Controller
         })->get();
         $attachments = Attachment::whereIn('tugas_id', $taskss->pluck('id'))->get();
         $progress = $taskss->count() > 0 ? ($tasks->count() / $taskss->count()) * 100 : 0;
-        $jadwal = logbooks::where('project_id', $id)->get();
+        $jadwal = logbooks::where('project_id', $id)->paginate(10);
         return view('projects.detail', compact('project', 'nextTask', 'tasks', 'users', 'attachments', 'progress', 'jadwal'));
     }
 
@@ -92,14 +92,14 @@ class ProjectController extends Controller
         $logbook->project_id = $id;
         $logbook->user_id = $userId;
         $logbook->save();
-        session()->flash('success', 'Berhasil Membuat ' . $request->title);
+        session()->flash('success', 'Berhasil Membuat Jadwal ' . $request->title);
         return redirect()->back();
     }
 
     public function jadwal_destroy(logbooks $logbooks)
     {
         $logbooks->delete();
-        session()->flash('success', 'Berhasil Menghapus Jadwal');
+        session()->flash('success', 'Berhasil Menghapus');
         return redirect()->back();
     }
 }
