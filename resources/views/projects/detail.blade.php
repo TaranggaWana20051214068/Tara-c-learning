@@ -249,7 +249,9 @@
                     @endforeach
                 </div>
                 <br>
-                <h5>Teman Kelas</h5>
+                <h5>Teman Kelas <a data-bs-toggle="modal" data-bs-target="#role"
+                        class="btn btn-sm btn-primary text-white">Atur
+                        Role <i class="bi bi-person-fill-gear"></i> </a></h5>
                 <hr>
                 <div class="row row-cols-1 row-cols-md-1 g-2">
                     @foreach ($users->where('role', 'siswa') as $user)
@@ -259,16 +261,84 @@
                             @else
                                 <img src="{{ URL::asset('assets/images/faces/' . $user->profile_pic . '') }}">
                             @endif
-                            <h3 style="margin-left: 15px">{{ $user->name }}</h3>
+                            @foreach ($user->kelompok as $kelompok)
+                                <h3 style="margin-left: 15px">
+                                    {{ $user->name }}
+                                    @if ($kelompok->krole)
+                                        <span class="badge badge-info text-sm">({{ $kelompok->krole }})</span>
+                                    @endif
+                                </h3>
+                            @endforeach
                         </div>
                     @endforeach
+                    {{-- modal form Role start --}}
+                    <div class="modal modal-lg modal-centered fade" id="role" data-bs-backdrop="static"
+                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Atur Role</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <form action="{{ route('project.role', ['id' => $project->id]) }}" method="POST"
+                                    id="formRole">
+                                    @csrf
+                                    @method('POST')
+                                    @php
+                                        $roles = [
+                                            'developer' => 'Developer',
+                                            'project manager' => 'Project Manager',
+                                            'analis' => 'Analis',
+                                            'UI/UX' => 'UI/UX',
+                                        ];
+                                    @endphp
+                                    <div class="modal-body">
+                                        @foreach ($users->where('role', 'siswa') as $user)
+                                            <div class="input-group mb-3">
+                                                <label for="role_{{ $user->id }}"
+                                                    class="col-md-2 col-form-label">{{ $user->name }}</label>
+                                                <div class="col-md-10">
+                                                    <select name="roles[{{ $user->id }}]"
+                                                        id="role_{{ $user->id }}" class="form-control">
+                                                        <option value="">Pilih Role</option>
+                                                        @foreach ($user->kelompok as $kelompok)
+                                                            @if ($kelompok->krole)
+                                                                @foreach ($roles as $value => $label)
+                                                                    <option value="{{ $value }}"
+                                                                        {{ $kelompok->krole == $value ? 'selected' : '' }}>
+                                                                        {{ $label }}</option>
+                                                                @endforeach
+                                                            @else
+                                                                @foreach ($roles as $value => $label)
+                                                                    <option value="{{ $value }}">
+                                                                        {{ $label }}</option>
+                                                                @endforeach
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Selesai</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- modal form Role end  --}}
                 </div>
 
             </div>
             <div id="jadwal" class="tab-pane fade">
                 <br>
-                <h5>Jadwal <a data-bs-toggle="modal" data-bs-target="#add" class="btn btn-outline-primary">Add <i
-                            class="bi bi-plus-circle"></i> </a> </h5>
+                <h5>Jadwal <a data-bs-toggle="modal" data-bs-target="#add" class="btn btn-sm btn-primary text-white">Add
+                        <i class="bi bi-plus-circle"></i> </a> </h5>
                 <hr>
                 <div class="row g-2">
                     <table class="striped table-responsive-sm" style="border-collapse: collapse; width: 100%;">
@@ -384,6 +454,7 @@
                         </div>
                     </div>
                     {{-- modal form Jadwal end  --}}
+
                 </div>
                 <div class="paginate float-right mt-3">
                     {{ $jadwal->links() }}
@@ -410,12 +481,15 @@
         <script>
             $.SweetAlert.showErr("Kesalahan pengisian silahkan ulangi.");
         </script>
-    @endif
-    @if ($errors->has('judul') || $errors->has('deskripsi') || $errors->has('deadline'))
+    @elseif ($errors->has('judul') || $errors->has('deskripsi') || $errors->has('deadline'))
         <script>
             $(document).ready(function() {
                 $('#add').modal('show');
             });
+        </script>
+    @elseif(session('error'))
+        <script>
+            $.SweetAlert.showErr("{{ session('error') }}");
         </script>
     @endif
 @endsection

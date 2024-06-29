@@ -15,6 +15,7 @@ return new class extends Migration {
         Schema::create('kelompoks', function (Blueprint $table) {
             $table->id();
             $table->string('nama_siswa');
+            $table->string('krole')->nullable();
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
             $table->timestamps();
         });

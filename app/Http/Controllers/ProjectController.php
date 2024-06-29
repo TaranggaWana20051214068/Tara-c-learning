@@ -46,7 +46,7 @@ class ProjectController extends Controller
         $kelompok = $project->kelompok;
         $users = User::whereHas('kelompok', function ($query) use ($id) {
             $query->where('project_id', $id);
-        })->get();
+        })->with('kelompok')->get();
         $attachments = Attachment::whereIn('tugas_id', $taskss->pluck('id'))->get();
         $progress = $taskss->count() > 0 ? ($tasks->count() / $taskss->count()) * 100 : 0;
         $jadwal = logbooks::where('project_id', $id)->paginate(10);
@@ -95,6 +95,41 @@ class ProjectController extends Controller
         session()->flash('success', 'Berhasil Membuat Jadwal ' . $request->title);
         return redirect()->back();
     }
+
+    public function role(Request $request, $id)
+    {
+        $request->validate([
+            'roles' => 'required|array',
+        ]);
+
+        foreach ($request->roles as $userId => $role) {
+            if ($role == null) {
+                session()->flash('error', 'Lengkapi Role');
+                return redirect()->back();
+            }
+        }
+        $updatedUsers = [];
+
+        foreach ($request->roles as $userId => $role) {
+            $kelompok = Kelompok::whereHas('users', function ($query) use ($id, $userId) {
+                $query->where('project_id', $id);
+                $query->where('user_id', $userId);
+            })->first();
+            $kelompok->krole = $role;
+            $kelompok->save();
+            $user = User::findOrFail($userId);
+            $updatedUsers[] = $user->name;
+        }
+
+        session()->flash('success', 'Berhasil ' . implode(', ', array_map(function ($name) {
+            return "'$name'";
+        }, $updatedUsers)) . ' berhasil diubah');
+
+        session()->flash('success', 'Berhasil' . ' ' . implode(', ', $updatedUsers) . ' ' . 'berhasil diubah');
+        return redirect()->back();
+    }
+
+
 
     public function jadwal_destroy(logbooks $logbooks)
     {

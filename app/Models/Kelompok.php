@@ -11,6 +11,7 @@ class Kelompok extends Model
     protected $fillable = [
         'nama_siswa',
         'project_id',
+        'krole'
     ];
 
     public function project()
