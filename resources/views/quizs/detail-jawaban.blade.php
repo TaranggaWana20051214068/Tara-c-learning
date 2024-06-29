@@ -29,7 +29,7 @@
                     <div class="card-body row">
                         @foreach ($data as $index => $item)
                             <a class="btn btn-outline-primary" style="max-width: 50px; max-height:40px; margin:5px;"
-                                href="#" onclick="showQuestion({{ $index }})">{{ $item['no_urut'] }}</a>
+                                onclick="showQuestion({{ $index }})">{{ $item['no_urut'] }}</a>
                         @endforeach
                     </div>
                 </div>
@@ -37,37 +37,40 @@
             <div class="col-md-9 sm:mt-5">
                 <div class="card text-primary h-100">
                     <div class="card-body">
-                        <form action="{{ route('quiz.add', ['category' => $category]) }}" method="POST" id="form">
-                            @csrf
-                            @method('post')
-                            <input type="hidden" name="data" value="{{ json_encode($data) }}">
-                            @foreach ($data as $index => $item)
-                                <div class="question" id="question-{{ $index }}"
-                                    style="{{ $index > 0 ? 'display: none;' : '' }}">
-                                    <h4 class='mb-3'>{{ $item['question_text'] }}</h4>
-                                    @if ($item['file'])
-                                        <img class="img mb-3" src="{{ Storage::url('/images/quizs/' . $item['file']) }}"
-                                            alt="question-file-{{ $index }}">
-                                    @endif
-                                    @foreach ($item['choices'] as $choiceIndex => $choice)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio"
-                                                name="answers[{{ $item['id'] }}]" value="{{ $choice['id'] }}"
-                                                id="flexRadioDefault{{ $choiceIndex + 1 }}"
-                                                data-question-index="{{ $index }}"
-                                                onchange="updateButtonClass(this)">
-                                            <label class="form-check-label text-secondary"
-                                                for="flexRadioDefault{{ $choiceIndex + 1 }}">
+                        <h5 class="text-info">score: {{ number_format($normalizedScore, 2) }}</h5>
+                        @foreach ($data as $index => $item)
+                            <div class="question" id="question-{{ $index }}"
+                                style="{{ $index > 0 ? 'display: none;' : '' }}">
+                                <h4 class='mb-3'>{{ $item['question_text'] }}
+                                </h4>
+                                @if ($item['file'])
+                                    <img class="img mb-3" src="{{ Storage::url('/images/quizs/' . $item['file']) }}"
+                                        alt="question-file-{{ $index }}">
+                                @endif
+                                @foreach ($item['choices'] as $choiceIndex => $choice)
+                                    <div class="mb-2">
+                                        <span
+                                            class="alert d-flex align-items-center @if ($choice['is_selected'] && $choice['is_correct']) alert-primary @elseif(!$choice['is_selected'] && $choice['is_correct']) alert-primary @elseif($choice['is_selected'] && !$choice['is_correct']) alert-danger @else alert-light @endif">
+                                            <div class="flex-shrink-0 me-2">
+                                                @if ($choice['is_selected'] && $choice['is_correct'])
+                                                    <i class="bi bi-check-circle ms-2"></i>
+                                                @elseif(!$choice['is_selected'] && $choice['is_correct'])
+                                                    <i class="bi bi-check-circle ms-2"></i>
+                                                @elseif($choice['is_selected'] && !$choice['is_correct'])
+                                                    <i class="bi bi-x-circle ms-2"></i>
+                                                @endif
+                                            </div>
+                                            <div>
                                                 {{ $choice['choice_text'] }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endforeach
-                            <button type="submit" class="btn btn-primary float-right"
-                                style="margin-left: 5px;">Selesai</button>
-                            <button class="btn btn-outline-info next-button float-right" type="button">Next</button>
-                        </form>
+                                            </div>
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        <button type="button" onclick="window.history.back();" class="btn btn-primary float-right"
+                            style="margin-left: 5px;">Kembali</button>
+                        <button class="btn btn-outline-info next-button float-right" type="button">Next</button>
                     </div>
                 </div>
             </div>

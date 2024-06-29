@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::prefix('/quizs')->group(function () {
         Route::get('/', 'QuizController@index')->name('quiz.index');
         Route::get('/{category}', 'QuizController@show')->name('quiz.show');
+        Route::get('/jawaban/{category}', 'QuizController@showJawaban')->name('quiz.showJawaban');
         Route::post('/{category}', 'QuizController@add')->name('quiz.add');
     });
     Route::post('/articles', [ArticleController::class, 'url'])->name('admin.articles.url');

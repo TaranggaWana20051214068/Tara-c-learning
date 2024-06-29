@@ -20,6 +20,28 @@ class QuizController extends Controller
             ->groupBy('category')
             ->orderBy('category', 'desc')
             ->get();
+        $quizClear = QuizQuestion::with('userAnswers')
+            ->whereHas('userAnswers', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->get()
+            ->groupBy('category');
+
+        $data = $quizClear->map(function ($quizClear, $category) use ($userId) {
+            $maxScore = $quizClear->count(); // Jumlah soal dalam kategori
+
+            $totalScore = $quizClear->sum(function ($question) use ($userId) {
+                $userAnswer = $question->userAnswers->where('user_id', $userId)->first();
+                return $userAnswer && $userAnswer->choice->is_correct ? 1 : 0;
+            });
+
+            $normalizedScore = $maxScore > 0 ? ($totalScore / $maxScore) * 100 : 0;
+
+            return [
+                'category' => $category,
+                'score' => $normalizedScore,
+            ];
+        });
         // $quizs = QuizQuestion::with('userAnswers')
         // ->whereDoesntHave('userAnswers', function ($query) use ($userId) {
         //     $query->where('user_id', $userId);
@@ -30,7 +52,7 @@ class QuizController extends Controller
         // ->orderBy('category', 'desc')
         // ->get();
 
-        return view('quizs.index', compact('quizs'));
+        return view('quizs.index', compact('quizs', 'data'));
     }
 
 
@@ -55,9 +77,57 @@ class QuizController extends Controller
                 })->all(),
             ];
         });
-        $categorys = $category;
-        return view('quizs.detail', compact('data', 'categorys'));
+        return view('quizs.detail', compact('data', 'category'));
     }
+
+    public function showJawaban($category)
+    {
+        $userId = auth()->id(); // Dapatkan id pengguna yang sedang login
+
+        // Dapatkan semua pertanyaan dari kategori tertentu dan urutkan berdasarkan id
+        $questions = QuizQuestion::where('category', $category)
+            ->with([
+                'choices',
+                'userAnswers' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }
+            ])
+            ->orderBy('id')
+            ->get();
+
+        $data = $questions->map(function ($question, $index) use ($userId) {
+            $userAnswer = $question->userAnswers->where('user_id', $userId)->first();
+            $isCorrect = $userAnswer ? $userAnswer->choice->is_correct : null;
+
+            return [
+                'no_urut' => $index + 1,
+                'question_text' => $question->pertanyaan,
+                'file' => $question->file,
+                'choices' => $question->choices->map(function ($choice) use ($userAnswer, $isCorrect) {
+                    return [
+                        'id' => $choice->id,
+                        'choice_text' => $choice->choice_text,
+                        'is_selected' => $userAnswer && $userAnswer->choice_id == $choice->id,
+                        'is_correct' => $choice->is_correct, // Tambahkan kunci 'is_correct' di sini
+                    ];
+                })->all(),
+                'user_answer_id' => $userAnswer ? $userAnswer->choice_id : null,
+                'is_correct' => $isCorrect,
+            ];
+        });
+
+
+        $totalScore = $questions->sum(function ($question) use ($userId) {
+            $userAnswer = $question->userAnswers->where('user_id', $userId)->first();
+            return $userAnswer && $userAnswer->choice->is_correct ? 1 : 0;
+        });
+
+        $maxScore = $questions->count();
+        $normalizedScore = $maxScore > 0 ? ($totalScore / $maxScore) * 100 : 0;
+
+        return view('quizs.detail-jawaban', compact('data', 'category', 'normalizedScore'));
+    }
+
     public function add(Request $request)
     {
         $data = json_decode($request->input('data'), true);
