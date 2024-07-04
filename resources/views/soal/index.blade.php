@@ -28,27 +28,39 @@
             </div>
         </div>
         <div class="section-body">
-            <div class="row mb-3">
-                <form action="" class="form-inline">
-                    <div class="col-md-5 mb-3">
-                        <div class="input-group">
-                            <select name="subject" id="subject" class="form-select">
-                                <option value="" selected disabled>- Pilih Mata Pelajaran -</option>
-                                <option value="">All</option>
-                                @foreach ($subjects as $subject)
-                                    <option value="{{ $subject->id }}"
-                                        {{ request()->input('subject') == $subject->id ? 'selected' : '' }}>
-                                        {{ $subject->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-search"></i>
-                            </button>
+            <a class="btn btn-primary mb-3 text-white" data-bs-toggle="modal" data-bs-target="#matapelajaran">Pilih Mata
+                Pelajaran</a>
+            {{-- modal mata pelajaran --}}
+            <div class="modal fade" id="matapelajaran" tabindex="-1" aria-labelledby="matapelajaranLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="matapelajaranLabel">Pilih Mata Pelajaran</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
+                        <form action="">
+                            <div class="modal-body">
+                                <div class="containerr">
+                                    @foreach ($subjects as $subject)
+                                        <label>
+                                            <input type="radio" name="subject" checked=""
+                                                value="{{ $subject->id }}">
+                                            <span>{{ $subject->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Pilih</button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
+            {{-- modal mata pelajaran end --}}
             <div class="row row-cols-1 row-cols-md-3 d-flex flex-wrap">
                 @forelse ($questions as $question)
                     <a class="text-decoration-none  d-flex justify-content-center" href="{!! $question->codes->count() == 0 ? route('soal.show', ['id' => $question->id]) : '#' !!}">
@@ -92,4 +104,14 @@
     </div>
 </section>
 
+@endsection
+@section('script-bottom')
+@if (!request()->get('subject'))
+    <script>
+        window.onload = function() {
+            var exampleModal = new bootstrap.Modal(document.getElementById('matapelajaran'));
+            exampleModal.show();
+        }
+    </script>
+@endif
 @endsection

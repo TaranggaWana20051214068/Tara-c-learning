@@ -244,16 +244,43 @@ class HomeController extends Controller
 
 
 
-    public function projects_index()
+    public function projects_index(Request $request)
     {
+        $subject = $request->get('subject');
+
         $projects = Project::whereDoesntHave('kelompok.users', function ($query) {
             $query->where('users.id', auth()->id());
-        })->orderBy('id', 'asc')->paginate(10);
+        })
+            ->whereHas('periode', function ($query) {
+                $query->where('status', 1);
+            })
+            ->whereHas('subject', function ($query) use ($subject) {
+                if ($subject) {
+                    $query->where('id', $subject);
+                }
+            })
+            ->orderBy('id', 'asc')
+            ->paginate(10);
+
         $takenProjects = Project::whereHas('kelompok.users', function ($query) {
             $query->where('users.id', auth()->id());
-        })->orderBy('id', 'desc')->paginate(10);
-        return view('projects.index', compact('projects', 'takenProjects'));
+        })
+            ->whereHas('periode', function ($query) {
+                $query->where('status', 1);
+            })
+            ->whereHas('subject', function ($query) use ($subject) {
+                if ($subject) {
+                    $query->where('id', $subject);
+                }
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+
+        $subjects = Subject::all();
+
+        return view('projects.index', compact('projects', 'takenProjects', 'subjects'));
     }
+
 
     public function panduan()
     {

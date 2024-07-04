@@ -13,6 +13,39 @@
             <div class="divider"></div>
             <button type="button" class="waves-effect waves-light btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#modalAdd">Add Project <i class="bi bi-arrow-right-circle-fill"></i></button>
+            <a class="btn btn-primary text-white " data-bs-toggle="modal" data-bs-target="#matapelajaran">Pilih Mata
+                Pelajaran</a>
+            {{-- modal mata pelajaran --}}
+            <div class="modal fade" id="matapelajaran" tabindex="-1" aria-labelledby="matapelajaranLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="matapelajaranLabel">Pilih Mata Pelajaran</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <form action="">
+                            <div class="modal-body">
+                                <div class="containerr">
+                                    @foreach ($subjects as $subject)
+                                        <label>
+                                            <input type="radio" name="subject" checked=""
+                                                value="{{ $subject->id }}">
+                                            <span>{{ $subject->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Pilih</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {{-- modal mata pelajaran end --}}
         </div>
         <div class="section-body">
             <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -94,7 +127,8 @@
                                 @endforelse
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
@@ -111,6 +145,14 @@
 @if (session('success'))
     <script>
         $.SweetAlert.showSucc("{{ session('success') }}");
+    </script>
+@endif
+@if (!request()->get('subject'))
+    <script>
+        window.onload = function() {
+            var exampleModal = new bootstrap.Modal(document.getElementById('matapelajaran'));
+            exampleModal.show();
+        }
     </script>
 @endif
 @endsection
