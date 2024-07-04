@@ -124,26 +124,6 @@ class HomeController extends Controller
 
     public function profile()
     {
-        DB::table('articles')
-            ->update([
-                'periode_id' => 1,
-                'subject_id' => 1,
-            ]);
-        DB::table('projects')
-            ->update([
-                'periode_id' => 1,
-                'subject_id' => 1,
-            ]);
-        DB::table('questions')
-            ->update([
-                'periode_id' => 1,
-                'subject_id' => 1,
-            ]);
-        DB::table('quiz_questions')
-            ->update([
-                'periode_id' => 1,
-                'subject_id' => 1,
-            ]);
         // return view('errors.503', compact('pesan'));
         $user = Auth::user();
         $userId = Auth::user()->id;
