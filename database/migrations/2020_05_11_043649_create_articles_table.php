@@ -20,9 +20,13 @@ class CreateArticlesTable extends Migration
             $table->string('thumbnail_image_name')->nullable();
             $table->string('file_name')->nullable();
             $table->text('content');
+            $table->unsignedBigInteger('periode_id');
+            $table->unsignedBigInteger('subject_id');
             $table->timestamps();
 
             $table->foreign('author_id')->references('id')->on('users');
+            $table->foreign('periode_id')->references('id')->on('periodes');
+            $table->foreign('subject_id')->references('id')->on('subjects');
         });
     }
 

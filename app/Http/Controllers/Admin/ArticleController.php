@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Periode;
+use App\Models\Subject;
 use App\Models\YoutubeLink;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,7 +11,8 @@ use App\Models\Article;
 use Str;
 use Auth;
 use Storage;
-
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 
 class ArticleController extends Controller
 {
@@ -18,22 +21,34 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $search = $request->get('search');
-        $articles = Article::where('title', 'LIKE', "%$search%")->orderBy('id', 'desc')->paginate(10);
-        $articles->appends(['search' => $search]);
-        return view('admin.articles.index', compact('articles'));
+        $subject = $request->get('subject');
+
+        $articles = Article::whereHas('periode', function ($query) {
+            $query->where('status', 1);
+        })->whereHas('subject', function ($query) use ($subject) {
+            if ($subject) {
+                $query->where('id', 'LIKE', "%$subject%");
+            }
+        })->where('title', 'LIKE', "%$search%")->orderBy('id', 'desc')->paginate(10);
+
+        $articles->appends(['search' => $search, 'subject' => $subject]);
+        $subjects = Subject::all();
+        return view('admin.articles.index', compact('articles', 'subjects'));
     }
+
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
-        return view('admin.articles.add');
+        $subjects = Subject::all();
+        return view('admin.articles.add', compact('subjects'));
     }
     /**
      * Store a newly created resource in storage.
@@ -50,12 +65,17 @@ class ArticleController extends Controller
             'content' => 'required',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'youtube_links' => 'nullable',
+            'subject' => 'required||integer',
         ]);
+        // Dapatkan id periode yang sedang aktif
+        $periodeId = Periode::where('status', 1)->first()->id;
         // Simpan artikel
         $article = new Article;
         $article->title = $request->title;
         $article->author_id = Auth::user()->id;
         $article->content = $request->content;
+        $article->subject_id = $request->subject;
+        $article->periode_id = $periodeId;
 
         // Simpan thumbnail jika ada
         $photo = $request->file('thumbnail');
@@ -108,11 +128,12 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id): View
     {
         $article = Article::findOrFail($id);
         $links = YoutubeLink::where('article_id', $id)->orderBy('id', 'desc')->pluck('link');
-        return view('admin.articles.edit', compact('article', 'links'));
+        $subjects = Subject::all();
+        return view('admin.articles.edit', compact('article', 'links', 'subjects'));
     }
 
     /**
@@ -128,11 +149,13 @@ class ArticleController extends Controller
             'title' => 'required',
             'content' => 'required',
             'thumbnail' => 'nullable|file',
-            'file' => 'nullable|file'
+            'file' => 'nullable|file',
+            'subject' => 'required||integer',
         ]);
         $article = Article::findOrFail($id);
         $article->title = $request->title;
         $article->content = $request->content;
+        $article->subject_id = $request->subject;
         if ($request->hasFile('thumbnail')) {
             Storage::delete('public/images/articles/' . $article->thumbnail_image_name);
             $photo = $request->file('thumbnail');

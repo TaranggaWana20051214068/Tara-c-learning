@@ -15,4 +15,14 @@ class Article extends Model
     {
         return $this->hasMany(YoutubeLink::class);
     }
+
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'subject_id', 'id');
+    }
 }

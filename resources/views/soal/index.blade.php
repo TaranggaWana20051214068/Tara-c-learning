@@ -28,6 +28,27 @@
             </div>
         </div>
         <div class="section-body">
+            <div class="row mb-3">
+                <form action="" class="form-inline">
+                    <div class="col-md-5 mb-3">
+                        <div class="input-group">
+                            <select name="subject" id="subject" class="form-select">
+                                <option value="" selected disabled>- Pilih Mata Pelajaran -</option>
+                                <option value="">All</option>
+                                @foreach ($subjects as $subject)
+                                    <option value="{{ $subject->id }}"
+                                        {{ request()->input('subject') == $subject->id ? 'selected' : '' }}>
+                                        {{ $subject->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <div class="row row-cols-1 row-cols-md-3 d-flex flex-wrap">
                 @forelse ($questions as $question)
                     <a class="text-decoration-none  d-flex justify-content-center" href="{!! $question->codes->count() == 0 ? route('soal.show', ['id' => $question->id]) : '#' !!}">

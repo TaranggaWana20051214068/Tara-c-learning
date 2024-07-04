@@ -29,19 +29,38 @@
 
                         <h4 class="mt-0 header-title">Project</h4>
                         <p class="text-muted m-b-30 font-14">Berikut adalah daftar seluruh project</p>
-
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <form action="" class="form-inline">
-                                    <input type="text" class="form-control mr-2" placeholder="Cari Data" name='search'>
-                                    <button type="submit" class='btn btn-primary'>Cari</button>
-                                </form>
+                        <form action="" class="form-inline">
+                            <div class="row mb-3">
+                                <div class="col-md-5 mb-3">
+                                    <div class="input-group">
+                                        <select name="subject" id="subject" class="form-select">
+                                            <option value="" selected disabled>- Pilih Mata Pelajaran -</option>
+                                            @foreach ($subjects as $subject)
+                                                <option value="{{ $subject->id }}"
+                                                    {{ request()->input('subject') == $subject->id ? 'selected' : '' }}>
+                                                    {{ $subject->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Cari Data" name="search"
+                                            value="{{ request()->get('search') }}">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 ml-auto float-right">
+                                    <a class="btn btn-primary " href="{{ route('admin.projects.create') }}">Tambah</a>
+                                </div>
                             </div>
-                            <div class="col-md-2 ml-auto">
-                                <a class="btn btn-primary float-right"
-                                    href="{{ route('admin.projects.create') }}">Tambah</a>
-                            </div>
-                        </div>
+                        </form>
                         @if (session('success'))
                             <div class="alert alert-success d-flex align-items-center" role="alert">
                                 <i class="bi-lg bi-check-circle flex-shrink-0 me-2"></i>
@@ -63,7 +82,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($projects as $project)
+                                    @forelse ($projects as $project)
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td>{{ $project->judul }}</td>
@@ -90,18 +109,17 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforeach
-                                    @forelse ($projects as $project)
                                     @empty
                                         <tr>
-                                            <td colspan="6" class='text-center'>Data tidak ditemukan, Mohon <a
-                                                    href="{{ route('admin.projects.create') }}">Tambah
-                                                    Data</a></td>
+                                            <td colspan="6" class='text-center'>Data tidak ditemukan, Mohon
+                                                @if (request()->search || request()->subject)
+                                                    <a href="{{ route('admin.projects.index') }}">Kembali</a>
+                                                @else
+                                                    <a href="{{ route('admin.projects.create') }}">Tambah</a>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforelse
-                                    <tr>
-                                        <div></div>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -126,6 +144,17 @@
     @if (session('success'))
         <script>
             $.SweetAlert.showSucc("{{ session('success') }}");
+        </script>
+    @endif
+    @if ($subjects->isEmpty())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Mata Pelajaran tidak ditemukan, Silahkan Isi Mata Pelajaran Terlebih Dahulu',
+            }).then(function() {
+                window.location.href = "{{ route('admin.subjects.create') }}";
+            });
         </script>
     @endif
 @endsection

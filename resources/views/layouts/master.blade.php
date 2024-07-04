@@ -10,6 +10,7 @@
 </head>
 
 <body>
+
     <script src="{{ URL::asset('assets/js/initTheme.js') }}"></script>
 
     <!-- Begin page -->
@@ -28,6 +29,12 @@
     </div>
     <!-- END wrapper -->
     @include('layouts.footer-script')
+    @if (Session::has('error'))
+        <script>
+            $.SweetAlert.showErr("{{ Session::get('error') }}");
+        </script>
+    @endif
+
 </body>
 
 </html>

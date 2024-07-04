@@ -2,17 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subject;
 use App\Models\UserAnswer;
 use Illuminate\Http\Request;
 use App\Models\QuizQuestion;
 
 class QuizController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userId = auth()->id(); // Dapatkan id pengguna yang sedang login
+        $subject = $request->get('subject');
 
-        $quizs = QuizQuestion::with('userAnswers')
+        $quizs = QuizQuestion::whereHas('periode', function ($query) {
+            $query->where('status', 1);
+        })
+            ->whereHas('subject', function ($query) use ($subject) {
+                if ($subject) {
+                    $query->where('id', $subject);
+                }
+            })
+            ->with('userAnswers')
             ->whereDoesntHave('userAnswers', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
@@ -20,7 +30,16 @@ class QuizController extends Controller
             ->groupBy('category')
             ->orderBy('category', 'desc')
             ->get();
-        $quizClear = QuizQuestion::with('userAnswers')
+
+        $quizClear = QuizQuestion::whereHas('periode', function ($query) {
+            $query->where('status', 1);
+        })
+            ->whereHas('subject', function ($query) use ($subject) {
+                if ($subject) {
+                    $query->where('id', $subject);
+                }
+            })
+            ->with('userAnswers')
             ->whereHas('userAnswers', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
@@ -42,18 +61,12 @@ class QuizController extends Controller
                 'score' => $normalizedScore,
             ];
         });
-        // $quizs = QuizQuestion::with('userAnswers')
-        // ->whereDoesntHave('userAnswers', function ($query) use ($userId) {
-        //     $query->where('user_id', $userId);
-        // })
-        // ->where('category', 'LIKE', "%$search%")
-        // ->select('category')
-        // ->groupBy('category')
-        // ->orderBy('category', 'desc')
-        // ->get();
 
-        return view('quizs.index', compact('quizs', 'data'));
+        $subjects = Subject::all();
+
+        return view('quizs.index', compact('quizs', 'data', 'subjects'));
     }
+
 
 
 

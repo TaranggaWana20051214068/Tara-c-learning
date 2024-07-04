@@ -32,7 +32,28 @@
                             class='mt-3'>
                             @csrf
                             @method('put')
-                            <input type="hidden" name="subject" value="1">
+                            <div class="form-group row">
+                                <label for="subject" class='col-md-2 col-form-label'>Mata Pelajaran</label>
+                                <div class="col-md-10">
+                                    <select name="subject" class="form-select @error('subject') is-invalid @enderror"
+                                        id="">
+                                        <option value="" disabled>Pilih Mata Pelajaran</option>
+                                        @foreach ($subjects as $subject)
+                                            @if ($subject->id == 1)
+                                            @else
+                                                <option value="{{ $subject->id }}"
+                                                    {{ ($question->subject_id == $subject->id ? 'selected' : old('subject') == $subject->id) ? 'selected' : '' }}>
+                                                    {{ $subject->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @error('subject')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Judul</label>
                                 <div class="col-md-10">
@@ -68,25 +89,6 @@
                                         @endforeach
                                     </select>
                                     @error('materi')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="bahasa" class='col-md-2 col-form-label'>Bahasa Pemprograman</label>
-                                <div class="col-md-10">
-                                    <select name="bahasa" id="bahasa"
-                                        class="form-control @error('bahasa') is-invalid @enderror">
-                                        <option value="">Pilih bahasa</option>
-                                        @foreach ($bahasa as $item)
-                                            <option
-                                                value="{{ $item }}"{{ $item == $question->bahasa ? 'selected' : '' }}>
-                                                {{ $item }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('bahasa')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>

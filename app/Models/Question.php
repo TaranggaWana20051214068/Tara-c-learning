@@ -17,6 +17,8 @@ class Question extends Model
         'judul',
         'deskripsi',
         'bahasa',
+        'periode_id',
+        'subject_id',
     ];
 
 
@@ -31,5 +33,14 @@ class Question extends Model
     public function codes()
     {
         return $this->hasMany(Code::class);
+    }
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
     }
 }

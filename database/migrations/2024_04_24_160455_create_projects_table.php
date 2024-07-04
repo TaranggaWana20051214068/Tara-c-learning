@@ -17,7 +17,12 @@ return new class extends Migration {
             $table->string('judul');
             $table->text('deskripsi');
             $table->string('thumbnail')->nullable();
+            $table->unsignedBigInteger('periode_id');
+            $table->unsignedBigInteger('subject_id');
             $table->timestamps();
+
+            $table->foreign('periode_id')->references('id')->on('periodes');
+            $table->foreign('subject_id')->references('id')->on('subjects');
         });
     }
 

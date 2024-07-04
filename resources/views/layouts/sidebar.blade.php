@@ -92,12 +92,19 @@
                         <span>Pengguna</span>
                     </a>
                 </li>
-                {{-- <li class="sidebar-item  {{ 'admin.subjects.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                <li class="sidebar-item  {{ 'admin.subjects.index' === Route::currentRouteName() ? 'active' : '' }} ">
                     <a href="{{ route('admin.subjects.index') }}" class="sidebar-link ">
                         <i class="bi bi-book-fill"></i>
                         <span>Mata Pelajaran </span>
                     </a>
                 </li>
+                <li class="sidebar-item  {{ 'admin.periode.index' === Route::currentRouteName() ? 'active' : '' }} ">
+                    <a href="{{ route('admin.periode.index') }}" class="sidebar-link ">
+                        <i class="bi bi-clock-fill"></i>
+                        <span>Tahun Ajaran </span>
+                    </a>
+                </li>
+                {{-- 
                 <li class="sidebar-item  {{ 'admin.schedules.index' === Route::currentRouteName() ? 'active' : '' }} ">
                     <a href="{{ route('admin.schedules.index') }}" class="sidebar-link ">
                         <i class="bi bi-clock-fill"></i>

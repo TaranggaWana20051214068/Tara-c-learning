@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Periode;
 use App\Models\Project;
+use App\Models\Subject;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use App\Models\Tugas;
 use App\Models\Attachment;
@@ -16,8 +19,21 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
-        $projects = Project::where('judul', 'LIKE', "%$search%")->orderBy('id', 'desc')->paginate(10);
-        $projects->appends(['search' => $search]);
+        $subject = $request->get('subject');
+
+        $projects = Project::whereHas('periode', function ($query) {
+            $query->where('status', 1);
+        })
+            ->whereHas('subject', function ($query) use ($subject) {
+                if ($subject) {
+                    $query->where('id', $subject);
+                }
+            })
+            ->where('judul', 'LIKE', "%$search%")
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+
+        $projects->appends(['search' => $search, 'subject' => $subject]);
 
         // Check if there are any tasks with project_id from the projects table
         $projectIds = $projects->pluck('id');
@@ -28,8 +44,11 @@ class ProjectController extends Controller
                 return $tasks->count() > 0;
             });
 
-        return view('admin.projects.index', compact('projects', 'cekTugas'));
+        $subjects = Subject::all();
+
+        return view('admin.projects.index', compact('projects', 'cekTugas', 'subjects'));
     }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -52,7 +71,8 @@ class ProjectController extends Controller
 
     public function create()
     {
-        return view('admin.projects.add');
+        $subjects = Subject::all();
+        return view('admin.projects.add', compact('subjects'));
     }
     /**
      * Show the form for creating a new resource.
@@ -64,12 +84,17 @@ class ProjectController extends Controller
         $request->validate([
             'judul' => 'required',
             'deskripsi' => 'required',
-            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'subject' => 'required||integer',
         ]);
-
+        // 
+        // Dapatkan id periode yang sedang aktif
+        $periodeId = Periode::where('status', 1)->first()->id;
         $project = new Project();
         $project->judul = $request->judul;
         $project->deskripsi = $request->deskripsi;
+        $project->periode_id = $periodeId;
+        $project->subject_id = $request->subject;
 
         $photo = $request->file('thumbnail');
         $image_extension = $photo->extension();
@@ -87,10 +112,11 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id): View
     {
         $project = Project::findOrFail($id);
-        return view('admin.projects.edit', compact('project'));
+        $subjects = Subject::all();
+        return view('admin.projects.edit', compact('project', 'subjects'));
     }
     /**
      * Update the specified resource in storage.
@@ -104,11 +130,13 @@ class ProjectController extends Controller
         $request->validate([
             'judul' => 'required',
             'deskripsi' => 'required',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'subject' => 'required'
         ]);
         $project = Project::find($id);
         $project->judul = $request->judul;
         $project->deskripsi = $request->deskripsi;
+        $project->subject_id = $request->subject;
         if ($request->hasFile('thumbnail')) {
             Storage::delete('public/images/projects/' . $project->thumbnail);
             $photo = $request->file('thumbnail');

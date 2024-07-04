@@ -12,7 +12,9 @@ class QuizQuestion extends Model
     protected $fillable = [
         'pertanyaan',
         'category',
-        'file'
+        'file',
+        'periode_id',
+        'subject_id',
     ];
     protected $table = 'quiz_questions';
     public function choices()
@@ -22,5 +24,14 @@ class QuizQuestion extends Model
     public function userAnswers()
     {
         return $this->hasMany(UserAnswer::class, 'q_question_id');
+    }
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
     }
 }

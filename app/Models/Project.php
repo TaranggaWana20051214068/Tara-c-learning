@@ -11,6 +11,8 @@ class Project extends Model
         'judul',
         'deskripsi',
         'status',
+        'periode_id',
+        'subject_id',
     ];
 
     public function kelompok()
@@ -22,5 +24,15 @@ class Project extends Model
     public function tugas()
     {
         return $this->hasMany('App\Tugas');
+    }
+
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
     }
 }

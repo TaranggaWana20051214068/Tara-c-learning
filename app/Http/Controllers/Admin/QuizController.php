@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Periode;
 use App\Models\QuizQuestion;
+use App\Models\Subject;
 use App\Models\UserAnswer;
 use Illuminate\Http\Request;
 use DB;
@@ -17,20 +19,36 @@ class QuizController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
-        $quizs = QuizQuestion::where('category', 'LIKE', "%$search%")
+        $subject = $request->get('subject');
+
+        $quizs = QuizQuestion::whereHas('periode', function ($query) {
+            $query->where('status', 1);
+        })
+            ->whereHas('subject', function ($query) use ($subject) {
+                if ($subject) {
+                    $query->where('id', $subject);
+                }
+            })
+            ->where('category', 'LIKE', "%$search%")
             ->select('category', DB::raw('count(*) as total'))
             ->groupBy('category')
             ->orderBy('total', 'desc')
             ->paginate(10);
-        $quizs->appends(['search' => $search]);
 
-        return view('admin.quizs.index', compact('quizs'));
+        $quizs->appends(['search' => $search, 'subject' => $subject]);
+
+        $subjects = Subject::all();
+
+        return view('admin.quizs.index', compact('quizs', 'subjects'));
     }
+
 
     public function create()
     {
-        return view('admin.quizs.add');
+        $subjects = Subject::all();
+        return view('admin.quizs.add', compact('subjects'));
     }
+
     public function addQuiz(Request $request)
     {
         if (empty($request->category)) {
@@ -47,10 +65,14 @@ class QuizController extends Controller
                 return response()->json(['error' => 'Ukuran file tidak boleh lebih dari 2MB'], 422);
             }
         }
+        // Dapatkan id periode yang sedang aktif
+        $periodeId = Periode::where('status', 1)->first()->id;
         // Membuat pertanyaan baru
         $quizQuestion = new QuizQuestion;
         $quizQuestion->pertanyaan = $request->question;
         $quizQuestion->category = $request->category;
+        $quizQuestion->periode_id = $periodeId;
+        $quizQuestion->subject_id = $request->subject;
         if ($request->hasFile('file')) {
             $photo = $request->file('file');
             $image_extension = $photo->extension();
@@ -89,11 +111,13 @@ class QuizController extends Controller
 
     public function edit($id)
     {
+        $subjects = Subject::all();
+
         // Temukan quiz berdasarkan id
         $quiz = QuizQuestion::with('choices')->findOrFail($id);
 
         // Tampilkan view edit dengan quiz dan choices
-        return view('admin.quizs.edit', compact('quiz'));
+        return view('admin.quizs.edit', compact('quiz', 'subjects'));
     }
 
     public function update(Request $request, $id)
@@ -106,12 +130,14 @@ class QuizController extends Controller
             'category' => 'required|string',
             'question' => 'required|string',
             'file' => 'nullable|max:2048',
+            'subject' => 'required|numeric',
         ]);
 
         // Perbarui pertanyaan
         $quizQuestion = QuizQuestion::find($id);
         $quizQuestion->pertanyaan = $validated['question'];
         $quizQuestion->category = $validated['category'];
+        $quizQuestion->subject_id = $validated['subject'];
         if ($request->hasFile('file')) {
             Storage::delete('public/images/quizs/' . $quizQuestion->file);
             $photo = $request->file('file');

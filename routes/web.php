@@ -83,6 +83,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     Route::name('admin.')->group(function () {
         Route::get('/', 'HomeController@index')->name('dashboard');
         Route::resource('/users', 'UserController');
+        Route::resource('/periode', 'PeriodeController');
         Route::resource('/students', 'StudentController');
         Route::resource('/subjects', 'SubjectController');
         Route::resource('/schedules', 'ScheduleController');
@@ -103,6 +104,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::post('/projects/siswa/{id}', 'ProjectController@siswa')->name('projects.siswa');
         Route::get('/projects/siswa/{id}', 'ProjectController@siswaShow')->name('projects.tampilSiswa');
         Route::get('/projects/{id}/editTugas', 'ProjectController@editTugas')->name('projects.editTugas');
+        Route::post('/questions/createCustom', 'SoalController@createCustom')->name('questions.createCustom');
         Route::post('/questions/{id}/nilai', 'SoalController@nilai')->name('questions.nilai');
         Route::post('/questions/{id}', 'SoalController@editNilai')->name('questions.editNilai');
         Route::get('/settings', 'SettingController@index')->name('settings.index');

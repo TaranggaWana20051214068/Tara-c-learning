@@ -3,11 +3,32 @@
 @section('css')
     <link rel="stylesheet" href="{{ URL::asset('assets/plugins/morris/morris.css') }}">
 @endsection
+@section('script-bottom')
+    @php
+        $existsPeriode = \App\Models\Periode::exists();
+    @endphp
+
+    @if (!$existsPeriode)
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Periode belum dibuat!, buat periode terlebih dahulu!',
+            }).then(function() {
+                window.location.href = "{{ route('admin.periode.create') }}";
+            });
+        </script>
+    @endif
+@endsection
 @section('title', 'Dashboard')
 @section('content')
     <div class="page-heading">
         <h3>Dashboard</h3>
         <p>Welcome to {{ config('web_config')['WEB_TITLE'] }}</p>
+        @foreach ($periode as $i)
+            <p>Tahun Ajaran: {{ $i->tahun . ',' . $i->semester }}</p>
+        @endforeach
+
     </div>
     <div class="page-content">
 
@@ -72,7 +93,6 @@
                 <div class="card m-b-20">
                     <div class="card-body">
                         <h4 class="mt-0 header-title">Latest Articles</h4>
-
                         <div class="table-responsive mt-5">
                             <table class="table table-striped">
                                 <thead>
@@ -110,7 +130,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 @endsection

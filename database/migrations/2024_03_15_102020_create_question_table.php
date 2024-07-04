@@ -16,10 +16,15 @@ return new class extends Migration {
             $table->id();
             $table->string('judul');
             $table->text('deskripsi');
-            $table->string('bahasa');
+            $table->string('bahasa')->nullable();
             $table->foreignId('author_id')->nullable()->constrained('users');
             $table->foreignId('article_id')->nullable()->constrained();
+            $table->unsignedBigInteger('periode_id');
+            $table->unsignedBigInteger('subject_id');
             $table->timestamps();
+
+            $table->foreign('periode_id')->references('id')->on('periodes');
+            $table->foreign('subject_id')->references('id')->on('subjects');
         });
     }
 

@@ -32,6 +32,25 @@
                             enctype="multipart/form-data">
                             @csrf
                             <div class="form-group row">
+                                <label for="subject" class='col-md-2 col-form-label'>Mata Pelajaran</label>
+                                <div class="col-md-10">
+                                    <select name="subject" class="form-select @error('subject') is-invalid @enderror"
+                                        id="">
+                                        <option value="" disabled>Pilih Mata Pelajaran</option>
+                                        @foreach ($subjects as $subject)
+                                            <option value="{{ $subject->id }}"
+                                                {{ old('subject') == $subject->id ? 'selected' : '' }}>{{ $subject->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('subject')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="" class='col-md-2 col-form-label'>Judul</label>
                                 <div class="col-md-10">
                                     <input type="text" name="title"
@@ -114,4 +133,15 @@
     <script>
         addYT();
     </script>
+    @if ($subjects->isEmpty())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Mata Pelajaran tidak ditemukan, Silahkan Isi Mata Pelajaran Terlebih Dahulu',
+            }).then(function() {
+                window.location.href = "{{ route('admin.subjects.create') }}";
+            });
+        </script>
+    @endif
 @endsection

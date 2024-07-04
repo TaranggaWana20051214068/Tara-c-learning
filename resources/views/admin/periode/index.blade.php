@@ -3,7 +3,7 @@
 @section('css')
     <!-- Plugins css -->
 @endsection
-@section('title', 'Mata Pelajaran')
+@section('title', 'Tahun Ajaran')
 
 @section('content')
     <div class="container-fluid">
@@ -11,10 +11,10 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Mata Pelajaran</h4>
+                    <h4 class="page-title">Tahun Ajaran</h4>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Mata Pelajaran</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Tahun Ajaran</a></li>
                     </ol>
 
 
@@ -28,8 +28,8 @@
                 <div class="card m-b-20">
                     <div class="card-body">
 
-                        <h4 class="mt-0 header-title">Seluruh Mata Pelajaran</h4>
-                        <p class="text-muted m-b-30 font-14">Berikut adalah daftar seluruh mata pelajaran</p>
+                        <h4 class="mt-0 header-title">Seluruh Tahun Ajaran</h4>
+                        <p class="text-muted m-b-30 font-14">Berikut adalah daftar seluruh tahun ajaran.</p>
 
                         <div class="row mb-3">
                             <div class="col-md-4">
@@ -39,8 +39,7 @@
                                 </form>
                             </div>
                             <div class="col-md-2 ml-auto">
-                                <a class="btn btn-primary float-right"
-                                    href="{{ route('admin.subjects.create') }}">Tambah</a>
+                                <a class="btn btn-primary float-right" href="{{ route('admin.periode.create') }}">Tambah</a>
                             </div>
                         </div>
                         @if (session('success'))
@@ -51,21 +50,27 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Nama</th>
+                                        <th>Tahun</th>
+                                        <th>Semester</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($subjects as $subject)
+                                    @forelse ($periode as $i)
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
-                                            <td>{{ $subject->name }}</td>
+                                            <td>{{ $i->tahun }}</td>
+                                            <td>{{ $i->semester }}</td>
+                                            <td> <span
+                                                    class="badge text-bg-{{ $i->status == 1 ? 'success' : 'danger' }}">{{ $i->status == 1 ? 'Aktif' : 'Nonaktif' }}</span>
+                                            </td>
                                             <td>
                                                 <div class='d-inline-flex'>
-                                                    <a href="{{ route('admin.subjects.edit', ['subject' => $subject->id]) }}"
+                                                    <a href="{{ route('admin.periode.edit', ['periode' => $i->id]) }}"
                                                         class='btn btn-warning mr-2'><i class="bi bi-pencil-fill"></i></a>
                                                     <form
-                                                        action="{{ route('admin.subjects.destroy', ['subject' => $subject->id]) }}"
+                                                        action="{{ route('admin.periode.destroy', ['periode' => $i->id]) }}"
                                                         method="post">
                                                         @csrf
                                                         @method('delete')
@@ -78,14 +83,14 @@
                                     @empty
                                         <tr>
                                             <td colspan="5" class="text-center">Data tidak ditemukan, <a
-                                                    href="{{ route('admin.subjects.create') }}">Tambah Data.</a></td>
+                                                    href="{{ route('admin.periode.create') }}">Tambah Data.</a></td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
                         <div class="paginate float-right mt-3">
-                            {{ $subjects->links() }}
+                            {{ $periode->links() }}
                         </div>
                     </div>
                 </div>

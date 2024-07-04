@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Question;
 use App\Models\QuizQuestion;
+use App\Models\Subject;
 use App\Models\UserAnswer;
 use App\Models\YoutubeLink;
 use Carbon\Carbon;
@@ -65,6 +66,7 @@ class HomeController extends Controller
                 session()->flash('warning-presensi', 'Anda belum presensi hari ini.');
             }
         }
+
         return view('home', compact('menus', 'ttg'));
     }
     public function updatedJawaban()
@@ -81,11 +83,28 @@ class HomeController extends Controller
         return 'Nilai created_at dan updated_at berhasil diubah untuk tabel ' . $table_name;
     }
 
-    public function article_index()
+    public function article_index(Request $request)
     {
-        $articles = Article::orderBy('id', 'desc')->paginate(10);
-        return view('articles.index', compact('articles'));
+        $search = $request->get('search');
+        $subject = $request->get('subject');
+
+        $articles = Article::whereHas('periode', function ($query) {
+            $query->where('status', 1);
+        })
+            ->whereHas('subject', function ($query) use ($subject) {
+                if ($subject) {
+                    $query->where('id', $subject);
+                }
+            })
+            ->where('title', 'LIKE', "%$search%")
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+
+        $articles->appends(['search' => $search, 'subject' => $subject]);
+        $subjects = Subject::all();
+        return view('articles.index', compact('articles', 'subjects'));
     }
+
     public function article_show($id)
     {
         $article = Article::findOrFail($id);
@@ -105,6 +124,26 @@ class HomeController extends Controller
 
     public function profile()
     {
+        DB::table('articles')
+            ->update([
+                'periode_id' => 1,
+                'subject_id' => 1,
+            ]);
+        DB::table('projects')
+            ->update([
+                'periode_id' => 1,
+                'subject_id' => 1,
+            ]);
+        DB::table('questions')
+            ->update([
+                'periode_id' => 1,
+                'subject_id' => 1,
+            ]);
+        DB::table('quiz_questions')
+            ->update([
+                'periode_id' => 1,
+                'subject_id' => 1,
+            ]);
         // return view('errors.503', compact('pesan'));
         $user = Auth::user();
         $userId = Auth::user()->id;
@@ -190,24 +229,39 @@ class HomeController extends Controller
         session()->flash('success', "Sukses ubah data $request->name");
         return redirect()->route('user.profile');
     }
-    public function questions_index()
+    public function questions_index(Request $request)
     {
         $userId = auth()->id();
+        $subject = $request->get('subject');
 
         // Ambil semua pertanyaan dengan informasi 'codes' terkait
         $questions = Question::with([
             'codes' => function ($query) use ($userId) {
                 $query->where('author_id', $userId);
             }
-        ])->orderBy('id', 'desc')->paginate(10);
+        ])
+            ->whereHas('periode', function ($query) {
+                $query->where('status', 1);
+            })
+            ->whereHas('subject', function ($query) use ($subject) {
+                if ($subject) {
+                    $query->where('id', $subject);
+                }
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
         // Siapkan data 'nilai' untuk setiap pertanyaan
         $questions->each(function ($question) use ($userId) {
             $question->nilai = $question->codes->first() ? $question->codes->first()->score : null;
         });
 
-        return view('soal.index', compact('questions'));
+        $questions->appends(['subject' => $subject]);
+
+        $subjects = Subject::all();
+        return view('soal.index', compact('questions', 'subjects'));
     }
+
 
 
     public function projects_index()

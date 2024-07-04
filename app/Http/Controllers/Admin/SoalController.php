@@ -5,38 +5,87 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Code;
+use App\Models\Periode;
+use App\Models\Subject;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use App\Models\Question;
 use Auth;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 
 class SoalController extends Controller
 {
+    /**
+     * Menampilkan daftar pertanyaan.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
+        // Mengambil kata kunci pencarian dan ID mata pelajaran dari permintaan
         $search = $request->get('search');
-        $questions = Question::leftJoin('articles', 'questions.article_id', '=', 'articles.id')
-            ->where('questions.judul', 'LIKE', "%$search%")
-            ->orWhere('articles.title', 'LIKE', "%$search%")
-            ->orderBy('questions.id', 'asc')
-            ->select('questions.*', 'articles.title as article_title')
-            ->paginate(10);
-        $questions->appends(['search' => $search]);
+        $subject = $request->get('subject');
 
-        return view('admin.questions.index', compact('questions'));
+        // Melakukan query pada tabel pertanyaan dengan left join pada tabel artikel
+        $questions = Question::leftJoin('articles', 'questions.article_id', '=', 'articles.id')
+            // Memfilter pertanyaan berdasarkan periode aktif
+            ->whereHas('periode', function ($query) {
+                $query->where('status', 1);
+            })
+            // Memfilter pertanyaan berdasarkan ID mata pelajaran
+            ->whereHas('subject', function ($query) use ($subject) {
+                if ($subject) {
+                    $query->where('id', $subject);
+                }
+            })
+            // Memfilter pertanyaan berdasarkan kata kunci pencarian
+            ->where(function ($query) use ($search) {
+                $query->where('questions.judul', 'LIKE', "%$search%")
+                    ->orWhere('articles.title', 'LIKE', "%$search%");
+            })
+            // Mengurutkan hasil berdasarkan ID pertanyaan secara ascending
+            ->orderBy('questions.id', 'asc')
+            // Memilih kolom yang diinginkan dari tabel pertanyaan dan artikel
+            ->select('questions.*', 'articles.title as article_title')
+            // Membatasi hasil dengan 10 item per halaman
+            ->paginate(10);
+
+        // Menambahkan parameter pencarian dan mata pelajaran ke tautan paginasi
+        $questions->appends(['search' => $search, 'subject' => $subject]);
+
+        // Mengambil semua mata pelajaran
+        $subjects = Subject::all();
+
+        // Meneruskan data pertanyaan dan mata pelajaran ke view
+        return view('admin.questions.index', compact('questions', 'subjects'));
     }
+
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    // public function create(): View
+    // {
+    //     $articles = Article::orderBy('id', 'asc')->get();
+    //     $subjects = Subject::all();
+    //     return view('admin.questions.add', compact('articles', 'subjects'));
+    // }
+    public function createCustom(Request $request): View
     {
-        $articles = Article::orderBy('id', 'asc')->get();
-        return view('admin.questions.add', compact('articles'));
-    }
+        if ($request->subject == '1') {
+            $articles = Article::orderBy('id', 'asc')->get();
+            return view('admin.questions.add', compact('articles'));
+        } else {
+            $articles = Article::orderBy('id', 'asc')->get();
+            $subjects = Subject::all();
+            return view('admin.questions.addCustom', compact('articles', 'subjects'));
+        }
 
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -49,19 +98,32 @@ class SoalController extends Controller
             'judul' => 'required',
             'deskripsi' => 'required',
             'materi' => 'required',
-            'bahasa' => 'required',
+            'subject' => 'required||integer',
         ]);
-
+        // Dapatkan id periode yang sedang aktif
+        $periodeId = Periode::where('status', 1)->first()->id;
+        if ($request->subject == '1') {
+            $bahasa = $request->bahasa;
+        } else {
+            $bahasa = '';
+        }
         $create = Question::create([
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
             'bahasa' => $request->bahasa,
             'author_id' => Auth::user()->id,
             'article_id' => $request->materi,
+            'periode_id' => $periodeId,
+            'subject_id' => $request->subject,
         ]);
 
-        session()->flash('success', "Sukses tambah Soal $request->judul");
-        return redirect()->route('admin.questions.index');
+        if ($create) {
+            session()->flash('success', "Sukses tambah Soal $request->judul");
+            return redirect()->route('admin.questions.index');
+        } else {
+            session()->flash('error', "Gagal tambah Soal $request->judul");
+            return redirect()->route('admin.questions.index');
+        }
     }
 
     /**
@@ -70,16 +132,22 @@ class SoalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id): View
     {
         $question = Question::findOrFail($id);
         $articles = Article::orderBy('id', 'asc')->get();
-        $bahasa = [
-            'html',
-            'php',
-            'mysql'
-        ];
-        return view('admin.questions.edit', compact('question', 'articles', 'bahasa'));
+        if ($question->subject_id == 1) {
+            $bahasa = [
+                'html',
+                'php',
+                'mysql',
+            ];
+            return view('admin.questions.edit', compact('question', 'articles', 'bahasa'));
+        } else {
+            $subjects = Subject::all();
+            return view('admin.questions.editCustom', compact('question', 'articles', 'subjects'));
+
+        }
     }
     /**
      * Update the specified resource in storage.
@@ -94,25 +162,34 @@ class SoalController extends Controller
             'judul' => 'required',
             'deskripsi' => 'required',
             'materi' => 'required',
-            'bahasa' => 'required',
+            'subject' => 'required||integer',
         ]);
-
+        if ($request->subject == '1') {
+            $bahasa = $request->bahasa;
+        } else {
+            $bahasa = '';
+        }
         $create = Question::find($id)->update([
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
             'bahasa' => $request->bahasa,
             'article_id' => $request->materi,
+            'subject_id' => $request->subject,
         ]);
-
-        session()->flash('success', "Sukses ubah Soal $request->judul");
-        return redirect()->route('admin.questions.index');
+        if ($create) {
+            session()->flash('success', "Sukses ubah Soal $request->judul");
+            return redirect()->route('admin.questions.index');
+        } else {
+            session()->flash('error', "Gagal ubah Soal $request->judul");
+            return redirect()->route('admin.questions.index');
+        }
     }
     /**
      *
      *@param  int  $id
      *@return \Illuminate\Http\Response
      */
-    public function show(request $request, $id)
+    public function show(request $request, $id): View
     {
         $question = Question::with(['codes', 'author'])->findOrFail($id);
         $codes = Code::where('question_id', $id)->orderBy('id', 'asc')->paginate(10);
@@ -135,7 +212,11 @@ class SoalController extends Controller
             ->paginate(10);
 
         $questions->appends(['search' => $search]);
-        return view('admin.questions.detail', compact('question', 'codes'));
+        if ($question->subject_id == 1) {
+            return view('admin.questions.detail', compact('question', 'codes'));
+        } else {
+            return view('admin.questions.detailCustom', compact('question', 'codes'));
+        }
     }
 
     /**
